@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Vigie (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Vigie (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -4,17 +4,16 @@
 ║        Centre de maintenance logicielle intelligent                  ║
 ║                                                                      ║
 ║  Module : Services                                                   ║
-║  Fichier : IPackageManager.cs                                        ║
+║  Fichier : WingetManager.cs                                          ║
 ║                                                                      ║
 ║  Rôle :                                                              ║
-║  Définit le contrat d’un gestionnaire de paquets utilisé             ║
-║  pour scanner et mettre à jour les logiciels du système.             ║
+║  Implémente IPackageManager pour le gestionnaire winget.             ║
 ║                                                                      ║
 ║  Responsabilités principales :                                       ║
-║  - Définir les méthodes de scan                                      ║
-║  - Définir les méthodes de mise à jour                               ║
+║  - Fournir une implémentation du scan                                ║
 ║                                                                      ║
 ║  Dépendances :                                                       ║
+║  - IPackageManager                                                   ║
 ║  - LogicielMiseAJour                                                 ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
@@ -28,34 +27,34 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Vigie.Modeles;
+using Vigie.Services.Interfaces;
 
 #endregion
 
 #region 2. Description Générale
 
 /*
- * Interface : IPackageManager
+ * Classe : WingetManager
  *
  * Rôle :
- * Définit le contrat commun pour tous les gestionnaires
- * de paquets supportés par Vigie (winget, scoop, etc.).
+ * Implémentation concrète du gestionnaire winget.
  *
  * Objectif architectural :
- * Permettre l’abstraction complète de la logique
- * de scan et de mise à jour.
+ * Séparer la logique spécifique winget
+ * du reste de l’application.
  *
  * Limites :
- * - Aucune implémentation
- * - Aucune logique système
+ * - Aucun appel système pour le moment
+ * - Aucune logique de parsing
  */
 
 #endregion
 
-#region 3. Déclaration
+#region 3. Déclaration de la Classe
 
-namespace Vigie.Services.Interfaces
+namespace Vigie.Services.PackageManagers
 {
-    public interface IPackageManager
+    public class WingetManager : IPackageManager
     {
         #region 3.1 Méthodes Publiques
 
@@ -63,13 +62,15 @@ namespace Vigie.Services.Interfaces
          * Méthode : ScanAsync
          *
          * Objectif :
-         * Scanner le système et retourner la liste
-         * des logiciels nécessitant une mise à jour.
+         * Fournir une implémentation minimale du scan.
          *
          * Retour :
-         * Liste de LogicielMiseAJour.
+         * Liste vide de LogicielMiseAJour.
          */
-        Task<List<LogicielMiseAJour>> ScanAsync();
+        public Task<List<LogicielMiseAJour>> ScanAsync()
+        {
+            return Task.FromResult(new List<LogicielMiseAJour>());
+        }
 
         #endregion
     }

@@ -3,73 +3,81 @@
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
 ║                                                                      ║
-║  Module : Services                                                   ║
-║  Fichier : IPackageManager.cs                                        ║
+║  Module : VueModeles                                                 ║
+║  Fichier : AccueilVueModele.cs                                       ║
 ║                                                                      ║
 ║  Rôle :                                                              ║
-║  Définit le contrat d’un gestionnaire de paquets utilisé             ║
-║  pour scanner et mettre à jour les logiciels du système.             ║
+║  Gère la logique de la page Accueil.                                 ║
 ║                                                                      ║
 ║  Responsabilités principales :                                       ║
-║  - Définir les méthodes de scan                                      ║
-║  - Définir les méthodes de mise à jour                               ║
+║  - Exposer la commande de scan                                       ║
+║  - Interagir avec IPackageManager                                    ║
 ║                                                                      ║
 ║  Dépendances :                                                       ║
-║  - LogicielMiseAJour                                                 ║
+║  - IPackageManager                                                   ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
-║  Voir fichier LICENSE pour détails                                   ║
 ║  Copyright © 2026 Flo Latury                                         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 */
 
 #region 1. Imports
 
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Vigie.Modeles;
+using System.Windows.Input;
+using Vigie.Services.Interfaces;
+using Vigie.Services.PackageManagers;
 
 #endregion
 
 #region 2. Description Générale
 
 /*
- * Interface : IPackageManager
+ * Classe : AccueilVueModele
  *
  * Rôle :
- * Définit le contrat commun pour tous les gestionnaires
- * de paquets supportés par Vigie (winget, scoop, etc.).
+ * Intermédiaire entre la vue Accueil et la logique métier.
  *
  * Objectif architectural :
- * Permettre l’abstraction complète de la logique
- * de scan et de mise à jour.
+ * Respecter le pattern MVVM strict.
  *
  * Limites :
- * - Aucune implémentation
- * - Aucune logique système
+ * - Pas encore de gestion d’état
+ * - Pas encore de binding complexe
  */
 
 #endregion
 
 #region 3. Déclaration
 
-namespace Vigie.Services.Interfaces
+namespace Vigie.VueModeles
 {
-    public interface IPackageManager
+    public class AccueilVueModele
     {
-        #region 3.1 Méthodes Publiques
+        #region 3.1 Propriétés
 
-        /*
-         * Méthode : ScanAsync
-         *
-         * Objectif :
-         * Scanner le système et retourner la liste
-         * des logiciels nécessitant une mise à jour.
-         *
-         * Retour :
-         * Liste de LogicielMiseAJour.
-         */
-        Task<List<LogicielMiseAJour>> ScanAsync();
+        private readonly IPackageManager _packageManager;
+
+        public ICommand ScannerCommande { get; }
+
+        #endregion
+
+        #region 3.2 Constructeur
+
+        public AccueilVueModele()
+        {
+            _packageManager = new WingetManager();
+            ScannerCommande = new AsyncRelayCommand(ScannerAsync);
+        }
+
+        #endregion
+
+        #region 3.3 Méthodes
+
+        private async Task ScannerAsync()
+        {
+            await _packageManager.ScanAsync();
+        }
 
         #endregion
     }

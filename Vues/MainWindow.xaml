@@ -21,6 +21,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Vigie"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Vigie.VueModeles"
     Title="Vigie"
     mc:Ignorable="d">
 
@@ -114,13 +115,86 @@
         <!--  Zone principale droite  -->
         <Grid Grid.Column="1" Background="#F4FAFF">
 
-            <Button
-                Width="220"
-                Height="60"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  Bloc titre  -->
+            <StackPanel Margin="40,40,0,0">
+                <TextBlock
+                    FontSize="24"
+                    FontWeight="SemiBold"
+                    Foreground="#1F2933"
+                    Text="État du système" />
+
+                <TextBlock
+                    Margin="0,4,0,0"
+                    FontSize="14"
+                    Foreground="#6B7280"
+                    Text="Dernier scan : jamais effectué" />
+            </StackPanel>
+
+            <Border
+                Grid.Row="1"
+                Width="480"
+                Height="260"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                Background="#FFFFFF"
+                CornerRadius="12">
+
+                <Border.Shadow>
+                    <ThemeShadow />
+                </Border.Shadow>
+
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="16">
+
+                    <!--  Icône avec halo  -->
+                    <Grid>
+
+                        <!--  Halo léger  -->
+                        <Ellipse
+                            Width="110"
+                            Height="110"
+                            Fill="#2E7D32"
+                            Opacity="0.08" />
+
+                        <!--  Cercle outline  -->
+                        <Ellipse
+                            Width="80"
+                            Height="80"
+                            Fill="Transparent"
+                            Stroke="#2E7D32"
+                            StrokeThickness="4" />
+
+                    </Grid>
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="#1F2933"
+                        Text="Système à jour" />
+
+                </StackPanel>
+
+            </Border>
+
+            <!--  Bouton principal  -->
+            <Button
+                Grid.Row="2"
+                Width="220"
+                Height="60"
+                Margin="0,0,0,120"
+                HorizontalAlignment="Center"
                 Background="#384454"
                 BorderThickness="0"
+                Command="{Binding ScannerCommande}"
                 Content="Scanner"
                 Foreground="White">
 

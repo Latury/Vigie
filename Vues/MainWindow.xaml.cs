@@ -20,6 +20,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Threading.Tasks;
+using Vigie.VueModeles;
 
 #endregion
 
@@ -52,10 +53,17 @@ namespace Vigie
 
         /*
          * Initialise la fenêtre et charge le XAML associé.
+         * Associe le VueModele à la vue (pattern MVVM).
          */
         public MainWindow()
         {
             InitializeComponent();
+
+            // Association du DataContext en WinUI 3
+            if (this.Content is FrameworkElement rootElement)
+            {
+                rootElement.DataContext = new AccueilVueModele();
+            }
         }
 
         #endregion

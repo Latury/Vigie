@@ -29,15 +29,109 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <!--  Layout principal minimal  -->
+    <!--  Layout principal  -->
     <Grid>
 
-        <Button
-            Width="200"
-            Height="60"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Content="Scanner" />
+        <Grid.ColumnDefinitions>
+            <!--  Colonne gauche fixe  -->
+            <ColumnDefinition Width="220" />
+
+            <!--  Colonne droite prend tout l’espace restant  -->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Barre gauche  -->
+        <Grid Grid.Column="0" Background="#384454">
+
+            <Grid.Resources>
+
+                <Style x:Key="NavButtonStyle" TargetType="Button">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Height" Value="44" />
+                    <Setter Property="Margin" Value="20,0" />
+                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                    <Setter Property="Padding" Value="12,0" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Grid x:Name="RootGrid" Background="Transparent">
+                                    <ContentPresenter Margin="12,0" VerticalAlignment="Center" />
+
+                                    <VisualStateManager.VisualStateGroups>
+
+                                        <VisualStateGroup x:Name="CommonStates">
+
+                                            <VisualState x:Name="Normal" />
+
+                                            <VisualState x:Name="PointerOver">
+                                                <Storyboard>
+                                                    <ColorAnimation
+                                                        Storyboard.TargetName="RootGrid"
+                                                        Storyboard.TargetProperty="(Grid.Background).(SolidColorBrush.Color)"
+                                                        To="#4F6D8C"
+                                                        Duration="0" />
+                                                </Storyboard>
+                                            </VisualState>
+
+                                            <VisualState x:Name="Pressed">
+                                                <Storyboard>
+                                                    <ColorAnimation
+                                                        Storyboard.TargetName="RootGrid"
+                                                        Storyboard.TargetProperty="(Grid.Background).(SolidColorBrush.Color)"
+                                                        To="#2F3B4A"
+                                                        Duration="0" />
+                                                </Storyboard>
+                                            </VisualState>
+
+                                        </VisualStateGroup>
+
+                                    </VisualStateManager.VisualStateGroups>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+            </Grid.Resources>
+
+            <StackPanel
+                Margin="0,40,0,0"
+                VerticalAlignment="Top"
+                Spacing="12">
+
+                <Button Content="Accueil" Style="{StaticResource NavButtonStyle}" />
+                <Button Content="Historique" Style="{StaticResource NavButtonStyle}" />
+                <Button Content="Paramètres" Style="{StaticResource NavButtonStyle}" />
+                <Button Content="À propos" Style="{StaticResource NavButtonStyle}" />
+
+            </StackPanel>
+
+        </Grid>
+
+        <!--  Zone principale droite  -->
+        <Grid Grid.Column="1" Background="#F4FAFF">
+
+            <Button
+                Width="220"
+                Height="60"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="#384454"
+                BorderThickness="0"
+                Content="Scanner"
+                Foreground="White">
+
+                <Button.Resources>
+                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#4F6D8C" />
+                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#2F3B4A" />
+                </Button.Resources>
+
+            </Button>
+
+        </Grid>
 
     </Grid>
 </Window>

@@ -67,9 +67,25 @@ namespace Vigie.Services.PackageManagers
          * Retour :
          * Liste vide de LogicielMiseAJour.
          */
-        public Task<List<LogicielMiseAJour>> ScanAsync()
+        public async Task<List<LogicielMiseAJour>> ScanAsync()
         {
-            return Task.FromResult(new List<LogicielMiseAJour>());
+            await Task.Delay(1500); // Simulation 1,5 secondes
+
+            return new List<LogicielMiseAJour>
+    {
+        new LogicielMiseAJour
+        {
+            Nom = "Google Chrome",
+            VersionActuelle = "120.0",
+            NouvelleVersion = "121.0"
+        },
+        new LogicielMiseAJour
+        {
+            Nom = "VLC Media Player",
+            VersionActuelle = "3.0.18",
+            NouvelleVersion = "3.0.19"
+        }
+    };
         }
 
         #endregion

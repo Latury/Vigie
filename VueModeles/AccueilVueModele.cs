@@ -11,9 +11,9 @@
 ║                                                                      ║
 ║  Responsabilités principales :                                       ║
 ║  - Exposer la commande de scan                                       ║
-║  - Interagir avec IPackageManager                                    ║
+║  - Interagir avec GestionnaireWinget                                 ║
 ║  - Exposer la liste des logiciels détectés                           ║
-║  - Fournir un état dynamique du système                              ║
+║  - Fournir un état dynamique structuré du système                    ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -31,6 +31,7 @@ using System.Windows.Input;
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
 using Vigie.Services.PackageManagers;
+using Vigie.Infrastructure;
 
 #endregion
 
@@ -41,9 +42,6 @@ using Vigie.Services.PackageManagers;
  *
  * Rôle :
  * Intermédiaire entre la vue Accueil et la logique métier.
- *
- * Objectif architectural :
- * Respecter le pattern MVVM strict.
  *
  * Particularité :
  * Implémente INotifyPropertyChanged pour permettre
@@ -58,15 +56,21 @@ namespace Vigie.VueModeles
 {
     public class AccueilVueModele : INotifyPropertyChanged
     {
-        #region 3.1 Propriétés privées
+        #region 3.1 Champs privés
 
-        private readonly IPackageManager _packageManager;
+        private readonly IGestionnairePaquets _packageManager;
+
+        private bool _isScanning;
+        private EtatSysteme _etatActuel = EtatSysteme.Inconnu;
+        private DateTime? _dernierScan;
 
         #endregion
 
         #region 3.2 Propriétés publiques
 
-        private bool _isScanning;
+        public ICommand ScannerCommande { get; }
+
+        public ObservableCollection<LogicielMiseAJour> Logiciels { get; }
 
         public bool IsScanning
         {
@@ -75,50 +79,41 @@ namespace Vigie.VueModeles
             {
                 _isScanning = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(EtatSysteme));
             }
         }
 
-        public ICommand ScannerCommande { get; }
-
-        public ObservableCollection<LogicielMiseAJour> Logiciels { get; }
+        /*
+         * État structuré du système (enum).
+         */
+        public EtatSysteme EtatActuel
+        {
+            get => _etatActuel;
+            private set
+            {
+                _etatActuel = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TexteEtat));
+            }
+        }
 
         /*
-         * Propriété calculée représentant l’état du système.
+         * Texte affiché dans l’UI basé sur l’état.
          */
-        public string EtatSysteme
+        public string TexteEtat
         {
             get
             {
-                if (IsScanning)
-                    return "Analyse en cours...";
-
-                return Logiciels.Count == 0
-                    ? "Système à jour"
-                    : $"{Logiciels.Count} mise(s) à jour disponible(s)";
+                return EtatActuel switch
+                {
+                    EtatSysteme.AnalyseEnCours => "Analyse en cours...",
+                    EtatSysteme.Ajour => "Système à jour",
+                    EtatSysteme.MisesAJourDisponibles =>
+                        $"{Logiciels.Count} mise(s) à jour disponible(s)",
+                    EtatSysteme.Erreur => "Erreur lors du scan",
+                    _ => "État inconnu"
+                };
             }
         }
-
-        #endregion
-
-        #region 3.3 Constructeur
-
-        public AccueilVueModele()
-        {
-            _packageManager = new WingetManager();
-
-            Logiciels = new ObservableCollection<LogicielMiseAJour>();
-
-            // Quand la collection change → notifier l’état
-            Logiciels.CollectionChanged += (s, e) =>
-            {
-                OnPropertyChanged(nameof(EtatSysteme));
-            };
-
-            ScannerCommande = new AsyncRelayCommand(ScannerAsync);
-        }
-
-        private DateTime? _dernierScan;
 
         public string DernierScanTexte
         {
@@ -133,26 +128,57 @@ namespace Vigie.VueModeles
 
         #endregion
 
+        #region 3.3 Constructeur
+
+        public AccueilVueModele()
+        {
+            _packageManager = new GestionnaireWinget();
+
+            Logiciels = new ObservableCollection<LogicielMiseAJour>();
+
+            Logiciels.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(TexteEtat));
+            };
+
+            ScannerCommande = new CommandeAsynchrone(ScannerAsync);
+        }
+
+        #endregion
+
         #region 3.4 Méthodes
 
         private async Task ScannerAsync()
         {
-            IsScanning = true;
-
-            var resultats = await _packageManager.ScanAsync();
-
-            Logiciels.Clear();
-
-            foreach (var logiciel in resultats)
+            try
             {
-                Logiciels.Add(logiciel);
+                IsScanning = true;
+                EtatActuel = EtatSysteme.AnalyseEnCours;
+
+                var resultats = await _packageManager.ScanAsync();
+
+                Logiciels.Clear();
+
+                foreach (var logiciel in resultats)
+                {
+                    Logiciels.Add(logiciel);
+                }
+
+                _dernierScan = DateTime.Now;
+                OnPropertyChanged(nameof(DernierScanTexte));
+
+                EtatActuel = Logiciels.Count == 0
+                    ? EtatSysteme.Ajour
+                    : EtatSysteme.MisesAJourDisponibles;
             }
-
-            _dernierScan = DateTime.Now;
-
-            OnPropertyChanged(nameof(DernierScanTexte));
-
-            IsScanning = false;
+            catch
+            {
+                EtatActuel = EtatSysteme.Erreur;
+            }
+            finally
+            {
+                IsScanning = false;
+            }
         }
 
         #endregion
@@ -161,9 +187,12 @@ namespace Vigie.VueModeles
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        protected void OnPropertyChanged(
+            [CallerMemberName] string? propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion

@@ -66,8 +66,8 @@ Mettre en place la base architecturale stable.
 - 🔲 Création projet WinUI 3 (.NET 8)
 - 🔲 Mise en place structure dossiers conforme standard interne
 - 🔲 Implémentation MVVM strict
-- 🔲 Création interface IPackageManager
-- 🔲 Implémentation WingetManager
+- 🔲 Création interface GestionnaireWinget
+- 🔲 Implémentation GestionnaireWinget
 - 🔲 Scan winget avec sortie JSON
 - 🔲 Affichage liste simple des mises à jour
 - 🔲 Journalisation de base

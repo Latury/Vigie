@@ -77,8 +77,8 @@
                 - Affichage du ProgressRing pendant le scan
                 - Masquage de l’icône lorsque l’analyse est en cours
             -->
-            <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <conv:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <conv:ConvertisseurBooleenVersVisibilite x:Key="ConvertisseurBooleenVersVisibilite" />
+            <conv:ConvertisseurBooleenInverse x:Key="ConvertisseurBooleenInverse" />
 
             <!--
                 Zone réservée aux ressources globales personnalisées.

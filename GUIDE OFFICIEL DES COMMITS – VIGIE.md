@@ -63,7 +63,7 @@ Exemples adaptés à Vigie :
 
 📎 [Init] Initialisation projet WinUI 3
 🏗️ [Architecture] Mise en place MVVM strict
-🧱 [Core] Implémentation WingetManager
+🧱 [Core] Implémentation GestionnaireWinget
 ✨ [Feature] Ajout mise à jour individuelle
 🔒 [Security] Ajout point de restauration
 
@@ -164,7 +164,7 @@ Explication claire destinée :
 
 ## Summary
 
-🧱 [Core] Implémentation WingetManager scan JSON
+🧱 [Core] Implémentation GestionnaireWinget scan JSON
 
 ---
 
@@ -177,8 +177,8 @@ Ajout du moteur permettant à Vigie de scanner les mises à jour via winget.
 
 👨‍💻 Description technique :
 
-- Création classe WingetManager
-- Implémentation interface IPackageManager
+- Création classe GestionnaireWinget
+- Implémentation interface GestionnaireWinget
 - Exécution commande :
   winget upgrade --output json
 - Lecture sortie standard
@@ -189,8 +189,8 @@ Ajout du moteur permettant à Vigie de scanner les mises à jour via winget.
 
 📁 Fichiers concernés :
 
-- Services/PackageManagers/WingetManager.cs
-- Services/Interfaces/IPackageManager.cs
+- Services/PackageManagers/GestionnaireWinget.cs
+- Services/Interfaces/GestionnaireWinget.cs
 - Modeles/LogicielMiseAJour.cs
 
 ---

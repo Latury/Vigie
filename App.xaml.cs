@@ -77,12 +77,12 @@ namespace Vigie
          * Appelée automatiquement lorsque l’application démarre.
          *
          * Effet :
-         * - Instancie MainWindow
+         * - Instancie FenetrePrincipale
          * - Active la fenêtre
          */
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            _window = new MainWindow();
+            _window = new FenetrePrincipale();
             _window.Activate();
         }
 

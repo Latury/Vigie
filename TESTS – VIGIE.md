@@ -29,8 +29,8 @@ Garantir :
 
 ## 🧠 Tests unitaires (à implémenter)
 
-- Test IPackageManager
-- Test WingetManager
+- Test GestionnaireWinget
+- Test GestionnaireWinget
 - Test gestion erreurs
 - Test normalisation données
 

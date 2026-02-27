@@ -114,7 +114,7 @@ Vigie/
 - MVVM strict
 - Séparation claire des responsabilités
 - Logique métier isolée des vues
-- Abstraction via interfaces (IPackageManager)
+- Abstraction via interfaces (GestionnaireWinget)
 - Services découplés et testables
 - Journalisation centralisée
 - Extensibilité progressive
@@ -127,8 +127,8 @@ Vigie/
 
 - Structure WinUI 3 initialisée
 - Architecture MVVM en place
-- Interface IPackageManager définie
-- Implémentation WingetManager
+- Interface GestionnaireWinget définie
+- Implémentation GestionnaireWinget
 - Scan winget avec sortie JSON
 - Affichage liste des mises à jour
 

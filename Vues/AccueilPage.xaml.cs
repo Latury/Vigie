@@ -4,10 +4,18 @@
 ║        Centre de maintenance logicielle intelligent                  ║
 ║                                                                      ║
 ║  Module : Vues                                                       ║
-║  Fichier : MainWindow.xaml.cs                                        ║
+║  Fichier : AccueilPage.xaml.cs                                       ║
 ║                                                                      ║
 ║  Rôle :                                                              ║
-║  Gère le comportement de la fenêtre principale.                      ║
+║  Code-behind minimal de la page Accueil.                             ║
+║                                                                      ║
+║  Responsabilités :                                                   ║
+║  - Initialiser la page                                               ║
+║  - Associer le ViewModel                                             ║
+║                                                                      ║
+║  Limites :                                                           ║
+║  - Aucune logique métier                                             ║
+║  - Binding uniquement via ViewModel                                  ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -16,73 +24,39 @@
 
 #region 1. Imports
 
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Threading.Tasks;
 using Vigie.VueModeles;
 
 #endregion
 
-namespace Vigie
+namespace Vigie.Vues
 {
     #region 2. Description Générale
 
     /*
-     * Classe : MainWindow
+     * Classe : AccueilPage
      *
      * Rôle :
-     * Représente la fenêtre principale affichée au démarrage.
-     *
-     * Responsabilités :
-     * - Initialiser les composants visuels
-     * - Gérer les interactions simples
-     *
-     * Limites :
-     * - Ne contient pas de logique métier
-     * - Ne contient pas encore de ViewModel
+     * Page d’accueil affichant l’état du système.
      */
 
     #endregion
 
     #region 3. Déclaration
 
-    public sealed partial class MainWindow : Window
+    public sealed partial class AccueilPage : Page
     {
         #region 3.1 Constructeur
 
         /*
-         * Initialise la fenêtre et charge le XAML associé.
-         * Associe le VueModele à la vue (pattern MVVM).
+         * Initialise la page et associe le ViewModel.
          */
-        public MainWindow()
+        public AccueilPage()
         {
             InitializeComponent();
 
-            // Association du DataContext en WinUI 3
-            if (this.Content is FrameworkElement rootElement)
-            {
-                rootElement.DataContext = new AccueilVueModele();
-            }
+            DataContext = new AccueilVueModele();
         }
-
-        #endregion
-
-        #region 3.2 Méthodes Publiques
-
-        /*
-         * Méthode : Scanner_Click
-         *
-         * Objectif :
-         * Vérifier le fonctionnement du cycle événement → code.
-         *
-         * Paramètres :                                                          
-         * sender : objet déclencheur.
-         * e : informations liées à l’événement.
-         *
-         * Effets :
-         * Affiche une boîte de dialogue de test.
-         */
 
         #endregion
     }

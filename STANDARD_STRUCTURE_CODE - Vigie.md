@@ -119,10 +119,10 @@ using System.Diagnostics;
 #region 2. Description Générale
 
 /*
- * Classe : WingetManager
+ * Classe : GestionnaireWinget
  *
  * Rôle :
- * Implémente l’interface IPackageManager pour gérer
+ * Implémente l’interface GestionnaireWinget pour gérer
  * le scan et la mise à jour via winget.
  *
  * Responsabilités :
@@ -140,7 +140,7 @@ using System.Diagnostics;
 
 #region 3. Déclaration de la Classe
 
-public class WingetManager : IPackageManager
+public class GestionnaireWinget : GestionnaireWinget
 {
     #region 3.1 Propriétés
 
@@ -150,7 +150,7 @@ public class WingetManager : IPackageManager
 
     #region 3.2 Constructeur
 
-    public WingetManager(ILogService logService)
+    public GestionnaireWinget(ILogService logService)
     {
         _logService = logService;
     }

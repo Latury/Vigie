@@ -12,6 +12,12 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Vues\AccueilPage.xaml" />
+    <None Remove="Vues\AProposPage.xaml" />
+    <None Remove="Vues\HistoriquePage.xaml" />
+    <None Remove="Vues\ParametresPage.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -40,8 +46,27 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260209005" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Logs\" />
-    <Folder Include="Vues\" />
+    <Folder Include="JournalEvenements\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Vues\AProposPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Vues\ParametresPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Vues\HistoriquePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Vues\AccueilPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!--

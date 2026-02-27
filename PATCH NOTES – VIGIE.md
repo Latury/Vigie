@@ -69,13 +69,13 @@ Base stable pour évolution progressive.
 
 ## 🧩 Gestionnaires de paquets
 
-### 🔹 Interface IPackageManager
+### 🔹 Interface GestionnaireWinget
 
 - Définition abstraction commune
 - Préparation support multi-gestionnaires
 - Découplage logique métier
 
-### 🔹 WingetManager
+### 🔹 GestionnaireWinget
 
 - Implémentation initiale
 - Exécution commande :
@@ -112,7 +112,7 @@ Principes appliqués :
 - Journalisation centralisée
 
 Décision structurante :
-Support multi-gestionnaires via IPackageManager dès la version initiale.
+Support multi-gestionnaires via GestionnaireWinget dès la version initiale.
 
 ---
 

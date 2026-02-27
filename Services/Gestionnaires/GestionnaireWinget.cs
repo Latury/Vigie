@@ -39,52 +39,64 @@ namespace Vigie.Services.PackageManagers
         {
             var logiciels = new List<LogicielMiseAJour>();
 
-            var processStartInfo = new ProcessStartInfo
+            var processInfo = new System.Diagnostics.ProcessStartInfo
             {
                 FileName = "winget",
-                Arguments = "upgrade --output json",
+                Arguments = "upgrade",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
 
-            using var process = new Process();
-            process.StartInfo = processStartInfo;
+            using var process = new System.Diagnostics.Process
+            {
+                StartInfo = processInfo
+            };
 
             process.Start();
 
             string output = await process.StandardOutput.ReadToEndAsync();
-            string error = await process.StandardError.ReadToEndAsync();
-
             await process.WaitForExitAsync();
 
-            if (!string.IsNullOrWhiteSpace(error))
-            {
-                Debug.WriteLine("Winget error: " + error);
+            var lignes = output.Split(Environment.NewLine);
+
+            // Trouver la ligne de séparation ------
+            int separatorIndex = Array.FindIndex(lignes, l => l.StartsWith("---"));
+
+            if (separatorIndex <= 0)
                 return logiciels;
-            }
 
-            if (string.IsNullOrWhiteSpace(output))
-                return logiciels;
+            string header = lignes[separatorIndex - 1];
 
-            try
+            int idIndex = header.IndexOf("ID");
+            int versionIndex = header.IndexOf("Version");
+            int dispoIndex = header.IndexOf("Disponible");
+
+            for (int i = separatorIndex + 1; i < lignes.Length; i++)
             {
-                using JsonDocument document = JsonDocument.Parse(output);
+                var ligne = lignes[i];
 
-                foreach (var element in document.RootElement.EnumerateArray())
+                if (string.IsNullOrWhiteSpace(ligne))
+                    continue;
+
+                if (ligne.StartsWith("Les packages") ||
+                    ligne.Contains("mise") ||
+                    ligne.Contains("upgrade"))
+                    break;
+
+                var colonnes = System.Text.RegularExpressions.Regex
+                    .Split(ligne.Trim(), @"\s{2,}");
+
+                if (colonnes.Length < 4)
+                    continue;
+
+                logiciels.Add(new LogicielMiseAJour
                 {
-                    logiciels.Add(new LogicielMiseAJour
-                    {
-                        Nom = element.GetProperty("Name").GetString() ?? "",
-                        VersionActuelle = element.GetProperty("Version").GetString() ?? "",
-                        NouvelleVersion = element.GetProperty("AvailableVersion").GetString() ?? ""
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Parsing error: " + ex.Message);
+                    Nom = colonnes[0],
+                    VersionActuelle = colonnes[2],
+                    NouvelleVersion = colonnes[3]
+                });
             }
 
             return logiciels;

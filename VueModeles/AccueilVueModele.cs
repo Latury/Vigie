@@ -32,6 +32,7 @@ using Vigie.Modeles;
 using Vigie.Services.Interfaces;
 using Vigie.Services.PackageManagers;
 using Vigie.Infrastructure;
+using Vigie.Services.Gestionnaires;
 
 #endregion
 

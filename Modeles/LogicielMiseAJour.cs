@@ -94,6 +94,23 @@ namespace Vigie.Modeles
          */
         public string Source { get; set; } = string.Empty;
 
+        /*
+         * Propriété : IdentifiantNormalise
+         *
+         * Rôle :
+         * Identifiant technique normalisé utilisé pour
+         * la déduplication multi-gestionnaires.
+         *
+         * Objectif :
+         * Permettre la fusion intelligente des logiciels
+         * provenant de différentes sources.
+         *
+         * Remarque :
+         * Cette valeur est calculée lors du processus
+         * de normalisation et ne dépend pas de l’UI.
+         */
+        public string IdentifiantNormalise { get; set; } = string.Empty;
+
         #endregion
     }
 

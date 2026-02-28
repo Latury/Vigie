@@ -311,11 +311,27 @@ Objectif : Extension maîtrisée de l’architecture multi-gestionnaires
 
 Aucune mise à jour automatique encore.
 
+### ✅ Évolution réalisée
+
+- Ajout propriété `Source` dans `LogicielMiseAJour`
+- Ajout propriété `IdentifiantNormalise`
+- Préparation déduplication multi-gestionnaires future
+- Aucun changement pipeline Scan actuel
+- Aucune régression détectée
+
+### 🧠 Impact architectural
+
+- Le modèle devient prêt pour la fusion multi-sources
+- La déduplication robuste pourra être implémentée proprement
+- Aucune dette technique introduite
+
+Statut : 🟡 0.2.0-dev en cours (architecture en extension maîtrisée)
+
 ---
 
 # 📦 MÉTADONNÉES
 
-Version : 0.1.0-dev
+Version : Version : 0.1.0-dev
 Type : Development (Foundations Stabilized)
 Licence : MIT
 Dernière mise à jour : 28 février 2026

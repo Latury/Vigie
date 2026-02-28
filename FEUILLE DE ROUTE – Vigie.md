@@ -90,7 +90,7 @@ Objectif : fonctionnement minimal mais propre.
 Préparer officiellement le support multi-gestionnaires
 et structurer l’architecture avancée.
 
-- 🔲 Ajout champ Source dans LogicielMiseAJour
+- ✅ Ajout champ Source dans LogicielMiseAJour
 - 🔲 Préparation affichage source (Mode Expert)
 - 🔲 Début support second gestionnaire (Scoop ou Chocolatey)
 - 🔲 Fusion intelligente des résultats
@@ -100,7 +100,7 @@ et structurer l’architecture avancée.
 - 🔲 Préparation infrastructure paramètres utilisateur
 - 🔲 Implémentation déduplication robuste basée sur ID normalisé
       (modification GestionnaireGlobal.cs)
-- 🔲 Ajout propriété IdentifiantNormalise dans LogicielMiseAJour
+- ✅ Ajout propriété IdentifiantNormalise dans LogicielMiseAJour
       (Modeles/LogicielMiseAJour.cs)
 - 🔲 Introduction couche de normalisation multi-gestionnaires
       (création dossier Services/Normalisation)

@@ -4,7 +4,7 @@
 ║        Centre de maintenance logicielle intelligent                  ║
 ║                                                                      ║
 ║  Module : Vues                                                       ║
-║  Fichier : FenetrePrincipale.xaml.cs                                        ║
+║  Fichier : FenetrePrincipale.xaml.cs                                 ║
 ║                                                                      ║
 ║  Rôle :                                                              ║
 ║  Gère la navigation principale de l’application.                     ║
@@ -25,10 +25,14 @@
 
 #region 1. Imports
 
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using System;
 using Vigie.Infrastructure;
 using Vigie.Vues;
+using WinRT.Interop;
 
 #endregion
 
@@ -66,9 +70,26 @@ namespace Vigie
 
             // Initialisation du service de navigation
             _navigationService = new NavigationService(RootFrame);
-
-            // Chargement de la page d'accueil
             _navigationService.Navigate(typeof(AccueilPage));
+
+            // Forcer l’icône après activation complète
+            this.Activated += FenetrePrincipale_Activated;
+        }
+
+        private void FenetrePrincipale_Activated(object sender, WindowActivatedEventArgs args)
+        {
+            this.Activated -= FenetrePrincipale_Activated;
+
+            var hWnd = WindowNative.GetWindowHandle(this);
+            var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+            var appWindow = AppWindow.GetFromWindowId(windowId);
+
+            string cheminIcone = System.IO.Path.Combine(
+                AppContext.BaseDirectory,
+                "Assets",
+                "Vigie.ico");
+
+            appWindow.SetIcon(cheminIcone);
         }
 
         #endregion

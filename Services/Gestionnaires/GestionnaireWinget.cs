@@ -222,7 +222,8 @@ namespace Vigie.Services.PackageManagers
                 {
                     Nom = nom,
                     VersionActuelle = versionActuelle,
-                    NouvelleVersion = nouvelleVersion
+                    NouvelleVersion = nouvelleVersion,
+                    Source = "winget"
                 });
             }
 

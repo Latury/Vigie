@@ -18,7 +18,7 @@
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Voir fichier LICENSE pour détails                                   ║
-║  Copyright © Année 2026 Flo Latury                                   ║
+║  Copyright © 2026 Flo Latury                                         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 */
 
@@ -80,6 +80,19 @@ namespace Vigie.Modeles
          * Version disponible à la mise à jour.
          */
         public string NouvelleVersion { get; set; } = string.Empty;
+
+        /*
+         * Propriété : Source
+         *
+         * Rôle :
+         * Gestionnaire de paquets ayant détecté la mise à jour
+         * (ex : winget, scoop, chocolatey).
+         *
+         * Objectif :
+         * Permettre un affichage différencié en Mode Expert
+         * tout en conservant une fusion intelligente en Mode Senior.
+         */
+        public string Source { get; set; } = string.Empty;
 
         #endregion
     }

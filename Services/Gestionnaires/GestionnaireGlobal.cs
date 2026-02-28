@@ -12,6 +12,11 @@
 ║  Responsabilités principales :                                       ║
 ║  - Agréger plusieurs sources de mises à jour                         ║
 ║  - Fusionner les résultats                                           ║
+║  - Garantir la résilience globale                                    ║
+║  - Journaliser l’agrégation                                          ║
+║                                                                      ║
+║  Limites :                                                           ║
+║  - Déduplication basée uniquement sur le nom                         ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -20,11 +25,13 @@
 
 #region 1. Imports
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
+using Vigie.JournalEvenements;
 
 #endregion
 
@@ -35,6 +42,7 @@ namespace Vigie.Services.Gestionnaires
         #region 3.1 Champs privés
 
         private readonly List<IGestionnairePaquets> _gestionnaires;
+        private readonly IJournalService _journal;
 
         #endregion
 
@@ -42,6 +50,8 @@ namespace Vigie.Services.Gestionnaires
 
         public GestionnaireGlobal()
         {
+            _journal = new JournalService();
+
             _gestionnaires = new List<IGestionnairePaquets>
             {
                 new PackageManagers.GestionnaireWinget()
@@ -50,23 +60,44 @@ namespace Vigie.Services.Gestionnaires
 
         #endregion
 
-        #region 3.3 Méthodes
+        #region 3.3 Méthodes publiques
 
         public async Task<List<LogicielMiseAJour>> ScanAsync()
         {
             var tousLesResultats = new List<LogicielMiseAJour>();
 
+            _journal.Info("Agrégation des gestionnaires de paquets.");
+
             foreach (var gestionnaire in _gestionnaires)
             {
-                var resultats = await gestionnaire.ScanAsync();
-                tousLesResultats.AddRange(resultats);
+                try
+                {
+                    var resultats = await gestionnaire.ScanAsync();
+
+                    if (resultats != null && resultats.Any())
+                    {
+                        tousLesResultats.AddRange(resultats);
+                        _journal.Info($"{resultats.Count} mise(s) ajoutée(s) depuis {gestionnaire.GetType().Name}.");
+                    }
+                    else
+                    {
+                        _journal.Info($"Aucune mise à jour retournée par {gestionnaire.GetType().Name}.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _journal.Erreur($"Erreur dans {gestionnaire.GetType().Name} : {ex.Message}");
+                }
             }
 
-            // Déduplication simple par nom
-            return tousLesResultats
+            var resultatsDedup = tousLesResultats
                 .GroupBy(l => l.Nom)
                 .Select(g => g.First())
                 .ToList();
+
+            _journal.Info($"Total agrégé après déduplication : {resultatsDedup.Count}.");
+
+            return resultatsDedup;
         }
 
         #endregion

@@ -92,9 +92,6 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260209005" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="JournalEvenements\" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Update="Vues\AProposPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

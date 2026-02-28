@@ -11,8 +11,8 @@
 ║                                                                      ║
 ║  Responsabilités principales :                                       ║
 ║  - Exécuter winget                                                   ║
-║  - Lire la sortie JSON                                               ║
-║  - Parser les mises à jour                                           ║
+║  - Lire la sortie console                                            ║
+║  - Journaliser les événements                                        ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -24,10 +24,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
+using Vigie.JournalEvenements;
 
 #endregion
 
@@ -35,16 +35,35 @@ namespace Vigie.Services.PackageManagers
 {
     public class GestionnaireWinget : IGestionnairePaquets
     {
+        #region 3.1 Champs privés
+
+        private readonly IJournalService _journal;
+
+        #endregion
+
+        #region 3.2 Constructeur
+
+        public GestionnaireWinget()
+        {
+            _journal = new JournalService();
+        }
+
+        #endregion
+
+        #region 3.3 Méthodes
+
         public async Task<List<LogicielMiseAJour>> ScanAsync()
         {
             var logiciels = new List<LogicielMiseAJour>();
 
             try
             {
+                _journal.Info("Début du scan winget.");
+
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = "winget",
-                    Arguments = "upgrade --output json",
+                    Arguments = "upgrade",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -67,6 +86,7 @@ namespace Vigie.Services.PackageManagers
                 if (completedTask == timeoutTask)
                 {
                     try { process.Kill(); } catch { }
+                    _journal.Erreur("Timeout lors du scan winget.");
                     return logiciels;
                 }
 
@@ -75,18 +95,23 @@ namespace Vigie.Services.PackageManagers
 
                 if (process.ExitCode != 0)
                 {
+                    _journal.Erreur($"Winget a retourné un code {process.ExitCode}. Erreur : {error}");
                     return logiciels;
                 }
 
-                // Pour l’instant on ne parse pas encore.
-                // Parsing JSON sécurisé au commit suivant.
+                _journal.Info("Scan winget terminé avec succès.");
+
+                // Parsing texte sera amélioré au commit suivant.
 
                 return logiciels;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _journal.Erreur($"Exception lors du scan winget : {ex.Message}");
                 return logiciels;
             }
         }
+
+        #endregion
     }
 }

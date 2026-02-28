@@ -305,43 +305,57 @@ Objectif : Extension maîtrisée de l’architecture multi-gestionnaires
 - Consolidation parsing indépendant de la langue
 - Implémentation déduplication robuste basée sur ID normalisé
   via évolution de GestionnaireGlobal
-- Extension du modèle LogicielMiseAJour avec identifiant interne normalisé
 - Introduction couche de normalisation multi-gestionnaires
 - Refactorisation séparation Scan / Analyse / Fusion
 
 Aucune mise à jour automatique encore.
 
-### ✅ Évolution réalisée
+---
 
-- Ajout propriété `Source` dans `LogicielMiseAJour`
+## ✅ Évolutions réalisées (0.2.0-dev en cours)
+
+### 🧱 Extension du modèle
+
+- Ajout propriété `Source`
 - Ajout propriété `IdentifiantNormalise`
-- Préparation déduplication multi-gestionnaires future
-- Aucun changement pipeline Scan actuel
-- Aucune régression détectée
 
-### 🧠 Impact architectural
+Impact :
+Préparation structurelle du modèle pour la fusion multi-sources.
 
-- Le modèle devient prêt pour la fusion multi-sources
-- La déduplication robuste pourra être implémentée proprement
-- Aucune dette technique introduite
+---
 
-## 🏗️ Préparation déduplication robuste
+### 🏗️ Préparation déduplication robuste
 
-- Fusion désormais basée sur IdentifiantNormalise (fallback sur Nom)
-- Aucun changement comportemental actuel
-- Préparation moteur multi-gestionnaires
+- Fusion désormais basée sur `IdentifiantNormalise` (fallback sur `Nom`)
+- Aucune modification comportementale visible
 - Régression testée : scan Winget fonctionnel
 
-Statut : 🟡 0.2.0-dev en cours (architecture en extension maîtrisée)
+Impact :
+Moteur prêt pour multi-gestionnaires sans casser la stabilité.
+
+---
+
+### 🧬 Introduction couche de normalisation
+
+- Création interface `INormaliseur`
+- Implémentation `NormaliseurWinget`
+- Intégration dans `GestionnaireGlobal`
+- `IdentifiantNormalise` désormais généré automatiquement
+
+Impact :
+Pipeline officiel :
+Scan → Normalisation → Fusion
+
+Aucune régression détectée.
 
 ---
 
 # 📦 MÉTADONNÉES
 
-Version : 🟡 0.2.0-dev en cours
+Version : 0.1.0-dev
 Type : Development (Foundations Stabilized)
 Licence : MIT
-Dernière mise à jour : 28 février 2026
+Dernière mise à jour : 01 mars 2026
 
 ---
 

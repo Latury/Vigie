@@ -98,13 +98,14 @@ et structurer l’architecture avancée.
 - 🔲 Refactorisation contrôlée si nécessaire
 - 🔲 Préparation modèle Historique interne (non persistant)
 - 🔲 Préparation infrastructure paramètres utilisateur
-- 🔲 Implémentation déduplication robuste basée sur ID normalisé
-      (modification GestionnaireGlobal.cs)
+- 🟡 Implémentation déduplication robuste basée sur ID normalisé
+      (modification GestionnaireGlobal.cs)(préparation)
 - ✅ Ajout propriété IdentifiantNormalise dans LogicielMiseAJour
       (Modeles/LogicielMiseAJour.cs)
-- 🔲 Introduction couche de normalisation multi-gestionnaires
+- 🟡 Introduction couche de normalisation multi-gestionnaires
       (création dossier Services/Normalisation)
-- 🔲 Séparation explicite Scan / Normalisation / Fusion
+- 🟡 Séparation explicite Scan / Normalisation / Fusion
+      (pipeline actif pour Winget)
 
 Aucune mise à jour automatique encore.
 

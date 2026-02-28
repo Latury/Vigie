@@ -1,26 +1,26 @@
 ﻿/*
-╔══════════════════════════════════════════════════════════════════════╗
-║                          VIGIE                                       ║
-║        Centre de maintenance logicielle intelligent                  ║
-║                                                                      ║
-║  Module : Services                                                   ║
-║  Fichier : GestionnaireGlobal.cs                                     ║
-║                                                                      ║
-║  Rôle :                                                              ║
-║  Orchestrateur central des gestionnaires de paquets.                 ║
-║                                                                      ║
-║  Responsabilités principales :                                       ║
-║  - Agréger plusieurs sources de mises à jour                         ║
-║  - Fusionner les résultats                                           ║
-║  - Garantir la résilience globale                                    ║
-║  - Journaliser l’agrégation                                          ║
-║                                                                      ║
-║  Limites :                                                           ║
-║  - Déduplication basée uniquement sur le nom                         ║
-║                                                                      ║
-║  Licence : MIT                                                       ║
-║  Copyright © 2026 Flo Latury                                         ║
-╚══════════════════════════════════════════════════════════════════════╝
+╔═════════════════════════════════════════════════════════════════════════════╗
+║                          VIGIE                                              ║
+║        Centre de maintenance logicielle intelligent                         ║
+║                                                                             ║
+║  Module : Services                                                          ║
+║  Fichier : GestionnaireGlobal.cs                                            ║
+║                                                                             ║
+║  Rôle :                                                                     ║
+║  Orchestrateur central des gestionnaires de paquets.                        ║
+║                                                                             ║
+║  Responsabilités principales :                                              ║
+║  - Agréger plusieurs sources de mises à jour                                ║
+║  - Fusionner les résultats                                                  ║
+║  - Garantir la résilience globale                                           ║
+║  - Journaliser l’agrégation                                                 ║
+║                                                                             ║
+║  Limites :                                                                  ║
+║  - Déduplication basée sur IdentifiantNormalise (fallback sur Nom si vide)  ║
+║                                                                             ║
+║  Licence : MIT                                                              ║
+║  Copyright © 2026 Flo Latury                                                ║
+╚═════════════════════════════════════════════════════════════════════════════╝
 */
 
 #region 1. Imports
@@ -29,9 +29,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Vigie.JournalEvenements;
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
-using Vigie.JournalEvenements;
 
 #endregion
 
@@ -91,9 +91,12 @@ namespace Vigie.Services.Gestionnaires
             }
 
             var resultatsDedup = tousLesResultats
-                .GroupBy(l => l.Nom)
-                .Select(g => g.First())
-                .ToList();
+    .GroupBy(l =>
+        string.IsNullOrWhiteSpace(l.IdentifiantNormalise)
+            ? l.Nom
+            : l.IdentifiantNormalise)
+    .Select(g => g.First())
+    .ToList();
 
             _journal.Info($"Total agrégé après déduplication : {resultatsDedup.Count}.");
 

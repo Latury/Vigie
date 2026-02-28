@@ -325,13 +325,20 @@ Aucune mise à jour automatique encore.
 - La déduplication robuste pourra être implémentée proprement
 - Aucune dette technique introduite
 
+## 🏗️ Préparation déduplication robuste
+
+- Fusion désormais basée sur IdentifiantNormalise (fallback sur Nom)
+- Aucun changement comportemental actuel
+- Préparation moteur multi-gestionnaires
+- Régression testée : scan Winget fonctionnel
+
 Statut : 🟡 0.2.0-dev en cours (architecture en extension maîtrisée)
 
 ---
 
 # 📦 MÉTADONNÉES
 
-Version : Version : 0.1.0-dev
+Version : 🟡 0.2.0-dev en cours
 Type : Development (Foundations Stabilized)
 Licence : MIT
 Dernière mise à jour : 28 février 2026

@@ -221,6 +221,29 @@ Base pour futures mises à jour automatisées.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+# 🧾 FORMAT FOURNI PAR L’ASSISTANT
+
+Règle spécifique au workflow Vigie :
+
+À chaque demande de rédaction de commit,
+l’assistant doit obligatoirement fournir :
+
+- Le Summary en format texte brut
+- La Description complète en bloc code (format prêt à copier-coller)
+- Sans mise en forme décorative inutile
+- Sans variation de structure
+
+Objectif :
+
+Optimiser la rapidité de commit,
+éviter les erreurs de format,
+standardiser la communication technique,
+et maintenir une discipline professionnelle constante.
+
+Cette règle est permanente.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 # 🧠 BONNES PRATIQUES PROFESSIONNELLES
 
 - Commit petit mais régulier

@@ -6,8 +6,8 @@
 
 Application WinUI 3 (.NET 8) dédiée à la gestion, au contrôle et à la sécurisation des mises à jour logicielles sous Windows.
 
-![Version](https://img.shields.io/badge/Version-0.1.0--dev-1E90FF?style=for-the-badge)
-![Statut](https://img.shields.io/badge/Statut-En%20développement-FF8C00?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-0.2.0--dev-1E90FF?style=for-the-badge)
+![Statut](https://img.shields.io/badge/Statut-Extension%20architecturale-FF8C00?style=for-the-badge)
 ![Licence](https://img.shields.io/badge/Licence-MIT-2E8B57?style=for-the-badge)
 
 ![.NET](https://img.shields.io/badge/.NET-8-512BD4?style=for-the-badge)
@@ -16,7 +16,7 @@ Application WinUI 3 (.NET 8) dédiée à la gestion, au contrôle et à la sécu
 ![Plateforme](https://img.shields.io/badge/Plateforme-Windows-0078D6?style=for-the-badge)
 
 Auteur : Flo Latury
-Dernière mise à jour : —
+Dernière mise à jour : 28 février 2026
 
 </div>
 
@@ -30,9 +30,12 @@ Son objectif est de :
 
 - Scanner les logiciels installés
 - Identifier les mises à jour disponibles
-- Mettre à jour les applications de manière sécurisée
+- Préparer la mise à jour sécurisée des applications
 - Simplifier la maintenance pour les utilisateurs non techniques
 - Fournir un cadre pédagogique structuré
+
+Actuellement, Vigie se concentre sur la détection fiable des mises à jour
+et la consolidation de son architecture interne.
 
 Vigie n’est pas un simple utilitaire.
 C’est un projet conçu pour être :
@@ -47,14 +50,17 @@ C’est un projet conçu pour être :
 
 # 🎯 2. Objectif du Projet
 
-Vigie vise à :
+Vigie vise progressivement à :
 
-- Centraliser la gestion des mises à jour
+- Centraliser la gestion des mises à jour logicielles
 - Supporter plusieurs gestionnaires de paquets
-- Offrir un mode simplifié pour les personnes âgées
-- Proposer un mode expert avancé
+- Offrir un mode simplifié pour les personnes âgées (Mode Senior)
+- Proposer un mode expert avancé (Mode Expert)
 - Appliquer une architecture MVVM stricte
 - Maintenir une discipline documentaire complète
+
+Ces objectifs sont atteints par étapes, selon une progression maîtrisée
+définie dans la feuille de route officielle du projet.
 
 ---
 
@@ -79,7 +85,7 @@ Le projet sert également de support d’apprentissage :
 - Structuration avancée d’un projet WinUI 3
 - Application rigoureuse du MVVM
 - Gestion de processus système
-- Parsing JSON sécurisé
+- Parsing robuste de sorties console (normalisation et analyse)
 - Discipline Git professionnelle
 - Documentation technique exhaustive
 
@@ -92,21 +98,27 @@ Le projet sert également de support d’apprentissage :
 ```
 Vigie/
 │
-├── Application/
 ├── Services/
+│ ├── Gestionnaires/
+│ └── Interfaces/
+│
 ├── Modeles/
-├── ViewModels/
+├── JournalEvenements/
+├── Infrastructure/
+├── VueModeles/
 ├── Vues/
 │
+├── Assets/
+├── Properties/
+│
 ├── README.md
-├── FEUILLE_DE_ROUTE.md
-├── PATCH_NOTES.md
-├── STANDARD_STRUCTURE_CODE.md
-├── GUIDE_COMMITS.md
-├── GUIDE_GITHUB_DESKTOP.md
-├── TESTS.md
-├── GUIDE_UTILISATEUR.md
-├── LICENSE
+├── FEUILLE DE ROUTE – Vigie.md
+├── PATCH NOTES – VIGIE.md
+├── STANDARD_STRUCTURE_CODE - Vigie.md
+├── GUIDE OFFICIEL DES COMMITS – VIGIE.md
+├── GUIDE UTILISATEUR – VIGIE.md
+├── TESTS – VIGIE.md
+├── LICENSE.md
 ```
 
 ## 🏗️ Principes d’Architecture
@@ -114,46 +126,63 @@ Vigie/
 - MVVM strict
 - Séparation claire des responsabilités
 - Logique métier isolée des vues
-- Abstraction via interfaces (GestionnaireWinget)
+- Abstraction via IGestionnairePaquets
+- Implémentations concrètes découplées (GestionnaireWinget, futur Scoop, etc.)
 - Services découplés et testables
 - Journalisation centralisée
 - Extensibilité progressive
+- Orchestrateur central (GestionnaireGlobal)
+- Préparation au support multi-gestionnaires
 
 ---
 
 # ✨ 5. Fonctionnalités
 
-## ✅ Implémentées (Version en cours)
+## ✅ Implémentées (0.1.0-dev consolidé)
 
 - Structure WinUI 3 initialisée
-- Architecture MVVM en place
-- Interface GestionnaireWinget définie
+- Architecture MVVM stricte
+- Interface générique IGestionnairePaquets
 - Implémentation GestionnaireWinget
-- Scan winget avec sortie JSON
-- Affichage liste des mises à jour
+- Orchestrateur central (GestionnaireGlobal)
+- Scan winget avec parsing texte robuste basé sur structure colonnes
+- Nettoyage et normalisation des données
+- Gestion timeout (30 secondes)
+- Journalisation structurée des événements
+- Affichage liste simple des mises à jour
 
-## 🔄 En cours
+## 🔄 En cours (0.2.0-dev)
 
-- Stabilisation parsing JSON
-- Gestion erreurs robustes
-- Journalisation avancée
+- Introduction champ Source dans le modèle
+- Préparation support multi-gestionnaires
+- Déduplication robuste basée sur identifiant normalisé
+- Introduction couche de normalisation multi-sources
+- Séparation Scan / Normalisation / Fusion
+- Préparation infrastructure paramètres utilisateur
+- Préparation modèle Historique interne (non persistant)
 
-## 📌 Prévues
+## 📌 Prévues (versions ultérieures)
 
 - Mise à jour individuelle
-- Mise à jour globale
+- Mise à jour globale sécurisée
 - Création automatique point de restauration
 - Mode Senior simplifié
 - Mode Expert avancé
 - Support Scoop, Chocolatey, pip, npm
-- Historique des mises à jour
+- Historique persistant des mises à jour
 - Planification automatique
+- Niveaux de journalisation configurables
 
 ---
 
 # 👴 6. Expérience Utilisateur
 
-## Mode Senior
+L’expérience utilisateur de Vigie est conçue pour évoluer
+selon deux modes distincts, prévus dans la feuille de route.
+
+## 🟡 Mode Senior (prévu)
+
+Objectif : simplifier au maximum l’usage.
 
 - Interface simplifiée
 - Gros boutons
@@ -161,31 +190,52 @@ Vigie/
 - Aucun jargon technique
 - Actions principales en un clic
 
-## Mode Expert
+Implémentation prévue en version 0.5.0.
+
+---
+
+## 🟡 Mode Expert (prévu)
+
+Objectif : offrir un contrôle avancé.
 
 - Logs détaillés
 - Paramètres avancés
 - Sélection des gestionnaires
-- Mode silencieux
 - Informations techniques visibles
+- Configuration avancée
 
-Philosophie UX :
+Implémentation progressive jusqu’à la version 1.0.0.
 
-Lisibilité > Effets visuels
-Clarté > Complexité
+---
+
+## 🧭 Philosophie UX
+
+Lisibilité > Effets visuels  
+Clarté > Complexité  
 Feedback > Ambiguïté
 
 ---
 
 # 🔒 7. Sécurité
 
-Avant toute mise à jour globale :
+La version actuelle de Vigie (0.2.0-dev) se limite à la détection
+des mises à jour disponibles.
+
+Aucune modification système n’est effectuée.
+
+---
+
+## 🔮 Stratégie de sécurité prévue (versions ultérieures)
+
+Avant toute mise à jour globale, les mécanismes suivants seront appliqués :
 
 - Création automatique d’un point de restauration système
 - Confirmation utilisateur explicite
-- Journalisation complète
-- Gestion des erreurs détaillée
+- Journalisation complète des opérations
+- Gestion détaillée des erreurs
 - Possibilité de relancer une opération échouée
+
+---
 
 ⚠️ Vigie n’est pas destiné à un environnement critique sans validation approfondie.
 
@@ -193,12 +243,13 @@ Avant toute mise à jour globale :
 
 # 🚀 8. Performance
 
-- Exécution asynchrone des processus système
-- Parsing JSON optimisé
-- Réduction des appels redondants
-- Priorité à la stabilité
+- Exécution asynchrone non bloquante des processus système
+- Gestion d’un timeout contrôlé (30 secondes)
+- Parsing texte robuste basé sur structure colonnes winget
+- Mesure précise de la durée du scan (Stopwatch)
+- Priorité donnée à la stabilité et à la fiabilité
 
-Les optimisations avancées interviendront après stabilisation fonctionnelle.
+Les optimisations avancées interviendront après consolidation multi-gestionnaires.
 
 ---
 
@@ -206,42 +257,47 @@ Les optimisations avancées interviendront après stabilisation fonctionnelle.
 
 ## État actuel
 
-- Tests manuels systématiques
+- Tests manuels systématiques du scan winget
 - Validation des cas nominaux
-- Vérification parsing JSON
+- Vérification du parsing texte basé sur structure colonnes
+- Test du mécanisme de timeout
+- Vérification de la journalisation structurée
 
 ## Objectifs
 
 - Tests unitaires des services
-- Tests parsing JSON
-- Tests gestion erreurs
-- Automatisation progressive
+- Tests des cas limites (sortie vide, format inattendu)
+- Tests gestion erreurs et interruptions processus
+- Automatisation progressive des tests
 
 ---
 
 # 📦 10. Technologies Utilisées
 
-| Élément                 | Technologie                |
-| ----------------------- | -------------------------- |
-| Langage principal       | C#                         |
-| Framework               | .NET 8                     |
-| Interface               | WinUI 3                    |
-| Architecture            | MVVM strict                |
-| Gestionnaires supportés | winget (priorité initiale) |
-| Versioning              | Git                        |
-| Méthodologie            | Version progressive        |
+| Élément                     | Technologie / Approche                      |
+|-----------------------------|---------------------------------------------|
+| Langage principal           | C#                                          |
+| Framework                   | .NET 8                                      |
+| Interface                   | WinUI 3                                     |
+| Architecture                | MVVM strict                                 |
+| Gestionnaire implémenté     | winget                                      |
+| Support multi-gestionnaires | Préparation architecturale en cours         |
+| Versioning                  | Git (discipline commits structurée)         |
+| Méthodologie                | Versionnement incrémental par consolidation |
 
 ---
 
 # 📚 11. Documentation
 
-| Fichier                    | Rôle                                  |
-| -------------------------- | ------------------------------------- |
-| README.md                  | Présentation générale                 |
-| FEUILLE_DE_ROUTE.md        | Vision stratégique                    |
-| PATCH_NOTES.md             | Historique technique détaillé         |
-| STANDARD_STRUCTURE_CODE.md | Standard obligatoire de structuration |
-| GUIDE_COMMITS.md           | Convention stricte de commits         |
+| Fichier                                  | Rôle                                                |
+|------------------------------------------|-----------------------------------------------------|
+| README.md                                | Présentation générale du projet                     |
+| FEUILLE DE ROUTE – Vigie.md              | Vision stratégique et plan d’évolution              |
+| PATCH NOTES – VIGIE.md                   | Historique technique et architectural détaillé      |
+| STANDARD_STRUCTURE_CODE - Vigie.md       | Standard interne de structuration du code           |
+| GUIDE OFFICIEL DES COMMITS – VIGIE.md    | Convention et discipline Git                        |
+| GUIDE UTILISATEUR – VIGIE.md             | Documentation destinée aux utilisateurs             |
+| TESTS – VIGIE.md                         | Stratégie et suivi des tests                        |
 
 Toute évolution majeure doit être documentée.
 
@@ -249,26 +305,35 @@ Toute évolution majeure doit être documentée.
 
 # 🧭 12. Roadmap
 
-## Version 0.x
+## 🔹 Version 0.x — Consolidation
 
-- Fondations
-- Stabilisation scan
-- Mise à jour contrôlée
-- Sécurisation
+- 0.1.0 : Fondations architecturales
+- 0.2.0 : Extension multi-gestionnaires (normalisation, fusion, déduplication)
+- 0.3.0 : Mise à jour contrôlée
+- 0.4.0 : Sécurité renforcée
+- 0.5.0 : Introduction Mode Senior
 
-## Version 1.x
+---
 
-- Multi-gestionnaires
-- Mode Senior complet
+## 🔹 Version 1.0.0 — Maturité initiale
+
+- Support multi-gestionnaires complet
 - Mode Expert avancé
+- Paramètres utilisateur structurés
+- Niveaux de journalisation configurables
 - Packaging initial
 
-## Version 2.x
+---
+
+## 🔹 Version 2.x — Exploitation complète
 
 - Planification automatique
-- Historique détaillé
+- Historique persistant
 - Export rapports
-- Optimisation avancée
+- Optimisations avancées
+- Tests automatisés
+
+---
 
 Philosophie :
 
@@ -278,12 +343,12 @@ Croissance par consolidation.
 
 # 📊 13. État du Projet
 
-Version : 0.1.0-dev
-Statut : Développement actif
-Architecture : Stable
-Fonctionnalités : En progression
-Tests : Partiels
-Sécurité : En implémentation
+Version : 0.2.0-dev  
+Statut : Extension architecturale en cours  
+Architecture : Stable et extensible  
+Fonctionnalités : Détection consolidée, extension en cours  
+Tests : Manuels structurés  
+Sécurité : Détection uniquement (aucune action système)
 
 ---
 
@@ -292,7 +357,8 @@ Sécurité : En implémentation
 Licence : MIT
 
 Ce projet est distribué sous licence MIT.
-Voir le fichier LICENSE pour plus de détails.
+
+Voir le fichier LICENSE.md pour plus de détails.
 
 ---
 
@@ -303,11 +369,13 @@ Vigie n’est pas seulement un outil.
 C’est :
 
 - Une démonstration d’architecture propre
-- Une discipline documentaire
+- Une discipline documentaire rigoureuse
 - Un projet pédagogique structuré
-- Un outil destiné à durer
+- Un outil conçu pour évoluer durablement
 
 Un projet solide ne s’accumule pas.
 Il se consolide.
+
+Chaque version stabilise l’existant avant d’étendre ses capacités.
 
 </div>

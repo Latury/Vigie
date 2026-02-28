@@ -102,7 +102,7 @@ Déclaration principale
 3.3 Méthodes publiques
 3.4 Méthodes privées
 3.5 Événements (si applicable)
-3.6 Interfaces implémentées (si applicable)
+3.6 Interfaces implémentées (mentionnées dans la déclaration de classe)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -113,6 +113,9 @@ Exemple structure adaptée à Vigie
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using Vigie.Modeles;
+using Vigie.Services.Interfaces;
 
 #endregion
 
@@ -122,48 +125,50 @@ using System.Diagnostics;
  * Classe : GestionnaireWinget
  *
  * Rôle :
- * Implémente l’interface GestionnaireWinget pour gérer
- * le scan et la mise à jour via winget.
+ * Implémente l’interface IGestionnairePaquets
+ * pour gérer le scan via winget.
  *
  * Responsabilités :
- * 1. Exécuter les commandes système winget
- * 2. Lire et parser les sorties JSON
- * 3. Retourner des modèles normalisés
+ * 1. Exécuter la commande système winget upgrade
+ * 2. Lire la sortie texte standard
+ * 3. Parser les colonnes pour extraire les mises à jour
+ * 4. Retourner des modèles normalisés LogicielMiseAJour
  *
  * Limites :
  * - Ne contient aucune logique UI
  * - Ne gère pas la navigation
  * - Ne gère pas la persistance
+ * - Dépend du format texte winget
  */
 
 #endregion
 
 #region 3. Déclaration de la Classe
 
-public class GestionnaireWinget : GestionnaireWinget
+public class GestionnaireWinget : IGestionnairePaquets
 {
-    #region 3.1 Propriétés
+    #region 3.1 Champs privés
 
-    private readonly ILogService _logService;
+    private readonly IJournalService _journal;
 
     #endregion
 
     #region 3.2 Constructeur
 
-    public GestionnaireWinget(ILogService logService)
+    public GestionnaireWinget(IJournalService journal)
     {
-        _logService = logService;
+        _journal = journal;
     }
 
     #endregion
 
-    #region 3.3 Méthodes Publiques
+    #region 3.3 Méthodes publiques
 
     /*
      * Méthode : ScanAsync
      *
      * Objectif :
-     * Exécute la commande winget upgrade --output json
+     * Exécute la commande winget upgrade
      * et retourne la liste des logiciels à mettre à jour.
      *
      * Paramètres :
@@ -173,12 +178,11 @@ public class GestionnaireWinget : GestionnaireWinget
      * Liste de LogicielMiseAJour.
      *
      * Exceptions possibles :
-     * ProcessStartException
-     * JsonException
+     * Exception liée au processus système
      */
     public async Task<List<LogicielMiseAJour>> ScanAsync()
     {
-        // Implémentation future
+        // Implémentation
         return new List<LogicielMiseAJour>();
     }
 

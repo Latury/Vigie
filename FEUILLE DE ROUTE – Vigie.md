@@ -63,40 +63,52 @@ Mettre en place la base architecturale stable.
 
 ## 🏗️ Infrastructure
 
-- 🔲 Création projet WinUI 3 (.NET 8)
-- 🔲 Mise en place structure dossiers conforme standard interne
-- 🔲 Implémentation MVVM strict
-- 🔲 Création interface GestionnaireWinget
-- 🔲 Implémentation GestionnaireWinget
-- 🔲 Scan winget avec sortie JSON
-- 🔲 Affichage liste simple des mises à jour
-- 🔲 Journalisation de base
+- ✅ Création projet WinUI 3 (.NET 8)
+- ✅ Mise en place structure dossiers conforme standard interne
+- ✅ Implémentation MVVM strict
+- ✅ Création interface IGestionnairePaquets (abstraction des gestionnaires)
+- ✅ Implémentation GestionnaireWinget
+- ✅ Scan winget avec parsing texte robuste
+- ✅ Affichage liste simple des mises à jour
+- ✅ Journalisation de base
 
 ## 🎨 UX initiale
 
-- 🔲 Page principale minimaliste
-- 🔲 Bouton Scanner
-- 🔲 Affichage liste logiciels
-- 🔲 Indicateur d’état
+- ✅ Page principale minimaliste
+- ✅ Bouton Scanner
+- ✅ Affichage liste logiciels
+- ✅ Indicateur d’état
 
 Objectif : fonctionnement minimal mais propre.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# 🧱 5. Version 0.2.0 — Stabilisation du Scan
+# 🧱 5. Version 0.2.0 — Extension Architecturale Contrôlée
 
 ## 🎯 Objectif
 
-Rendre le scan robuste et fiable.
+Préparer officiellement le support multi-gestionnaires
+et structurer l’architecture avancée.
 
-- 🔲 Gestion erreurs winget
-- 🔲 Gestion timeout
-- 🔲 Parsing JSON sécurisé
-- 🔲 Logs détaillés
-- 🔲 Tests manuels exhaustifs
-- 🔲 Refactorisation si nécessaire
+- 🔲 Ajout champ Source dans LogicielMiseAJour
+- 🔲 Préparation affichage source (Mode Expert)
+- 🔲 Début support second gestionnaire (Scoop ou Chocolatey)
+- 🔲 Fusion intelligente des résultats
+- 🔲 Tests manuels multi-sources
+- 🔲 Refactorisation contrôlée si nécessaire
+- 🔲 Préparation modèle Historique interne (non persistant)
+- 🔲 Préparation infrastructure paramètres utilisateur
+- 🔲 Implémentation déduplication robuste basée sur ID normalisé
+      (modification GestionnaireGlobal.cs)
+- 🔲 Ajout propriété IdentifiantNormalise dans LogicielMiseAJour
+      (Modeles/LogicielMiseAJour.cs)
+- 🔲 Introduction couche de normalisation multi-gestionnaires
+      (création dossier Services/Normalisation)
+- 🔲 Séparation explicite Scan / Normalisation / Fusion
 
 Aucune mise à jour automatique encore.
+
+Priorité : extensibilité propre.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -145,7 +157,7 @@ Rendre l’application accessible.
 
 ## 🎯 Objectif
 
-Support multi-gestionnaires.
+Support multi-gestionnaires et mode avancé complet.
 
 - 🔲 Support Scoop
 - 🔲 Support Chocolatey
@@ -153,8 +165,14 @@ Support multi-gestionnaires.
 - 🔲 Support npm
 - 🔲 Paramètres avancés
 - 🔲 Mode Expert complet
+- 🔲 Affichage détaillé des sources en Mode Expert
+- 🔲 Fusion intelligente des logiciels en Mode Senior
+- 🔲 Option utilisateur pour activer/désactiver le Mode Expert
 - 🔲 Packaging application
 - 🔲 Documentation complète
+- 🔲 Implémentation niveaux de journalisation configurables
+      (Debug / Info / Warning / Erreur)
+- 🔲 Intégration configuration niveau via Paramètres utilisateur
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -188,14 +206,14 @@ Uniquement si l’architecture le permet.
 
 # 📊 12. Suivi Global
 
-| Version   | Statut      | Progression estimée |
-| --------- | ----------- | ------------------- |
-| 0.1.0-dev | 🔵 En cours | Fondations          |
-| 0.2.0     | ⚪ À faire  | 0 %                 |
-| 0.3.0     | ⚪ À faire  | 0 %                 |
-| 0.4.0     | ⚪ À faire  | 0 %                 |
-| 0.5.0     | ⚪ À faire  | 0 %                 |
-| 1.0.0     | ⚪ À faire  | 0 %                 |
+| Version   | Statut          | Progression estimée                   |
+| --------- | --------------- | --------------------------------------|
+| 0.1.0-dev | 🟢 Terminé      | Fondations consolidées                 |
+| 0.2.0     | 🟡 En cours     | Extension maîtrisée de l’architecture  |
+| 0.3.0     | ⚪ À faire      | 0 %                                   |
+| 0.4.0     | ⚪ À faire      | 0 %                                   |
+| 0.5.0     | ⚪ À faire      | 0 %                                   |
+| 1.0.0     | ⚪ À faire      | 0 %                                   |
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

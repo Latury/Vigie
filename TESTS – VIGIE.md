@@ -9,49 +9,54 @@ Stratégie de validation et de qualité du projet Vigie.
 Garantir :
 
 - Fiabilité du scan
-- Robustesse parsing JSON
-- Sécurité des mises à jour
-- Stabilité architecture
+- Robustesse du parsing texte
+- Gestion correcte des erreurs processus
+- Stabilité de l’architecture
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 # 1. TYPES DE TESTS
 
-## 🧪 Tests manuels
+## 🧪 Tests manuels (actuels)
 
 - Scan winget
-- Vérification parsing JSON
+- Vérification parsing texte basé sur structure colonnes
 - Simulation erreur commande
 - Test interruption processus
-- Test gestion droits administrateur
+- Test mécanisme de timeout (30 secondes)
+- Vérification journalisation
 
 ---
 
 ## 🧠 Tests unitaires (à implémenter)
 
 - Test GestionnaireWinget
-- Test GestionnaireWinget
+- Test GestionnaireGlobal
 - Test gestion erreurs
 - Test normalisation données
+- Test déduplication basée sur identifiant normalisé
 
 ---
 
-## 🔒 Tests sécurité
+## 🔒 Tests sécurité (versions futures)
+
+Ces tests seront activés lors de l’introduction des mises à jour automatiques :
 
 - Test point de restauration
 - Test confirmation utilisateur
 - Test rollback en cas d’échec
+- Test élévation administrateur contrôlée
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 # 2. STRATÉGIE
 
-Priorité :
+Priorité actuelle :
 
-1. Stabilité scan
+1. Stabilité du scan
 2. Gestion erreurs
-3. Sécurité mise à jour
-4. Performance
+3. Normalisation multi-gestionnaires
+4. Extensibilité architecturale
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -59,4 +64,5 @@ Priorité :
 
 Un outil système non testé devient dangereux.
 
-Chaque fonctionnalité critique doit être validée.
+Chaque fonctionnalité critique doit être validée
+avant d’introduire une action système.

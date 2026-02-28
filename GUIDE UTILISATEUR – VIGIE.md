@@ -2,7 +2,8 @@
 
 Vigie est un centre de maintenance logicielle intelligent.
 
-Il permet de vérifier et mettre à jour vos logiciels Windows.
+La version actuelle permet de détecter les mises à jour disponibles
+sur votre système Windows.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -11,42 +12,54 @@ Il permet de vérifier et mettre à jour vos logiciels Windows.
 1. Ouvrir Vigie
 2. Cliquer sur "Scanner"
 3. Attendre la fin de l’analyse
-4. Consulter la liste affichée
+4. Consulter la liste des mises à jour détectées
+
+Aucune modification système n’est effectuée.
+Vigie se limite à l’analyse.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# 🔄 2. Mettre à jour un logiciel
+# 🔄 2. Mise à jour des logiciels (prévu)
 
-1. Sélectionner le logiciel
-2. Cliquer sur "Mettre à jour"
-3. Confirmer l’action
+La mise à jour individuelle et globale sera disponible
+dans une version ultérieure du projet.
 
-Un point de restauration peut être créé automatiquement.
+Les mécanismes de sécurité prévus incluront :
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-# 👴 3. Mode Senior
-
-- Interface simplifiée
-- Boutons larges
-- Texte clair
-- Pas d’options techniques visibles
+- Confirmation utilisateur
+- Journalisation complète
+- Création d’un point de restauration système
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# 🧠 4. Mode Expert
+# 👴 3. Mode Senior (prévu)
 
-- Logs détaillés
-- Sélection gestionnaires
-- Paramètres avancés
+Une interface simplifiée est prévue pour :
+
+- Afficher uniquement les actions essentielles
+- Utiliser des boutons larges
+- Supprimer le jargon technique
+
+Implémentation prévue en version 0.5.0.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# 🧠 4. Mode Expert (prévu)
+
+Un mode avancé permettra :
+
+- Affichage détaillé des logs
+- Sélection des gestionnaires de paquets
+- Paramètres techniques avancés
+
+Implémentation progressive jusqu’à la version 1.0.0.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 # ⚠️ 5. Recommandations
 
-- Ne pas interrompre une mise à jour en cours
-- Vérifier connexion internet
-- Redémarrer si nécessaire
+- Vérifier votre connexion internet avant un scan
+- Ne pas fermer l’application pendant l’analyse
 
 Vigie est conçu pour simplifier la maintenance,
 pas pour la complexifier.

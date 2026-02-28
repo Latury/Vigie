@@ -39,67 +39,54 @@ namespace Vigie.Services.PackageManagers
         {
             var logiciels = new List<LogicielMiseAJour>();
 
-            var processInfo = new System.Diagnostics.ProcessStartInfo
+            try
             {
-                FileName = "winget",
-                Arguments = "upgrade",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            using var process = new System.Diagnostics.Process
-            {
-                StartInfo = processInfo
-            };
-
-            process.Start();
-
-            string output = await process.StandardOutput.ReadToEndAsync();
-            await process.WaitForExitAsync();
-
-            var lignes = output.Split(Environment.NewLine);
-
-            // Trouver la ligne de séparation ------
-            int separatorIndex = Array.FindIndex(lignes, l => l.StartsWith("---"));
-
-            if (separatorIndex <= 0)
-                return logiciels;
-
-            string header = lignes[separatorIndex - 1];
-
-            int idIndex = header.IndexOf("ID");
-            int versionIndex = header.IndexOf("Version");
-            int dispoIndex = header.IndexOf("Disponible");
-
-            for (int i = separatorIndex + 1; i < lignes.Length; i++)
-            {
-                var ligne = lignes[i];
-
-                if (string.IsNullOrWhiteSpace(ligne))
-                    continue;
-
-                if (ligne.StartsWith("Les packages") ||
-                    ligne.Contains("mise") ||
-                    ligne.Contains("upgrade"))
-                    break;
-
-                var colonnes = System.Text.RegularExpressions.Regex
-                    .Split(ligne.Trim(), @"\s{2,}");
-
-                if (colonnes.Length < 4)
-                    continue;
-
-                logiciels.Add(new LogicielMiseAJour
+                var processInfo = new ProcessStartInfo
                 {
-                    Nom = colonnes[0],
-                    VersionActuelle = colonnes[2],
-                    NouvelleVersion = colonnes[3]
-                });
-            }
+                    FileName = "winget",
+                    Arguments = "upgrade --output json",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
 
-            return logiciels;
+                using var process = new Process
+                {
+                    StartInfo = processInfo
+                };
+
+                process.Start();
+
+                // Timeout 30 secondes
+                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30));
+                var exitTask = process.WaitForExitAsync();
+
+                var completedTask = await Task.WhenAny(exitTask, timeoutTask);
+
+                if (completedTask == timeoutTask)
+                {
+                    try { process.Kill(); } catch { }
+                    return logiciels;
+                }
+
+                string output = await process.StandardOutput.ReadToEndAsync();
+                string error = await process.StandardError.ReadToEndAsync();
+
+                if (process.ExitCode != 0)
+                {
+                    return logiciels;
+                }
+
+                // Pour l’instant on ne parse pas encore.
+                // Parsing JSON sécurisé au commit suivant.
+
+                return logiciels;
+            }
+            catch (Exception)
+            {
+                return logiciels;
+            }
         }
     }
 }

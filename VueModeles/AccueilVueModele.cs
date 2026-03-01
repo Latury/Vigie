@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -30,7 +30,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
-using Vigie.Services.PackageManagers;
 using Vigie.Infrastructure;
 using Vigie.Services.Gestionnaires;
 
@@ -121,7 +120,9 @@ namespace Vigie.VueModeles
             get
             {
                 if (_dernierScan == null)
+                {
                     return "Dernier scan : jamais effectué";
+                }
 
                 return $"Dernier scan : {_dernierScan:dd/MM/yyyy à HH:mm}";
             }
@@ -133,7 +134,7 @@ namespace Vigie.VueModeles
 
         public AccueilVueModele()
         {
-            _packageManager = new GestionnaireWinget();
+            _packageManager = new GestionnaireGlobal();
 
             Logiciels = new ObservableCollection<LogicielMiseAJour>();
 

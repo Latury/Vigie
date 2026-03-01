@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -26,7 +26,10 @@
 
 #region 1. Imports
 
+using System;
+using System.Linq;
 using System.Text.RegularExpressions;
+
 using Vigie.Modeles;
 
 #endregion
@@ -76,14 +79,27 @@ namespace Vigie.Services.Normalisation
         public LogicielMiseAJour Normaliser(LogicielMiseAJour logiciel)
         {
             if (logiciel == null)
+            {
                 return null;
+            }
 
-            var nom = logiciel.Nom ?? string.Empty;
+            string baseIdentifiant = logiciel.IdentifiantSource;
 
-            // Supprime tout caractère non alphanumérique
-            var identifiant = Regex.Replace(nom, "[^a-zA-Z0-9]", "");
+            if (!string.IsNullOrWhiteSpace(baseIdentifiant) &&
+                baseIdentifiant.Contains("."))
+            {
+                string[] parties = baseIdentifiant.Split('.');
 
-            logiciel.IdentifiantNormalise = identifiant.ToLowerInvariant();
+                baseIdentifiant = parties
+                    .OrderByDescending(p => p.Length)
+                    .First();
+            }
+
+            string identifiant = Regex
+                .Replace(baseIdentifiant, "[^a-zA-Z0-9+]", "")
+                .ToLowerInvariant();
+
+            logiciel.IdentifiantNormalise = identifiant;
 
             return logiciel;
         }

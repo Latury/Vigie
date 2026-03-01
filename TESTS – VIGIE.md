@@ -25,6 +25,9 @@ Garantir :
 - Test interruption processus
 - Test mécanisme de timeout (30 secondes)
 - Vérification journalisation
+- Validation agrégation multi-gestionnaires (Winget + Scoop)
+- Vérification déduplication basée sur IdentifiantNormalise
+- Vérification pipeline Scan → Normalisation → Fusion
 
 ---
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -85,29 +85,29 @@ namespace Vigie.Modeles
          * Propriété : Source
          *
          * Rôle :
-         * Gestionnaire de paquets ayant détecté la mise à jour
-         * (ex : winget, scoop, chocolatey).
-         *
-         * Objectif :
-         * Permettre un affichage différencié en Mode Expert
-         * tout en conservant une fusion intelligente en Mode Senior.
+         * Gestionnaire ayant détecté la mise à jour
+         * (ex : winget, scoop).
          */
         public string Source { get; set; } = string.Empty;
+
+        /*
+         * Propriété : IdentifiantSource
+         *
+         * Rôle :
+         * Identifiant technique brut fourni par le gestionnaire
+         * (ex : Notepad++.Notepad++).
+         */
+        public string IdentifiantSource { get; set; } = string.Empty;
 
         /*
          * Propriété : IdentifiantNormalise
          *
          * Rôle :
-         * Identifiant technique normalisé utilisé pour
+         * Identifiant interne normalisé utilisé pour
          * la déduplication multi-gestionnaires.
          *
-         * Objectif :
-         * Permettre la fusion intelligente des logiciels
-         * provenant de différentes sources.
-         *
          * Remarque :
-         * Cette valeur est calculée lors du processus
-         * de normalisation et ne dépend pas de l’UI.
+         * Généré par la couche de normalisation.
          */
         public string IdentifiantNormalise { get; set; } = string.Empty;
 

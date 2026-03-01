@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -36,7 +36,7 @@ using Vigie.JournalEvenements;
 
 #endregion
 
-namespace Vigie.Services.PackageManagers
+namespace Vigie.Services.Gestionnaires
 {
     public class GestionnaireWinget : IGestionnairePaquets
     {
@@ -194,25 +194,29 @@ namespace Vigie.Services.PackageManagers
                 var ligne = lignes[i].Trim();
 
                 if (string.IsNullOrWhiteSpace(ligne))
+                {
                     continue;
+                }
 
                 if (ligne.StartsWith("Les ") || ligne.StartsWith("No "))
+                {
                     break;
+                }
 
                 var colonnes = Regex.Split(ligne, @"\s{2,}");
 
+                // Format winget typique :
+                // Nom | Id | Version | Available | Source
                 if (colonnes.Length < 5)
+                {
                     continue;
+                }
 
-                // Colonnes fixes à partir de la fin
+                var nom = colonnes[0];
+                var identifiantSource = colonnes[1];
                 var versionActuelle = colonnes[colonnes.Length - 3];
                 var nouvelleVersion = colonnes[colonnes.Length - 2];
 
-                // Nom toujours première colonne
-                var nom = colonnes[0];
-
-                // Sécurité : si le nom contient accidentellement la version,
-                // on supprime la version installée du nom.
                 if (nom.EndsWith(versionActuelle))
                 {
                     nom = nom.Replace(versionActuelle, "").Trim();
@@ -223,7 +227,7 @@ namespace Vigie.Services.PackageManagers
                     Nom = nom,
                     VersionActuelle = versionActuelle,
                     NouvelleVersion = nouvelleVersion,
-                    Source = "winget"
+                    IdentifiantSource = identifiantSource
                 });
             }
 

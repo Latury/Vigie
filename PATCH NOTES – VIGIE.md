@@ -350,10 +350,34 @@ Aucune régression détectée.
 
 ---
 
+### 🔀 Orchestrateur multi-gestionnaires
+
+- Implémentation complète de `GestionnaireGlobal`
+- Agrégation Winget + Scoop (simulation)
+- Intégration officielle dans `AccueilVueModele`
+- Activation du pipeline multi-sources en UI
+
+Impact :
+Le moteur supporte désormais plusieurs gestionnaires simultanément.
+La fusion est active et visible côté interface.
+
+---
+
+### 🧪 Tests manuels multi-sources
+
+- Validation agrégation Winget + Scoop
+- Vérification cohérence Journal / Interface
+- Vérification priorité Winget si version identique
+- Vérification déduplication active
+
+Aucune régression détectée.
+
+---
+
 # 📦 MÉTADONNÉES
 
-Version : 0.1.0-dev
-Type : Development (Foundations Stabilized)
+Version : 0.2.0-dev
+Type : Development (Architecture Multi-Gestionnaires Stabilisée)
 Licence : MIT
 Dernière mise à jour : 01 mars 2026
 

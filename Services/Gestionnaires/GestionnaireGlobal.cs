@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔═════════════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                              ║
 ║        Centre de maintenance logicielle intelligent                         ║
@@ -11,6 +11,7 @@
 ║                                                                             ║
 ║  Responsabilités principales :                                              ║
 ║  - Agréger plusieurs sources de mises à jour                                ║
+║  - Appliquer la normalisation                                               ║
 ║  - Fusionner les résultats                                                  ║
 ║  - Garantir la résilience globale                                           ║
 ║  - Journaliser l’agrégation                                                 ║
@@ -29,9 +30,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Vigie.JournalEvenements;
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
+using Vigie.Services.Normalisation;
 
 #endregion
 
@@ -43,6 +46,7 @@ namespace Vigie.Services.Gestionnaires
 
         private readonly List<IGestionnairePaquets> _gestionnaires;
         private readonly IJournalService _journal;
+        private readonly INormaliseur _normaliseur;
 
         #endregion
 
@@ -51,10 +55,12 @@ namespace Vigie.Services.Gestionnaires
         public GestionnaireGlobal()
         {
             _journal = new JournalService();
+            _normaliseur = new NormaliseurWinget();
 
             _gestionnaires = new List<IGestionnairePaquets>
             {
-                new PackageManagers.GestionnaireWinget()
+                new GestionnaireWinget(),
+                new GestionnaireScoop()
             };
         }
 
@@ -64,19 +70,25 @@ namespace Vigie.Services.Gestionnaires
 
         public async Task<List<LogicielMiseAJour>> ScanAsync()
         {
-            var tousLesResultats = new List<LogicielMiseAJour>();
+            List<LogicielMiseAJour> tousLesResultats = new List<LogicielMiseAJour>();
 
             _journal.Info("Agrégation des gestionnaires de paquets.");
 
-            foreach (var gestionnaire in _gestionnaires)
+            foreach (IGestionnairePaquets gestionnaire in _gestionnaires)
             {
                 try
                 {
-                    var resultats = await gestionnaire.ScanAsync();
+                    List<LogicielMiseAJour> resultats = await gestionnaire.ScanAsync();
 
-                    if (resultats != null && resultats.Any())
+                    if (resultats != null && resultats.Count > 0)
                     {
-                        tousLesResultats.AddRange(resultats);
+                        foreach (LogicielMiseAJour logiciel in resultats)
+                        {
+                            LogicielMiseAJour normalise = _normaliseur.Normaliser(logiciel);
+
+                            tousLesResultats.Add(normalise);
+                        }
+
                         _journal.Info($"{resultats.Count} mise(s) ajoutée(s) depuis {gestionnaire.GetType().Name}.");
                     }
                     else
@@ -90,19 +102,46 @@ namespace Vigie.Services.Gestionnaires
                 }
             }
 
-            var resultatsDedup = tousLesResultats
-    .GroupBy(l =>
-        string.IsNullOrWhiteSpace(l.IdentifiantNormalise)
-            ? l.Nom
-            : l.IdentifiantNormalise)
-    .Select(g => g.First())
-    .ToList();
+            List<LogicielMiseAJour> resultatsDedup =
+    tousLesResultats
+        .GroupBy(l =>
+            string.IsNullOrWhiteSpace(l.IdentifiantNormalise)
+                ? l.Nom
+                : l.IdentifiantNormalise)
+        .Select(g =>
+        {
+            List<LogicielMiseAJour> groupe = g.ToList();
 
-            _journal.Info($"Total agrégé après déduplication : {resultatsDedup.Count}.");
+            LogicielMiseAJour? winget =
+                groupe.FirstOrDefault(l => l.Source == "winget");
 
-            return resultatsDedup;
+            if (winget != null)
+            {
+                bool memeVersionExiste =
+                    groupe.Any(l =>
+                        l.Source != "winget" &&
+                        l.NouvelleVersion == winget.NouvelleVersion);
+
+                if (memeVersionExiste)
+                {
+                    return winget;
+                }
+            }
+
+            LogicielMiseAJour plusRecente =
+                groupe
+                    .OrderByDescending(l => l.NouvelleVersion)
+                    .First();
+
+            return plusRecente;
+        })
+        .ToList();
+
+_journal.Info($"Total agrégé après déduplication : {resultatsDedup.Count}.");
+
+return resultatsDedup;
+
+            #endregion
         }
-
-        #endregion
     }
 }

@@ -92,19 +92,19 @@ et structurer l’architecture avancée.
 
 - ✅ Ajout champ Source dans LogicielMiseAJour
 - 🔲 Préparation affichage source (Mode Expert)
-- 🔲 Début support second gestionnaire (Scoop ou Chocolatey)
-- 🔲 Fusion intelligente des résultats
-- 🔲 Tests manuels multi-sources
-- 🔲 Refactorisation contrôlée si nécessaire
+- 🟡 Début support second gestionnaire (Scoop ou Chocolatey)
+- ✅ Fusion intelligente des résultats
+- ✅ Tests manuels multi-sources
+- ✅ Refactorisation contrôlée si nécessaire
 - 🔲 Préparation modèle Historique interne (non persistant)
 - 🔲 Préparation infrastructure paramètres utilisateur
-- 🟡 Implémentation déduplication robuste basée sur ID normalisé
+- ✅ Implémentation déduplication robuste basée sur ID normalisé
       (modification GestionnaireGlobal.cs)(préparation)
 - ✅ Ajout propriété IdentifiantNormalise dans LogicielMiseAJour
       (Modeles/LogicielMiseAJour.cs)
-- 🟡 Introduction couche de normalisation multi-gestionnaires
+- ✅ Introduction couche de normalisation multi-gestionnaires
       (création dossier Services/Normalisation)
-- 🟡 Séparation explicite Scan / Normalisation / Fusion
+- ✅ Séparation explicite Scan / Normalisation / Fusion
       (pipeline actif pour Winget)
 
 Aucune mise à jour automatique encore.
@@ -207,14 +207,14 @@ Uniquement si l’architecture le permet.
 
 # 📊 12. Suivi Global
 
-| Version   | Statut          | Progression estimée                   |
-| --------- | --------------- | --------------------------------------|
-| 0.1.0-dev | 🟢 Terminé      | Fondations consolidées                 |
-| 0.2.0     | 🟡 En cours     | Extension maîtrisée de l’architecture  |
-| 0.3.0     | ⚪ À faire      | 0 %                                   |
-| 0.4.0     | ⚪ À faire      | 0 %                                   |
-| 0.5.0     | ⚪ À faire      | 0 %                                   |
-| 1.0.0     | ⚪ À faire      | 0 %                                   |
+| Version   | Statut          | Progression estimée                          |
+| --------- | --------------- | ---------------------------------------------|
+| 0.1.0-dev | 🟢 Terminé      |  ~100 %      Fondations consolidées          |
+| 0.2.0     | 🟡 En cours     |  ~75 % Extension maîtrisée de l’architecture  |
+| 0.3.0     | ⚪ À faire      | 0 %                                          |
+| 0.4.0     | ⚪ À faire      | 0 %                                          |
+| 0.5.0     | ⚪ À faire      | 0 %                                          |
+| 1.0.0     | ⚪ À faire      | 0 %                                          |
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

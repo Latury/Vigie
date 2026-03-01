@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -95,7 +95,7 @@ namespace Vigie.JournalEvenements
         /// </summary>
         private void Ecrire(string niveau, string message)
         {
-            var ligne = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{niveau}] {message}";
+            var ligne = $"{DateTime.Now:dd-MM-yyyy HH:mm:ss} [{niveau}] {message}";
             File.AppendAllText(_cheminFichier, ligne + Environment.NewLine);
         }
 

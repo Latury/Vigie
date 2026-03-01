@@ -35,9 +35,9 @@ csharp_indent_braces = false
 csharp_prefer_braces = true:error
 
 # Interdire var généralisé (lisibilité long terme)
-csharp_style_var_for_built_in_types = false:warning
-csharp_style_var_when_type_is_apparent = false:warning
-csharp_style_var_elsewhere = false:warning
+csharp_style_var_for_built_in_types = false:silent
+csharp_style_var_when_type_is_apparent = false:silent
+csharp_style_var_elsewhere = false:silent
 
 # Préférer initialisations propres
 dotnet_style_object_initializer = true:suggestion

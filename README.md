@@ -7,7 +7,7 @@
 Application WinUI 3 (.NET 8) dédiée à la gestion, au contrôle et à la sécurisation des mises à jour logicielles sous Windows.
 
 ![Version](https://img.shields.io/badge/Version-0.2.0--dev-1E90FF?style=for-the-badge)
-![Statut](https://img.shields.io/badge/Statut-Extension%20architecturale-FF8C00?style=for-the-badge)
+![Statut](https://img.shields.io/badge/Statut-Extension%20multi--gestionnaires%20active-FF8C00?style=for-the-badge)
 ![Licence](https://img.shields.io/badge/Licence-MIT-2E8B57?style=for-the-badge)
 
 ![.NET](https://img.shields.io/badge/.NET-8-512BD4?style=for-the-badge)
@@ -16,7 +16,7 @@ Application WinUI 3 (.NET 8) dédiée à la gestion, au contrôle et à la sécu
 ![Plateforme](https://img.shields.io/badge/Plateforme-Windows-0078D6?style=for-the-badge)
 
 Auteur : Flo Latury
-Dernière mise à jour : 28 février 2026
+Dernière mise à jour : 01 mars 2026
 
 </div>
 
@@ -101,6 +101,7 @@ Vigie/
 ├── Services/
 │ ├── Gestionnaires/
 │ └── Interfaces/
+│ └── Normalisation/
 │
 ├── Modeles/
 ├── JournalEvenements/
@@ -132,7 +133,7 @@ Vigie/
 - Journalisation centralisée
 - Extensibilité progressive
 - Orchestrateur central (GestionnaireGlobal)
-- Préparation au support multi-gestionnaires
+- Support multi-gestionnaires activé (Winget + Scoop)
 
 ---
 
@@ -154,10 +155,10 @@ Vigie/
 ## 🔄 En cours (0.2.0-dev)
 
 - Introduction champ Source dans le modèle
-- Préparation support multi-gestionnaires
+- Support multi-gestionnaires actif (Winget + Scoop)
 - Déduplication robuste basée sur identifiant normalisé
 - Introduction couche de normalisation multi-sources
-- Séparation Scan / Normalisation / Fusion
+- Séparation Scan / Normalisation / Fusion (pipeline actif)
 - Préparation infrastructure paramètres utilisateur
 - Préparation modèle Historique interne (non persistant)
 
@@ -168,7 +169,10 @@ Vigie/
 - Création automatique point de restauration
 - Mode Senior simplifié
 - Mode Expert avancé
-- Support Scoop, Chocolatey, pip, npm
+- Extension complète support Scoop
+- Support Chocolatey
+- Support pip
+- Support npm
 - Historique persistant des mises à jour
 - Planification automatique
 - Niveaux de journalisation configurables
@@ -280,8 +284,8 @@ Les optimisations avancées interviendront après consolidation multi-gestionnai
 | Framework                   | .NET 8                                      |
 | Interface                   | WinUI 3                                     |
 | Architecture                | MVVM strict                                 |
-| Gestionnaire implémenté     | winget                                      |
-| Support multi-gestionnaires | Préparation architecturale en cours         |
+| Gestionnaires implémentés   | winget, Scoop                               |
+| Support multi-gestionnaires | Actif (fusion et déduplication intégrées)   |
 | Versioning                  | Git (discipline commits structurée)         |
 | Méthodologie                | Versionnement incrémental par consolidation |
 
@@ -365,9 +369,9 @@ Croissance par consolidation.
 # 📊 14. État du Projet
 
 Version : 0.2.0-dev  
-Statut : Extension architecturale en cours  
+Statut : Extension multi-gestionnaires active  
 Architecture : Stable et extensible  
-Fonctionnalités : Détection consolidée, extension en cours  
+Fonctionnalités : Détection consolidée, multi-sources actives  
 Tests : Manuels structurés  
 Sécurité : Détection uniquement (aucune action système)
 

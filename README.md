@@ -287,7 +287,28 @@ Les optimisations avancées interviendront après consolidation multi-gestionnai
 
 ---
 
-# 📚 11. Documentation
+# ⚙️ 11. Environnement de Développement
+
+Le projet utilise un fichier `.editorconfig` versionné afin de garantir
+une cohérence de style et de formatage sur l’ensemble du code.
+
+Objectifs :
+
+- Indentation standardisée (4 espaces)
+- Accolades obligatoires en C#
+- Surveillance nullabilité
+- Conventions de nommage des champs privés (_camelCase)
+- Nettoyage automatique des espaces superflus
+- Organisation automatique des directives using
+
+Ce fichier fait partie intégrante de l’architecture technique
+et contribue à la stabilité long terme du projet.
+
+Toute contribution doit respecter ces règles.
+
+---
+
+# 📚 12. Documentation
 
 | Fichier                                  | Rôle                                                |
 |------------------------------------------|-----------------------------------------------------|
@@ -303,7 +324,7 @@ Toute évolution majeure doit être documentée.
 
 ---
 
-# 🧭 12. Roadmap
+# 🧭 13. Roadmap
 
 ## 🔹 Version 0.x — Consolidation
 
@@ -341,7 +362,7 @@ Croissance par consolidation.
 
 ---
 
-# 📊 13. État du Projet
+# 📊 14. État du Projet
 
 Version : 0.2.0-dev  
 Statut : Extension architecturale en cours  
@@ -352,7 +373,7 @@ Sécurité : Détection uniquement (aucune action système)
 
 ---
 
-# 📜 14. Licence
+# 📜 15. Licence
 
 Licence : MIT
 
@@ -362,7 +383,7 @@ Voir le fichier LICENSE.md pour plus de détails.
 
 ---
 
-# 🧠 15. Philosophie Finale
+# 🧠 16. Philosophie Finale
 
 Vigie n’est pas seulement un outil.
 

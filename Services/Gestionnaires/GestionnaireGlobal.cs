@@ -16,9 +16,6 @@
 ║  - Garantir la résilience globale                                           ║
 ║  - Journaliser l’agrégation                                                 ║
 ║                                                                             ║
-║  Limites :                                                                  ║
-║  - Déduplication basée sur IdentifiantNormalise (fallback sur Nom si vide)  ║
-║                                                                             ║
 ║  Licence : MIT                                                              ║
 ║  Copyright © 2026 Flo Latury                                                ║
 ╚═════════════════════════════════════════════════════════════════════════════╝
@@ -30,11 +27,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Vigie.JournalEvenements;
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
 using Vigie.Services.Normalisation;
+using System.Globalization;
 
 #endregion
 
@@ -44,7 +41,7 @@ namespace Vigie.Services.Gestionnaires
     {
         #region 3.1 Champs privés
 
-        private readonly List<IGestionnairePaquets> _gestionnaires;
+        private readonly IEnumerable<IGestionnairePaquets> _gestionnaires;
         private readonly IJournalService _journal;
         private readonly INormaliseur _normaliseur;
 
@@ -52,16 +49,23 @@ namespace Vigie.Services.Gestionnaires
 
         #region 3.2 Constructeur
 
-        public GestionnaireGlobal()
+        /*
+         * Constructeur :
+         * Reçoit les dépendances externes.
+         *
+         * Objectif :
+         * - Supprimer tout couplage direct
+         * - Permettre testabilité
+         * - Préparer injection DI future
+         */
+        public GestionnaireGlobal(
+            IEnumerable<IGestionnairePaquets> gestionnaires,
+            INormaliseur normaliseur,
+            IJournalService journal)
         {
-            _journal = new JournalService();
-            _normaliseur = new NormaliseurWinget();
-
-            _gestionnaires = new List<IGestionnairePaquets>
-            {
-                new GestionnaireWinget(),
-                new GestionnaireScoop()
-            };
+            _gestionnaires = gestionnaires ?? throw new ArgumentNullException(nameof(gestionnaires));
+            _normaliseur = normaliseur ?? throw new ArgumentNullException(nameof(normaliseur));
+            _journal = journal ?? throw new ArgumentNullException(nameof(journal));
         }
 
         #endregion
@@ -70,22 +74,21 @@ namespace Vigie.Services.Gestionnaires
 
         public async Task<List<LogicielMiseAJour>> ScanAsync()
         {
-            List<LogicielMiseAJour> tousLesResultats = new List<LogicielMiseAJour>();
+            var tousLesResultats = new List<LogicielMiseAJour>();
 
             _journal.Info("Agrégation des gestionnaires de paquets.");
 
-            foreach (IGestionnairePaquets gestionnaire in _gestionnaires)
+            foreach (var gestionnaire in _gestionnaires)
             {
                 try
                 {
-                    List<LogicielMiseAJour> resultats = await gestionnaire.ScanAsync();
+                    var resultats = await gestionnaire.ScanAsync();
 
                     if (resultats != null && resultats.Count > 0)
                     {
-                        foreach (LogicielMiseAJour logiciel in resultats)
+                        foreach (var logiciel in resultats)
                         {
-                            LogicielMiseAJour normalise = _normaliseur.Normaliser(logiciel);
-
+                            var normalise = _normaliseur.Normaliser(logiciel);
                             tousLesResultats.Add(normalise);
                         }
 
@@ -102,46 +105,73 @@ namespace Vigie.Services.Gestionnaires
                 }
             }
 
-            List<LogicielMiseAJour> resultatsDedup =
-    tousLesResultats
-        .GroupBy(l =>
-            string.IsNullOrWhiteSpace(l.IdentifiantNormalise)
-                ? l.Nom
-                : l.IdentifiantNormalise)
-        .Select(g =>
+            var resultatsDedup = tousLesResultats
+    .GroupBy(l => l.IdentifiantNormalise)
+    .Select(g =>
+    {
+        var groupe = g.ToList();
+
+        var winget = groupe.FirstOrDefault(x => x.Source == "winget");
+
+        if (winget != null)
         {
-            List<LogicielMiseAJour> groupe = g.ToList();
+            bool memeVersionExiste =
+                groupe.Any(x =>
+                    x.Source != "winget" &&
+                    x.NouvelleVersion == winget.NouvelleVersion);
 
-            LogicielMiseAJour? winget =
-                groupe.FirstOrDefault(l => l.Source == "winget");
-
-            if (winget != null)
+            if (memeVersionExiste)
             {
-                bool memeVersionExiste =
-                    groupe.Any(l =>
-                        l.Source != "winget" &&
-                        l.NouvelleVersion == winget.NouvelleVersion);
+                return winget;
+            }
+        }
 
-                if (memeVersionExiste)
-                {
-                    return winget;
-                }
+        return groupe
+            .OrderByDescending(x => ParseVersionSafe(x.NouvelleVersion))
+            .First();
+    })
+    .ToList();
+
+            _journal.Info($"Total agrégé après déduplication : {resultatsDedup.Count}.");
+
+            return resultatsDedup;
+        }
+
+        #region 3.4 Méthodes privées
+
+        /*
+         * Méthode : ParseVersionSafe
+         *
+         * Objectif :
+         * Convertir une version string en System.Version
+         * pour comparaison fiable.
+         *
+         * Comportement :
+         * - Si parsing réussi → retourne Version valide
+         * - Si parsing échoue → retourne Version(0,0)
+         *
+         * Pourquoi :
+         * Éviter comparaison lexicographique incorrecte.
+         */
+        private Version ParseVersionSafe(string versionString)
+        {
+            if (string.IsNullOrWhiteSpace(versionString))
+            {
+                return new Version(0, 0);
             }
 
-            LogicielMiseAJour plusRecente =
-                groupe
-                    .OrderByDescending(l => l.NouvelleVersion)
-                    .First();
+            // Nettoyage éventuel (ex: "1.2.3-preview")
+            var propre = versionString.Split('-')[0];
 
-            return plusRecente;
-        })
-        .ToList();
+            if (Version.TryParse(propre, out var version))
+            {
+                return version;
+            }
 
-_journal.Info($"Total agrégé après déduplication : {resultatsDedup.Count}.");
-
-return resultatsDedup;
-
-            #endregion
+            return new Version(0, 0);
         }
+
+        #endregion
     }
 }
+#endregion

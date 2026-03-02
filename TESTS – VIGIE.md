@@ -25,9 +25,14 @@ Garantir :
 - Test interruption processus
 - Test mécanisme de timeout (30 secondes)
 - Vérification journalisation
-- Validation agrégation multi-gestionnaires (Winget + Scoop)
+- Winget + Scoop (agrégation active, consolidation en cours)
 - Vérification déduplication basée sur IdentifiantNormalise
 - Vérification pipeline Scan → Normalisation → Fusion
+- Vérification comparaison versions via System.Version (plus de comparaison lexicographique)
+- Vérification fusion multi-sources avec versions différentes
+- Vérification priorité Winget si même version détectée
+- Vérification absence doublons lignes vides dans vigie.log
+- Vérification cohérence log après multi-gestionnaires
 
 ---
 
@@ -38,6 +43,10 @@ Garantir :
 - Test gestion erreurs
 - Test normalisation données
 - Test déduplication basée sur identifiant normalisé
+- Test comparaison versions (1.10 > 1.2)
+- Test ParseVersionSafe (gestion suffixes preview)
+- Test comportement fallback IdentifiantNormalise → Nom
+- Test résilience si un gestionnaire échoue
 
 ---
 
@@ -57,9 +66,10 @@ Ces tests seront activés lors de l’introduction des mises à jour automatique
 Priorité actuelle :
 
 1. Stabilité du scan
-2. Gestion erreurs
-3. Normalisation multi-gestionnaires
-4. Extensibilité architecturale
+2. Robustesse fusion multi-sources
+3. Gestion erreurs et résilience
+4. Consolidation architecture interne
+5. Extensibilité contrôlée
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

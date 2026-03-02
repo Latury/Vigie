@@ -96,6 +96,7 @@ et structurer l’architecture avancée.
 - ✅ Fusion intelligente des résultats
 - ✅ Tests manuels multi-sources
 - ✅ Refactorisation contrôlée si nécessaire
+- ✅ Stabilisation JournalService (suppression doublons lignes vides)
 - 🔲 Préparation modèle Historique interne (non persistant)
 - 🔲 Préparation infrastructure paramètres utilisateur
 - ✅ Implémentation déduplication robuste basée sur ID normalisé
@@ -210,7 +211,7 @@ Uniquement si l’architecture le permet.
 | Version   | Statut          | Progression estimée                          |
 | --------- | --------------- | ---------------------------------------------|
 | 0.1.0-dev | 🟢 Terminé      |  ~100 %      Fondations consolidées          |
-| 0.2.0     | 🟡 En cours     |  ~75 % Extension maîtrisée de l’architecture  |
+| 0.2.0     | 🟡 En cours     |  ~ 90 % Extension maîtrisée de l’architecture|
 | 0.3.0     | ⚪ À faire      | 0 %                                          |
 | 0.4.0     | ⚪ À faire      | 0 %                                          |
 | 0.5.0     | ⚪ À faire      | 0 %                                          |
@@ -225,7 +226,7 @@ Ce projet vise à développer :
 - Architecture modulaire avancée
 - Abstraction propre des services
 - Gestion processus système
-- Parsing JSON sécurisé
+- Parsing robuste des sorties console
 - Gestion erreurs robuste
 - Discipline Git professionnelle
 - Documentation rigoureuse

@@ -23,15 +23,19 @@
 #region 1. Imports
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Vigie.Modeles;
-using Vigie.Services.Interfaces;
+
 using Vigie.Infrastructure;
+using Vigie.JournalEvenements;
+using Vigie.Modeles;
 using Vigie.Services.Gestionnaires;
+using Vigie.Services.Interfaces;
+using Vigie.Services.Normalisation;
 
 #endregion
 
@@ -134,7 +138,21 @@ namespace Vigie.VueModeles
 
         public AccueilVueModele()
         {
-            _packageManager = new GestionnaireGlobal();
+            // Composition manuelle des dépendances
+            var journal = new JournalService();
+
+            var gestionnaires = new List<IGestionnairePaquets>
+    {
+        new GestionnaireWinget(),
+        new GestionnaireScoop()
+    };
+
+            var normaliseur = new NormaliseurWinget();
+
+            _packageManager = new GestionnaireGlobal(
+                gestionnaires,
+                normaliseur,
+                journal);
 
             Logiciels = new ObservableCollection<LogicielMiseAJour>();
 

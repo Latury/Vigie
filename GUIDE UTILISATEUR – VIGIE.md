@@ -14,8 +14,13 @@ sur votre système Windows.
 3. Attendre la fin de l’analyse
 4. Consulter la liste des mises à jour détectées
 
-Aucune modification système n’est effectuée.
-Vigie se limite à l’analyse.
+Aucun logiciel n’est installé, modifié ou supprimé.
+Le scan est strictement informatif.
+
+Vigie se limite à l’analyse et à l’agrégation des mises à jour disponibles.
+
+Vigie peut interroger plusieurs gestionnaires de paquets (ex : winget, Scoop).
+Les résultats sont fusionnés automatiquement afin d’éviter les doublons.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -48,8 +53,9 @@ Implémentation prévue en version 0.5.0.
 
 Un mode avancé permettra :
 
-- Affichage détaillé des logs
-- Sélection des gestionnaires de paquets
+- Affichage détaillé des journaux d’événements
+- Visualisation de la source des mises à jour détectées
+- Sélection et configuration des gestionnaires
 - Paramètres techniques avancés
 
 Implémentation progressive jusqu’à la version 1.0.0.
@@ -60,6 +66,7 @@ Implémentation progressive jusqu’à la version 1.0.0.
 
 - Vérifier votre connexion internet avant un scan
 - Ne pas fermer l’application pendant l’analyse
+- En cas d’erreur, consulter les journaux via le Mode Expert (version future)
 
 Vigie est conçu pour simplifier la maintenance,
 pas pour la complexifier.

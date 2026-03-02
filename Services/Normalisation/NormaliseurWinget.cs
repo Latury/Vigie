@@ -85,6 +85,12 @@ namespace Vigie.Services.Normalisation
 
             string baseIdentifiant = logiciel.IdentifiantSource;
 
+            // Si IdentifiantSource absent → fallback sur Nom
+            if (string.IsNullOrWhiteSpace(baseIdentifiant))
+            {
+                baseIdentifiant = logiciel.Nom;
+            }
+
             if (!string.IsNullOrWhiteSpace(baseIdentifiant) &&
                 baseIdentifiant.Contains("."))
             {
@@ -96,7 +102,7 @@ namespace Vigie.Services.Normalisation
             }
 
             string identifiant = Regex
-                .Replace(baseIdentifiant, "[^a-zA-Z0-9+]", "")
+                .Replace(baseIdentifiant ?? string.Empty, "[^a-zA-Z0-9+]", "")
                 .ToLowerInvariant();
 
             logiciel.IdentifiantNormalise = identifiant;

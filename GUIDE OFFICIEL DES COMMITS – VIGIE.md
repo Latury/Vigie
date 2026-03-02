@@ -47,6 +47,21 @@ Interdit :
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+# 🏗️ RÈGLE ARCHITECTURALE SPÉCIFIQUE
+
+Tout commit modifiant une classe métier doit préciser :
+
+- Si une dépendance est ajoutée ou supprimée
+- Si une instanciation directe a été remplacée par une injection
+- Si une interface a été introduite
+
+Objectif :
+
+Tracer l’évolution du découplage architectural
+et garantir la testabilité progressive du projet.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 # 📐 FORMAT STANDARD OBLIGATOIRE
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -132,31 +147,31 @@ Explication claire destinée :
 
 # 🏷️ CATÉGORIES OFFICIELLES DE COMMIT – VIGIE
 
-| Emoji | Type         | Utilisation spécifique Vigie                |
-| ----- | ------------ | ------------------------------------------- |
-| 📎    | Init         | Initialisation projet                       |
-| 🏗️    | Architecture | Modification structure MVVM                 |
-| 🧱    | Core         | Modification logique cœur (PackageManagers) |
-| ✨    | Feature      | Nouvelle fonctionnalité utilisateur         |
-| ⛓️‍💥    | Bugfix       | Correction bug                              |
-| 🛠️    | Fix          | Correction mineure                          |
-| ♻️    | Refactor     | Réorganisation sans changement fonctionnel  |
-| 📝    | Docs         | Documentation                               |
-| 📚    | Readme       | Modification README uniquement              |
-| 🔒    | Security     | Sécurité (point restauration, validation)   |
-| 🚀    | Performance  | Optimisation                                |
-| 🧪    | Test         | Ajout ou modification tests                 |
-| 🧹    | Cleanup      | Nettoyage code                              |
-| 🔥    | Remove       | Suppression code                            |
-| 🔧    | Config       | Configuration projet                        |
-| ⬆️    | Upgrade      | Mise à jour dépendances                     |
-| 🧠    | Logic        | Modification logique métier                 |
-| 🛡️    | Validation   | Validation données                          |
-| 🧵    | Async        | Passage en asynchrone                       |
-| 🧭    | Navigation   | Modification navigation                     |
-| 🎯    | UX           | Amélioration expérience utilisateur         |
-| 📁    | Structure    | Réorganisation dossiers                     |
-| 🧬    | Experimental | Fonctionnalité expérimentale                |
+| Emoji | Type         | Utilisation spécifique Vigie                                                         |
+| ----- | ------------ | ------------------------------------------------------------------------------------ |
+| 📎    | Init         | Initialisation projet                                                                |
+| 🏗️    | Architecture | Modification structure MVVM                                                          |
+| 🧱    | Core         | Modification logique cœur (PackageManagers)                                          |
+| ✨    | Feature      | Nouvelle fonctionnalité utilisateur                                                  |
+| ⛓️‍💥    | Bug          | Correction d’un dysfonctionnement affectant la logique métier ou l’exécution système |
+| 🛠️    | Fix          | Correction mineure                                                                   |
+| ♻️    | Refactor     | Réorganisation sans changement fonctionnel                                           |
+| 📝    | Docs         | Documentation                                                                        |
+| 📚    | Readme       | Modification README uniquement                                                       |
+| 🔒    | Security     | Sécurité (point restauration, validation)                                            |
+| 🚀    | Performance  | Optimisation                                                                         |
+| 🧪    | Test         | Ajout ou modification tests                                                          |
+| 🧹    | Cleanup      | Nettoyage code                                                                       |
+| 🔥    | Remove       | Suppression code                                                                     |
+| 🔧    | Config       | Configuration projet                                                                 |
+| 🔄    | Upgrade      | Mise à jour dépendances                                                              |
+| 🧠    | Logic        | Modification logique métier                                                          |
+| 🛡️    | Validation   | Validation données                                                                   |
+| 🧵    | Async        | Passage en asynchrone                                                                |
+| 🧭    | Navigation   | Modification navigation                                                              |
+| 🎯    | UX           | Amélioration expérience utilisateur                                                  |
+| 📁    | Structure    | Réorganisation dossiers                                                              |
+| 🧬    | Experimental | Fonctionnalité expérimentale                                                         |
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -219,6 +234,18 @@ Base architecturale pour extension multi-gestionnaires.
 - Pas de commit émotionnel
 - Pas de commit automatique non documenté
 - Pas de commit massif sans explication détaillée
+- Toute modification de logique de fusion ou de comparaison de versions
+  doit explicitement mentionner le mécanisme utilisé (ex : System.Version)
+- Toute modification du pipeline Scan → Normalisation → Fusion
+  doit décrire l’ordre exact d’exécution.
+- Toute modification du JournalService
+  doit préciser l’impact sur le format des logs
+  et le risque de rupture de lecture future.
+- Toute modification de documentation stratégique
+  (README, FEUILLE DE ROUTE, PATCH NOTES, STANDARD)
+  doit être strictement alignée avec l’état réel du code au moment du commit.
+- Un commit de documentation ne doit jamais anticiper une
+  fonctionnalité non encore implémentée.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

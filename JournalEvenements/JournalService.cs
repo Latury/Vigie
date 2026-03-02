@@ -38,6 +38,7 @@ namespace Vigie.JournalEvenements
         #region 3.1 Champs privés
 
         private readonly string _cheminFichier;
+        private bool _derniereLigneVide = false;
 
         #endregion
 
@@ -95,6 +96,22 @@ namespace Vigie.JournalEvenements
         /// </summary>
         private void Ecrire(string niveau, string message)
         {
+            message = message?.Trim();
+
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                if (_derniereLigneVide)
+                {
+                    return;
+                }
+
+                File.AppendAllText(_cheminFichier, Environment.NewLine);
+                _derniereLigneVide = true;
+                return;
+            }
+
+            _derniereLigneVide = false;
+
             var ligne = $"{DateTime.Now:dd-MM-yyyy HH:mm:ss} [{niveau}] {message}";
             File.AppendAllText(_cheminFichier, ligne + Environment.NewLine);
         }

@@ -155,6 +155,11 @@ public class GestionnaireWinget : IGestionnairePaquets
 
     #region 3.2 Constructeur
 
+    /*
+     * Dépendances injectées via constructeur
+     * pour garantir découplage et testabilité.
+     */
+
     public GestionnaireWinget(IJournalService journal)
     {
         _journal = journal;
@@ -180,7 +185,8 @@ public class GestionnaireWinget : IGestionnairePaquets
      * Exceptions possibles :
      * Exception liée au processus système
      */
-    public async Task<List<LogicielMiseAJour>> ScanAsync()
+   
+   public async Task<List<LogicielMiseAJour>> ScanAsync()
     {
         // Implémentation
         return new List<LogicielMiseAJour>();
@@ -253,6 +259,8 @@ Lisible
 
 Structuré
 
+Testable
+
 Maintenable
 
 Pédagogique
@@ -266,4 +274,56 @@ Un fichier documenté devient un actif architectural.
 
 Ce document est obligatoire pour tout nouveau fichier créé dans le projet Vigie.
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INJECTION DE DÉPENDANCES (RÈGLE ARCHITECTURALE)
+
+Toute classe métier ou service :
+
+- Ne doit pas instancier directement ses dépendances internes
+- Doit recevoir ses dépendances via le constructeur
+- Doit dépendre d’interfaces plutôt que d’implémentations concrètes
+
+Objectif :
+
+- Supprimer le couplage fort
+- Permettre la testabilité
+- Préparer l’intégration future d’un conteneur DI
+- Garantir l’évolutivité long terme
+
+Exemple interdit :
+
+new JournalService()
+
+Exemple conforme :
+
+public GestionnaireWinget(IJournalService journal)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COUCHE DE NORMALISATION (RÈGLE)
+
+Toute donnée issue d’une source externe :
+
+- Doit être normalisée avant fusion
+- Ne doit jamais être utilisée brute dans la couche d’orchestration
+- Doit produire un identifiant technique stable si nécessaire
+
+Objectif :
+
+Séparer acquisition des données et consolidation interne.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COMPARAISON DE VERSIONS
+
+Toute comparaison de versions logicielles :
+
+- Doit utiliser System.Version
+- Ne doit jamais utiliser une comparaison lexicographique de chaînes
+
+Raison :
+
+"1.10" > "1.2" est faux en comparaison texte,
+mais correct via System.Version.
 ```

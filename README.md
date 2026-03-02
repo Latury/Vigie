@@ -16,7 +16,7 @@ Application WinUI 3 (.NET 8) dédiée à la gestion, au contrôle et à la sécu
 ![Plateforme](https://img.shields.io/badge/Plateforme-Windows-0078D6?style=for-the-badge)
 
 Auteur : Flo Latury
-Dernière mise à jour : 01 mars 2026
+Dernière mise à jour : 02 mars 2026
 
 </div>
 
@@ -99,9 +99,9 @@ Le projet sert également de support d’apprentissage :
 Vigie/
 │
 ├── Services/
-│ ├── Gestionnaires/
-│ └── Interfaces/
-│ └── Normalisation/
+│   ├── Gestionnaires/
+│   ├── Interfaces/
+│   └── Normalisation/
 │
 ├── Modeles/
 ├── JournalEvenements/
@@ -159,6 +159,7 @@ Vigie/
 - Déduplication robuste basée sur identifiant normalisé
 - Introduction couche de normalisation multi-sources
 - Séparation Scan / Normalisation / Fusion (pipeline actif)
+- Stabilisation JournalService (suppression doublons lignes vides)
 - Préparation infrastructure paramètres utilisateur
 - Préparation modèle Historique interne (non persistant)
 
@@ -261,7 +262,7 @@ Les optimisations avancées interviendront après consolidation multi-gestionnai
 
 ## État actuel
 
-- Tests manuels systématiques du scan winget
+- Tests manuels systématiques du scan et de l’agrégation multi-gestionnaires
 - Validation des cas nominaux
 - Vérification du parsing texte basé sur structure colonnes
 - Test du mécanisme de timeout
@@ -278,16 +279,16 @@ Les optimisations avancées interviendront après consolidation multi-gestionnai
 
 # 📦 10. Technologies Utilisées
 
-| Élément                     | Technologie / Approche                      |
-|-----------------------------|---------------------------------------------|
-| Langage principal           | C#                                          |
-| Framework                   | .NET 8                                      |
-| Interface                   | WinUI 3                                     |
-| Architecture                | MVVM strict                                 |
-| Gestionnaires implémentés   | winget, Scoop                               |
-| Support multi-gestionnaires | Actif (fusion et déduplication intégrées)   |
-| Versioning                  | Git (discipline commits structurée)         |
-| Méthodologie                | Versionnement incrémental par consolidation |
+| Élément                     | Technologie / Approche                                          |
+|-----------------------------|-----------------------------------------------------------------|
+| Langage principal           |  C#                                                              |
+| Framework                   | .NET 8                                                          |
+| Interface                   | WinUI 3                                                         |
+| Architecture                | MVVM strict                                                     |
+| Gestionnaires implémentés   | winget (complet), Scoop (support actif, consolidation en cours) |
+| Support multi-gestionnaires | Actif (fusion et déduplication intégrées)                       |
+| Versioning                  | Git (discipline commits structurée)                             |
+| Méthodologie                | Versionnement incrémental par consolidation                     |
 
 ---
 
@@ -370,10 +371,11 @@ Croissance par consolidation.
 
 Version : 0.2.0-dev  
 Statut : Extension multi-gestionnaires active  
-Architecture : Stable et extensible  
+Architecture : Stable, extensible et consolidée
 Fonctionnalités : Détection consolidée, multi-sources actives  
 Tests : Manuels structurés  
 Sécurité : Détection uniquement (aucune action système)
+Journalisation : Stabilisée (écriture propre, sans doublons)
 
 ---
 

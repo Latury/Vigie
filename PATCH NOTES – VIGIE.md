@@ -99,6 +99,7 @@ Dépend du format texte winget (pas de JSON natif disponible).
 Architecture : Stable
 Scan winget : Robuste
 Parsing texte : Stabilisé
+Journalisation : Stabilisée (protection doublons lignes vides)
 Sécurité : Non implémentée
 Mode Senior : Non implémenté
 Mode Expert : Non implémenté
@@ -302,7 +303,7 @@ Objectif : Extension maîtrisée de l’architecture multi-gestionnaires
 - Préparation modèle Historique interne (non persistant)
 - Préparation infrastructure paramètres utilisateur
 - Tests manuels multi-gestionnaires
-- Consolidation parsing indépendant de la langue
+- Consolidation parsing robuste basé sur structure colonnes
 - Implémentation déduplication robuste basée sur ID normalisé
   via évolution de GestionnaireGlobal
 - Introduction couche de normalisation multi-gestionnaires
@@ -374,12 +375,28 @@ Aucune régression détectée.
 
 ---
 
+### 🧹 Stabilisation JournalService
+
+- Ajout protection contre lignes vides consécutives
+- Introduction nettoyage `Trim()` des messages avant écriture
+- Ajout état interne `_derniereLigneVide`
+- Amélioration lisibilité des fichiers logs
+- Aucune modification API publique
+
+Impact :
+Amélioration qualité audit technique et robustesse journalisation.
+Préparation future configuration niveaux de logs.
+
+Aucune régression détectée.
+
+---
+
 # 📦 MÉTADONNÉES
 
 Version : 0.2.0-dev
 Type : Development (Architecture Multi-Gestionnaires Stabilisée)
 Licence : MIT
-Dernière mise à jour : 01 mars 2026
+Dernière mise à jour : 02 mars 2026
 
 ---
 

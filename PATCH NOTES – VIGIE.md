@@ -391,12 +391,39 @@ Aucune régression détectée.
 
 ---
 
+### 🛡️ Consolidation Résilience Orchestrateur
+
+- Ajout d’un try/catch global final dans `GestionnaireGlobal.ScanAsync()`
+- Isolation complète des exceptions par gestionnaire
+- Protection explicite de la phase de normalisation
+- Blindage de la phase de fusion / déduplication
+- Garantie qu’aucune exception non gérée ne remonte vers l’UI
+- Journalisation des erreurs critiques orchestrateur
+
+Tests réalisés :
+
+- Exception volontaire dans GestionnaireWinget
+- Exception volontaire dans normalisation
+- Exception volontaire dans phase globale
+- Simulation timeout réel winget
+
+Impact :
+
+Résilience complète validée.
+Le moteur multi-gestionnaires tolère désormais les échecs partiels
+sans compromettre la stabilité de l’application.
+
+Aucune modification d’API publique.
+Aucune modification du pipeline Scan → Normalisation → Fusion.
+
+---
+
 # 📦 MÉTADONNÉES
 
 Version : 0.2.0-dev
 Type : Development (Architecture Multi-Gestionnaires Stabilisée)
 Licence : MIT
-Dernière mise à jour : 02 mars 2026
+Dernière mise à jour : 03 mars 2026
 
 ---
 

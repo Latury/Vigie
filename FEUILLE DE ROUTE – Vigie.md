@@ -91,14 +91,11 @@ Préparer officiellement le support multi-gestionnaires
 et structurer l’architecture avancée.
 
 - ✅ Ajout champ Source dans LogicielMiseAJour
-- 🔲 Préparation affichage source (Mode Expert)
-- 🟡 Début support second gestionnaire (Scoop ou Chocolatey)
+- ✅ Début support second gestionnaire (Scoop ou Chocolatey)
 - ✅ Fusion intelligente des résultats
 - ✅ Tests manuels multi-sources
 - ✅ Refactorisation contrôlée si nécessaire
 - ✅ Stabilisation JournalService (suppression doublons lignes vides)
-- 🔲 Préparation modèle Historique interne (non persistant)
-- 🔲 Préparation infrastructure paramètres utilisateur
 - ✅ Implémentation déduplication robuste basée sur ID normalisé
       (modification GestionnaireGlobal.cs)(préparation)
 - ✅ Ajout propriété IdentifiantNormalise dans LogicielMiseAJour
@@ -107,6 +104,8 @@ et structurer l’architecture avancée.
       (création dossier Services/Normalisation)
 - ✅ Séparation explicite Scan / Normalisation / Fusion
       (pipeline actif pour Winget)
+- ✅ Consolidation complète de la résilience orchestrateur
+      (try/catch global + validation anti-crash UI)
 
 Aucune mise à jour automatique encore.
 
@@ -125,6 +124,8 @@ Permettre la mise à jour sécurisée.
 - 🔲 Confirmation utilisateur
 - 🔲 Gestion élévation administrateur
 - 🔲 Journalisation complète
+- 🔲 Préparation modèle Historique interne (non persistant)
+- 🔲 Préparation infrastructure paramètres utilisateur
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -208,14 +209,14 @@ Uniquement si l’architecture le permet.
 
 # 📊 12. Suivi Global
 
-| Version   | Statut          | Progression estimée                          |
-| --------- | --------------- | ---------------------------------------------|
-| 0.1.0-dev | 🟢 Terminé      |  ~100 %      Fondations consolidées          |
-| 0.2.0     | 🟡 En cours     |  ~ 90 % Extension maîtrisée de l’architecture|
-| 0.3.0     | ⚪ À faire      | 0 %                                          |
-| 0.4.0     | ⚪ À faire      | 0 %                                          |
-| 0.5.0     | ⚪ À faire      | 0 %                                          |
-| 1.0.0     | ⚪ À faire      | 0 %                                          |
+| Version   | Statut          | Progression estimée                              |
+| --------- | --------------- | -------------------------------------------------|
+| 0.1.0-dev | 🟢 Terminé      |  ~100 %      Fondations consolidées               |
+| 0.2.0     | 🟢 Consolidée   |  ~100 % Extension maîtrisée et résilience validée |
+| 0.3.0     | ⚪ À faire      | 0 %                                              |
+| 0.4.0     | ⚪ À faire      | 0 %                                              |
+| 0.5.0     | ⚪ À faire      | 0 %                                              |
+| 1.0.0     | ⚪ À faire      | 0 %                                              |
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -29,7 +29,7 @@ using Vigie.Modeles;
 
 #endregion
 
-namespace Vigie.Services.Normalisation
+namespace Vigie.Services.Interfaces
 {
     #region 2. Description Générale
 

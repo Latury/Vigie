@@ -31,6 +31,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 using Vigie.Modeles;
+using Vigie.Services.Interfaces;
 
 #endregion
 

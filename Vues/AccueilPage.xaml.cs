@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -11,7 +11,7 @@
 ║                                                                      ║
 ║  Responsabilités :                                                   ║
 ║  - Initialiser la page                                               ║
-║  - Associer le ViewModel                                             ║
+║  - Recevoir le ViewModel via navigation                              ║
 ║                                                                      ║
 ║  Limites :                                                           ║
 ║  - Aucune logique métier                                             ║
@@ -25,6 +25,8 @@
 #region 1. Imports
 
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+
 using Vigie.VueModeles;
 
 #endregion
@@ -38,6 +40,9 @@ namespace Vigie.Vues
      *
      * Rôle :
      * Page d’accueil affichant l’état du système.
+     *
+     * Particularité :
+     * Le ViewModel est injecté via NavigationService.
      */
 
     #endregion
@@ -49,13 +54,33 @@ namespace Vigie.Vues
         #region 3.1 Constructeur
 
         /*
-         * Initialise la page et associe le ViewModel.
+         * Initialise la page.
+         * Aucune création de ViewModel ici.
          */
         public AccueilPage()
         {
             InitializeComponent();
+        }
 
-            DataContext = new AccueilVueModele();
+        #endregion
+
+        #region 3.2 Navigation
+
+        /*
+         * Méthode : OnNavigatedTo
+         *
+         * Objectif :
+         * Récupérer le ViewModel transmis via navigation
+         * et l’associer au DataContext.
+         */
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter is AccueilVueModele vm)
+            {
+                DataContext = vm;
+            }
+
+            base.OnNavigatedTo(e);
         }
 
         #endregion

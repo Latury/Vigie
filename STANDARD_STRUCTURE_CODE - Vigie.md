@@ -92,17 +92,22 @@ Chaque fichier doit respecter une organisation numérotée claire.
 
 Ordre obligatoire :
 
-Imports
+#region 1. Imports
 
-Description Générale
+#region 2. Description Générale
 
-Déclaration principale
-3.1 Propriétés
-3.2 Constructeur
-3.3 Méthodes publiques
-3.4 Méthodes privées
-3.5 Événements (si applicable)
-3.6 Interfaces implémentées (mentionnées dans la déclaration de classe)
+#region 3. Déclaration de la Classe
+
+3.1 Champs privés
+3.2 Propriétés
+3.3 Constructeur
+3.4 Méthodes publiques
+3.5 Méthodes privées
+3.6 Événements (si applicable)
+3.7 Interfaces implémentées (mentionnées dans la déclaration de classe)
+
+Chaque section doit être structurée à l’aide de blocs #region
+afin de faciliter la navigation dans les fichiers longs.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -186,7 +191,7 @@ public class GestionnaireWinget : IGestionnairePaquets
      * Exception liée au processus système
      */
    
-   public async Task<List<LogicielMiseAJour>> ScanAsync()
+public async Task<List<LogicielMiseAJour>> ScanAsync()
     {
         // Implémentation
         return new List<LogicielMiseAJour>();
@@ -303,15 +308,114 @@ public GestionnaireWinget(IJournalService journal)
 
 COUCHE DE NORMALISATION (RÈGLE)
 
-Toute donnée issue d’une source externe :
+Toute donnée issue d’une source externe doit passer par une étape de
+normalisation avant d’être utilisée par le moteur interne de l’application.
 
-- Doit être normalisée avant fusion
-- Ne doit jamais être utilisée brute dans la couche d’orchestration
-- Doit produire un identifiant technique stable si nécessaire
+Règles :
 
-Objectif :
+- Toute donnée externe doit être transformée en modèle interne standardisé.
+- Les données brutes issues des gestionnaires de paquets ne doivent jamais être utilisées directement dans la couche d’orchestration.
+- La normalisation doit produire un identifiant technique stable lorsque cela est nécessaire.
 
-Séparer acquisition des données et consolidation interne.
+Pipeline officiel du projet :
+
+Scan → Normalisation → Fusion
+
+Explication :
+
+1. Scan  
+   Les gestionnaires (winget, scoop, etc.) récupèrent les informations depuis les outils système.
+
+2. Normalisation  
+   Les données sont converties dans un format interne cohérent  
+   (ex : `LogicielMiseAJour`, `IdentifiantNormalise`).
+
+3. Fusion  
+   Les résultats provenant de plusieurs gestionnaires sont regroupés,
+   dédupliqués et consolidés.
+
+Objectif architectural :
+
+Séparer clairement :
+
+- l’acquisition des données externes
+- la normalisation des données
+- la consolidation interne
+
+Cela permet :
+
+- d’ajouter facilement de nouveaux gestionnaires
+- d’éviter les dépendances directes au format des outils externes
+- de garantir une cohérence interne du moteur de mise à jour.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RESSOURCES VISUELLES (RÈGLE ARCHITECTURALE)
+
+Les ressources visuelles globales de l’application doivent être centralisées
+dans le dossier `Ressources/`.
+
+Objectifs :
+
+- éviter les valeurs visuelles codées directement dans les vues
+- garantir la cohérence graphique de l'application
+- préparer un futur système de thème
+- simplifier la maintenance UI
+
+Structure recommandée :
+
+Ressources/
+├── Couleurs/
+├── Styles/
+├── Dimensions/
+└── Themes/
+
+Règles :
+
+Les vues XAML ne doivent pas contenir de couleurs codées directement.
+
+Exemple interdit :
+
+Foreground="#2563EB"
+
+Exemple conforme :
+
+Foreground="{StaticResource CouleurPrincipale}"
+
+Les styles de contrôles doivent être définis dans `Ressources/Styles`.
+
+Les constantes visuelles (espacements, tailles standard, rayons de bordure)
+doivent être définies dans `Ressources/Dimensions`.
+
+Les vues doivent uniquement consommer ces ressources
+et ne pas définir leurs propres valeurs visuelles.
+
+Objectif final :
+
+Maintenir une cohérence graphique globale et éviter
+la duplication de valeurs visuelles dans l’ensemble de l’application.
+
+Les ressources visuelles appartiennent à la couche UI.
+Elles ne doivent jamais être définies dans la logique métier
+ou dans les ViewModels.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RESPONSABILITÉ DES CLASSES (PRINCIPE)
+
+Chaque classe doit avoir une responsabilité claire et unique.
+
+Exemples :
+
+GestionnaireWinget
+Responsabilité : exécuter les commandes winget et parser la sortie.
+
+JournalService
+Responsabilité : écrire les événements dans les logs.
+
+AccueilVueModele
+Responsabilité : orchestrer les interactions entre l’interface
+et les services métier.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

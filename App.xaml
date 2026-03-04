@@ -29,63 +29,40 @@
     xmlns:conv="using:Vigie.Infrastructure"
     xmlns:local="using:Vigie">
 
-    <!--
-        Section des ressources globales de l’application.
-        
-        Tout ce qui est défini ici peut être utilisé
-        dans n’importe quelle vue de l’application.
-        
-        Exemple futur :
-        - Couleurs personnalisées
-        - Styles globaux
-        - Templates réutilisables
-    -->
     <Application.Resources>
 
         <ResourceDictionary>
 
-            <!--
-                Dictionnaires fusionnés.
-                
-                Ici on charge les ressources WinUI 3 par défaut.
-                Cela inclut :
-                - Styles de base
-                - Composants modernes
-                - Thème Fluent
-            -->
             <ResourceDictionary.MergedDictionaries>
 
                 <!--  Ressources natives WinUI 3  -->
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
 
-                <!--
-                    D’autres dictionnaires personnalisés pourront être ajoutés ici
-                    lorsque l’on créera :
-                    - Un fichier Styles.xaml
-                    - Une palette de couleurs
-                    - Un thème personnalisé
-                -->
+                <!--  ======================================================  -->
+                <!--  Ressources visuelles globales Vigie  -->
+                <!--  ======================================================  -->
+
+                <!--  Couleurs officielles  -->
+                <ResourceDictionary Source="Ressources/Couleurs/CouleursVigie.xaml" />
+
+                <!--  Styles globaux  -->
+                <ResourceDictionary Source="Ressources/Styles/StylesControles.xaml" />
+
+                <!--  Dimensions UI  -->
+                <ResourceDictionary Source="Ressources/Dimensions/DimensionsUI.xaml" />
+
+                <!--  Thème de base  -->
+                <ResourceDictionary Source="Ressources/Themes/ThemeBase.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 
-            <!--
-                Converters globaux utilisés pour :
-                - Afficher ou masquer des éléments selon un booléen
-                - Inverser un booléen pour gestion d'affichage conditionnel
-                
-                Utilisés notamment pour :
-                - Affichage du ProgressRing pendant le scan
-                - Masquage de l’icône lorsque l’analyse est en cours
-            -->
+            <!--  ======================================================  -->
+            <!--  Convertisseurs globaux  -->
+            <!--  ======================================================  -->
+
             <conv:ConvertisseurBooleenVersVisibilite x:Key="ConvertisseurBooleenVersVisibilite" />
+
             <conv:ConvertisseurBooleenInverse x:Key="ConvertisseurBooleenInverse" />
-
-            <!--
-                Zone réservée aux ressources globales personnalisées.
-
-                Exemple futur :
-                <Color x:Key="CouleurPrincipale">#0078D4</Color>
-            -->
 
         </ResourceDictionary>
 

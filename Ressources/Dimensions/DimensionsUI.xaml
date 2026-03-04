@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!--
+    ╔══════════════════════════════════════════════════════════════════════╗
+    ║                          VIGIE                                       ║
+    ║        Centre de maintenance logicielle intelligent                  ║
+    ║                                                                      ║
+    ║  Module : Ressources UI                                              ║
+    ║  Fichier : DimensionsUI.xaml                                         ║
+    ║                                                                      ║
+    ║  Rôle :                                                              ║
+    ║  Centraliser toutes les dimensions standard utilisées dans           ║
+    ║  l’interface utilisateur de Vigie.                                   ║
+    ║                                                                      ║
+    ║  Responsabilités :                                                   ║
+    ║  - Définir les espacements UI                                        ║
+    ║  - Définir les tailles standard des contrôles                        ║
+    ║  - Définir les rayons de bordure                                     ║
+    ║  - Garantir une cohérence visuelle globale                           ║
+    ║                                                                      ║
+    ║  Licence : MIT                                                       ║
+    ║  Copyright © 2026 Flo Latury                                         ║
+    ╚══════════════════════════════════════════════════════════════════════╝
+-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  ============================================================  -->
+    <!--  1. Espacements UI  -->
+    <!--  ============================================================  -->
+
+    <!--  Petit espacement  -->
+    <Thickness x:Key="EspacementPetit">4</Thickness>
+
+    <!--  Espacement standard  -->
+    <Thickness x:Key="EspacementStandard">8</Thickness>
+
+    <!--  Espacement moyen  -->
+    <Thickness x:Key="EspacementMoyen">12</Thickness>
+
+    <!--  Espacement large  -->
+    <Thickness x:Key="EspacementLarge">16</Thickness>
+
+    <!--  Espacement section  -->
+    <Thickness x:Key="EspacementSection">24</Thickness>
+
+
+    <!--  ============================================================  -->
+    <!--  2. Dimensions des contrôles  -->
+    <!--  ============================================================  -->
+
+    <!--  Hauteur bouton standard  -->
+    <x:Double x:Key="HauteurBoutonStandard">36</x:Double>
+
+    <!--  Hauteur champ texte  -->
+    <x:Double x:Key="HauteurChamp">32</x:Double>
+
+    <!--  Largeur bouton standard  -->
+    <x:Double x:Key="LargeurBoutonStandard">140</x:Double>
+
+
+    <!--  ============================================================  -->
+    <!--  3. Rayons de bordure  -->
+    <!--  ============================================================  -->
+
+    <!--  Rayon bouton  -->
+    <CornerRadius x:Key="RayonBouton">6</CornerRadius>
+
+    <!--  Rayon cartes UI  -->
+    <CornerRadius x:Key="RayonCarte">8</CornerRadius>
+
+    <!--  Rayon panneaux  -->
+    <CornerRadius x:Key="RayonPanneau">10</CornerRadius>
+
+
+    <!--  ============================================================  -->
+    <!--  4. Dimensions spécifiques UI  -->
+    <!--  ============================================================  -->
+
+    <!--  Taille icône standard  -->
+    <x:Double x:Key="TailleIconeStandard">20</x:Double>
+
+    <!--  Taille icône large  -->
+    <x:Double x:Key="TailleIconeLarge">28</x:Double>
+
+</ResourceDictionary>

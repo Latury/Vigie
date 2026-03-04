@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!--
+    ╔══════════════════════════════════════════════════════════════════════╗
+    ║                          VIGIE                                       ║
+    ║        Centre de maintenance logicielle intelligent                  ║
+    ║                                                                      ║
+    ║  Module : Ressources UI                                              ║
+    ║  Fichier : CouleursVigie.xaml                                        ║
+    ║                                                                      ║
+    ║  Rôle :                                                              ║
+    ║  Définit la palette officielle de couleurs de l'application Vigie.  ║
+    ║                                                                      ║
+    ║  Responsabilités :                                                   ║
+    ║  - Centraliser toutes les couleurs de l'interface                    ║
+    ║  - Fournir des SolidColorBrush réutilisables                         ║
+    ║  - Garantir une cohérence graphique globale                          ║
+    ║  - Préparer le futur support de thèmes                               ║
+    ║                                                                      ║
+    ║  Licence : MIT                                                       ║
+    ║  Copyright © 2026 Flo Latury                                         ║
+    ╚══════════════════════════════════════════════════════════════════════╝
+-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  ============================================================  -->
+    <!--  1. Couleurs principales de l'identité Vigie  -->
+    <!--  ============================================================  -->
+
+    <!--  🔵 Bleu principal Vigie  -->
+    <Color x:Key="CouleurPrincipale">#2563EB</Color>
+
+    <!--  🔷 Bleu accent pour actions  -->
+    <Color x:Key="CouleurAccent">#3B82F6</Color>
+
+
+    <!--  ============================================================  -->
+    <!--  2. Couleurs de fond  -->
+    <!--  ============================================================  -->
+
+    <!--  🌑 Fond principal de l'application  -->
+    <Color x:Key="CouleurFondPrincipal">#0F172A</Color>
+
+    <!--  🌒 Fond des cartes / panneaux  -->
+    <Color x:Key="CouleurFondCarte">#1E293B</Color>
+
+    <!--  🌘 Fond secondaire (zones UI légères)  -->
+    <Color x:Key="CouleurFondSecondaire">#111827</Color>
+
+
+    <!--  ============================================================  -->
+    <!--  3. Bordures et séparateurs  -->
+    <!--  ============================================================  -->
+
+    <!--  ▫ Bordures UI  -->
+    <Color x:Key="CouleurBordure">#334155</Color>
+
+    <!--  ▪ Séparateurs légers  -->
+    <Color x:Key="CouleurSeparateur">#475569</Color>
+
+
+    <!--  ============================================================  -->
+    <!--  4. Couleurs de texte  -->
+    <!--  ============================================================  -->
+
+    <!--  ⚪ Texte principal  -->
+    <Color x:Key="CouleurTextePrincipal">#F1F5F9</Color>
+
+    <!--  ⚪ Texte secondaire  -->
+    <Color x:Key="CouleurTexteSecondaire">#94A3B8</Color>
+
+    <!--  ⚪ Texte désactivé  -->
+    <Color x:Key="CouleurTexteDesactive">#64748B</Color>
+
+
+    <!--  ============================================================  -->
+    <!--  5. Couleurs d'état (feedback utilisateur)  -->
+    <!--  ============================================================  -->
+
+    <!--  🟢 Succès  -->
+    <Color x:Key="CouleurSucces">#22C55E</Color>
+
+    <!--  🟡 Avertissement  -->
+    <Color x:Key="CouleurAvertissement">#F59E0B</Color>
+
+    <!--  🔴 Erreur  -->
+    <Color x:Key="CouleurErreur">#EF4444</Color>
+
+
+    <!--  ============================================================  -->
+    <!--  6. Brushes réutilisables  -->
+    <!--  ============================================================  -->
+
+    <!--  Brushes principales  -->
+
+    <SolidColorBrush x:Key="BrushPrincipale" Color="{StaticResource CouleurPrincipale}" />
+    <SolidColorBrush x:Key="BrushAccent" Color="{StaticResource CouleurAccent}" />
+
+    <!--  Brushes fond  -->
+
+    <SolidColorBrush x:Key="BrushFondPrincipal" Color="{StaticResource CouleurFondPrincipal}" />
+    <SolidColorBrush x:Key="BrushFondCarte" Color="{StaticResource CouleurFondCarte}" />
+    <SolidColorBrush x:Key="BrushFondSecondaire" Color="{StaticResource CouleurFondSecondaire}" />
+
+    <!--  Brushes bordures  -->
+
+    <SolidColorBrush x:Key="BrushBordure" Color="{StaticResource CouleurBordure}" />
+    <SolidColorBrush x:Key="BrushSeparateur" Color="{StaticResource CouleurSeparateur}" />
+
+    <!--  Brushes texte  -->
+
+    <SolidColorBrush x:Key="BrushTextePrincipal" Color="{StaticResource CouleurTextePrincipal}" />
+    <SolidColorBrush x:Key="BrushTexteSecondaire" Color="{StaticResource CouleurTexteSecondaire}" />
+    <SolidColorBrush x:Key="BrushTexteDesactive" Color="{StaticResource CouleurTexteDesactive}" />
+
+    <!--  Brushes états  -->
+
+    <SolidColorBrush x:Key="BrushSucces" Color="{StaticResource CouleurSucces}" />
+    <SolidColorBrush x:Key="BrushAvertissement" Color="{StaticResource CouleurAvertissement}" />
+    <SolidColorBrush x:Key="BrushErreur" Color="{StaticResource CouleurErreur}" />
+
+</ResourceDictionary>

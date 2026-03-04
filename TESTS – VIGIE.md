@@ -28,11 +28,17 @@ Garantir :
 - Winget + Scoop (agrégation active, consolidation en cours)
 - Vérification déduplication basée sur IdentifiantNormalise
 - Vérification pipeline Scan → Normalisation → Fusion
-- Vérification comparaison versions via System.Version (plus de comparaison lexicographique)
+- Vérification comparaison versions via System.Version
 - Vérification fusion multi-sources avec versions différentes
 - Vérification priorité Winget si même version détectée
 - Vérification absence doublons lignes vides dans vigie.log
 - Vérification cohérence log après multi-gestionnaires
+- Vérification mise à jour globale via ServiceMiseAJourGlobal
+- Vérification confirmation utilisateur avant exécution mise à jour
+- Vérification journalisation début / fin des mises à jour
+- Vérification désactivation partielle de l’interface pendant mise à jour
+- Vérification intégration PointRestaurationSimule
+- Test initial système de sélection par cases (suspendu temporairement suite instabilité WinUI)
 
 ---
 
@@ -40,6 +46,7 @@ Garantir :
 
 - Test GestionnaireWinget
 - Test GestionnaireGlobal
+- Test NormaliseurWinget
 - Test gestion erreurs
 - Test normalisation données
 - Test déduplication basée sur identifiant normalisé
@@ -47,6 +54,8 @@ Garantir :
 - Test ParseVersionSafe (gestion suffixes preview)
 - Test comportement fallback IdentifiantNormalise → Nom
 - Test résilience si un gestionnaire échoue
+- Test pipeline complet Scan → Normalisation → Fusion
+- Test robustesse parsing si format winget change
 
 ---
 
@@ -56,7 +65,7 @@ Ces tests seront activés lors de l’introduction des mises à jour automatique
 
 - Test point de restauration
 - Test confirmation utilisateur
-- Test rollback en cas d’échec
+- Test comportement en cas d’échec partiel d’une mise à jour
 - Test élévation administrateur contrôlée
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

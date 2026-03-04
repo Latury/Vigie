@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -7,8 +7,8 @@
 ║  Fichier : App.xaml.cs                                               ║
 ║                                                                      ║
 ║  Rôle :                                                              ║
-║  Définit le point d’entrée logique de l’application.                 ║
-║  Gère le cycle de vie initial et l’ouverture de la fenêtre.          ║
+║  Point d’entrée logique de l’application.                            ║
+║  Centralise la composition des dépendances.                          ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -18,49 +18,49 @@
 #region 1. Imports
 
 using Microsoft.UI.Xaml;
-using Windows.ApplicationModel.Activation;
+
+using System.Collections.Generic;
+
+using Vigie.JournalEvenements;
+using Vigie.Services.Gestionnaires;
+using Vigie.Services.Interfaces;
+using Vigie.Services.MisesAJour;
+using Vigie.Services.Normalisation;
+using Vigie.Services.Securite;
+using Vigie.Services.UI;
+using Vigie.VueModeles;
+
+#endregion
+
+#region 2. Description Générale
+
+/*
+ * Classe : App
+ *
+ * Rôle :
+ * Initialise l’application et compose les dépendances.
+ *
+ * Objectif architectural :
+ * - Centraliser l’injection
+ * - Éviter toute dépendance UI dans les services métier
+ */
 
 #endregion
 
 namespace Vigie
 {
-    #region 2. Description Générale
-
-    /*
-     * Classe : App
-     *
-     * Rôle :
-     * Représente l’application dans son ensemble.
-     *
-     * Responsabilités :
-     * - Initialiser les composants globaux
-     * - Gérer le lancement
-     * - Créer et afficher la fenêtre principale
-     *
-     * Limites :
-     * - Ne contient aucune logique métier
-     * - Ne contient aucune logique d’interface spécifique
-     */
-
-    #endregion
-
     #region 3. Déclaration
 
     public partial class App : Application
     {
-        #region 3.1 Propriétés
+        #region 3.1 Champs privés
 
-        // Référence vers la fenêtre principale
         private Window? _window;
 
         #endregion
 
         #region 3.2 Constructeur
 
-        /*
-         * Initialise l’application.
-         * Appelle InitializeComponent() pour charger App.xaml.
-         */
         public App()
         {
             InitializeComponent();
@@ -68,22 +68,60 @@ namespace Vigie
 
         #endregion
 
-        #region 3.3 Méthodes Publiques
+        #region 3.3 Méthodes
 
-        /*
-         * Méthode : OnLaunched
-         *
-         * Objectif :
-         * Appelée automatiquement lorsque l’application démarre.
-         *
-         * Effet :
-         * - Instancie FenetrePrincipale
-         * - Active la fenêtre
-         */
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        protected override void OnLaunched(
+            Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            _window = new FenetrePrincipale();
-            _window.Activate();
+            // 1️⃣ Journalisation
+            var journal = new JournalService();
+
+            // 2️⃣ Gestionnaires de scan
+            var gestionnaires = new List<IGestionnairePaquets>
+            {
+                new GestionnaireWinget(),
+                new GestionnaireScoop()
+            };
+
+            var normaliseur = new NormaliseurWinget();
+
+            var gestionnaireGlobal = new GestionnaireGlobal(
+                gestionnaires,
+                normaliseur,
+                journal);
+
+            // 3️⃣ Service mise à jour simulé
+            IServiceMiseAJour serviceSimule =
+                new ServiceMiseAJourSimule();
+
+            // 4️⃣ Point de restauration simulé
+            IPointRestaurationService pointRestauration =
+                new PointRestaurationSimule();
+
+            var serviceMiseAJourGlobal =
+                new ServiceMiseAJourGlobal(
+                    serviceSimule,
+                    journal,
+                    pointRestauration);
+
+            // 5️⃣ Création fenêtre
+            var fenetre = new FenetrePrincipale();
+            fenetre.Activate();
+
+            // 6️⃣ Service de confirmation (Window-based)
+            var confirmationService =
+                new ConfirmationService(fenetre);
+
+            // 7️⃣ Création ViewModel
+            var accueilVM = new AccueilVueModele(
+                gestionnaireGlobal,
+                serviceMiseAJourGlobal,
+                confirmationService);
+
+            // 8️⃣ Injection ViewModel
+            fenetre.DefinirViewModel(accueilVM);
+
+            _window = fenetre;
         }
 
         #endregion

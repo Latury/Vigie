@@ -107,14 +107,6 @@ Tests automatisés : Non implémentés
 
 ---
 
-# 📦 MÉTADONNÉES
-
-Version : 0.1.0-dev
-Type : Experimental stabilisé
-Dernière mise à jour : 28 février 2026
-
----
-
 # 🏗️ ARCHITECTURE
 
 ## 📁 Organisation modulaire
@@ -131,6 +123,12 @@ Infrastructure/
 VueModeles/
 Vues/
 
+Ressources/
+├── Couleurs/
+├── Styles/
+├── Dimensions/
+└── Themes/
+
 Principes appliqués :
 
 - MVVM strict
@@ -140,6 +138,7 @@ Principes appliqués :
 - Abstraction via IGestionnairePaquets
 - Journalisation centralisée via JournalService
 - Orchestrateur central : GestionnaireGlobal
+- Centralisation progressive des ressources visuelles
 
 Décision structurante :
 
@@ -147,6 +146,10 @@ Le support multi-gestionnaires est prévu dès l’origine via l’abstraction I
 
 Chaque gestionnaire (Winget, futur Scoop, Chocolatey, etc.) implémente la même interface,
 permettant l’extension du système sans refactorisation majeure de l’architecture.
+
+Les ressources visuelles de l’application sont centralisées dans le dossier `Ressources/`
+afin d’éviter les valeurs visuelles codées directement dans les vues et de préparer
+un futur système de thème maintenable.
 
 ---
 
@@ -292,6 +295,16 @@ Tests automatisés : Non implémentés
 
 ---
 
+# 📦 MÉTADONNÉES
+
+Version : 0.1.0-dev
+Type : Experimental stabilisé
+Dernière mise à jour : 28 février 2026
+
+---
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 # ⏭️ VERSION SUIVANTE – 0.2.0
 
 Objectif : Extension maîtrisée de l’architecture multi-gestionnaires
@@ -422,6 +435,161 @@ Aucune modification du pipeline Scan → Normalisation → Fusion.
 
 Version : 0.2.0-dev
 Type : Development (Architecture Multi-Gestionnaires Stabilisée)
+Licence : MIT
+Dernière mise à jour : 03 mars 2026
+
+---
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# 🚀 VERSION 0.3.0-dev
+
+## 📅 Période
+
+Début implémentation mise à jour contrôlée
+
+## 📌 Statut
+
+🟡 En cours (~35%)
+
+## 🎯 Objectif stratégique
+
+Permettre la mise à jour sécurisée et maîtrisée des logiciels.
+
+Priorité :
+
+- Contrôle utilisateur
+- Sécurité des opérations
+- Stabilisation orchestration mise à jour
+- Préparation historisation interne
+
+---
+
+# ✨ ÉVOLUTIONS FONCTIONNELLES
+
+## 🔄 Mise à jour globale
+
+- Implémentation ServiceMiseAJourGlobal
+- Orchestration des mises à jour séquentielles
+- Journalisation début / fin par logiciel
+- Mesure durée d’exécution
+- Gestion des exceptions critiques
+
+Impact :
+
+Mise à jour globale désormais opérationnelle.
+
+---
+
+## 🔐 Confirmation utilisateur
+
+- Introduction IConfirmationService
+- Implémentation ConfirmationService (ContentDialog WinUI)
+- Injection propre via App.xaml.cs
+- Respect strict MVVM (aucune dépendance UI dans ViewModel)
+
+Impact :
+
+Aucune mise à jour globale exécutée sans confirmation explicite.
+
+---
+
+## 🛡️ Préparation point de restauration
+
+- Introduction IPointRestaurationService
+- Implémentation PointRestaurationSimule
+- Intégration dans ServiceMiseAJourGlobal
+- Blocage complet si échec sécurité
+
+Impact :
+
+Architecture prête pour sécurisation renforcée complète (v0.4.0).
+Implémentation actuelle en mode simulé.
+
+---
+
+## 🎨 Interface
+
+- Ajout bouton "Mettre à jour"
+- Ajout ProgressRing scan
+- Ajout ProgressRing mise à jour
+- Désactivation partielle UI pendant opération
+
+Impact :
+
+Meilleur retour visuel lors des opérations longues.
+
+---
+
+## 🎨 Centralisation des ressources visuelles
+
+- Création du dossier `Ressources/`
+- Préparation centralisation des couleurs officielles de l’application
+- Préparation des futurs styles UI (boutons, contrôles, dimensions)
+
+Objectif :
+
+Éviter les valeurs visuelles codées directement dans les vues
+et préparer un futur système de thème maintenable.
+
+Architecture prévue :
+
+Ressources/
+├── Couleurs/
+├── Styles/
+├── Dimensions/
+└── Themes/
+
+---
+
+## ⚠️ Mise en pause du système de sélection
+
+- Implémentation initiale des cases de sélection dans la liste des logiciels
+- Comportement instable observé avec WinUI ListView + CheckBox
+- Apparition intermittente de contrôles invisibles ou non interactifs
+- Tentatives de correction via styles, templates et neutralisation hover
+
+Décision :
+
+Le système de sélection est temporairement suspendu afin de
+prioriser la stabilité de l’interface.
+
+La fonctionnalité de mise à jour individuelle reste prévue
+mais sera réintroduite après stabilisation de l’UI.
+
+Impact :
+
+Aucun impact fonctionnel critique.
+
+La mise à jour globale reste pleinement opérationnelle.
+
+---
+
+# 📊 INDICATEURS DE MATURITÉ
+
+Mise à jour individuelle : Architecture prévue (UI temporairement suspendue)
+Confirmation utilisateur : Stable
+Point restauration : Simulé (architecture prête)
+Mise à jour individuelle : Non implémentée
+Élévation administrateur : Non implémentée
+Historique interne : Modèle prêt, non intégré
+
+---
+
+# ⏭️ PROCHAINES ÉTAPES (0.3.0)
+
+- Mise à jour individuelle (sélection par cases)
+- Gestion élévation administrateur
+- Historique interne en mémoire
+- Journalisation détaillée
+- Feedback visuel par logiciel
+
+---
+
+# 📦 MÉTADONNÉES
+
+Version : 0.3.0-dev
+Type : Development (Mise à jour contrôlée en construction)
 Licence : MIT
 Dernière mise à jour : 03 mars 2026
 

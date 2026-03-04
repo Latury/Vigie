@@ -70,6 +70,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Ressources\Couleurs\CouleursVigie.xaml" />
+    <None Remove="Ressources\Dimensions\DimensionsUI.xaml" />
     <None Remove="Vigie.ico" />
     <None Remove="Vues\AccueilPage.xaml" />
     <None Remove="Vues\AProposPage.xaml" />
@@ -128,6 +130,30 @@
     <Content Update="Assets\Vigie.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Ressources\Couleurs\CouleursVigie.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Ressources\Styles\StylesControles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Ressources\Dimensions\DimensionsUI.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Ressources\Themes\ThemeBase.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
 </Project>

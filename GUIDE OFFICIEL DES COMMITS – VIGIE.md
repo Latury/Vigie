@@ -205,7 +205,7 @@ Ajout du moteur permettant à Vigie de scanner les mises à jour via winget.
 
 📁 Fichiers concernés :
 
-- Services/PackageManagers/GestionnaireWinget.cs
+- Services/Gestionnaires/GestionnaireWinget.cs
 - Services/Interfaces/IGestionnairePaquets.cs
 - Modeles/LogicielMiseAJour.cs
 

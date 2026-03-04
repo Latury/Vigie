@@ -6,8 +6,8 @@
 
 Application WinUI 3 (.NET 8) dédiée à la gestion, au contrôle et à la sécurisation des mises à jour logicielles sous Windows.
 
-![Version](https://img.shields.io/badge/Version-0.2.0--dev-1E90FF?style=for-the-badge)
-![Statut](https://img.shields.io/badge/Statut-Extension%20multi--gestionnaires%20active-FF8C00?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-0.3.0--dev-1E90FF?style=for-the-badge)
+![Statut](https://img.shields.io/badge/Statut-Mise%20%C3%A0%20jour%20contr%C3%B4l%C3%A9e%20en%20dev-FF8C00?style=for-the-badge)
 ![Licence](https://img.shields.io/badge/Licence-MIT-2E8B57?style=for-the-badge)
 
 ![.NET](https://img.shields.io/badge/.NET-8-512BD4?style=for-the-badge)
@@ -16,7 +16,7 @@ Application WinUI 3 (.NET 8) dédiée à la gestion, au contrôle et à la sécu
 ![Plateforme](https://img.shields.io/badge/Plateforme-Windows-0078D6?style=for-the-badge)
 
 Auteur : Flo Latury
-Dernière mise à jour : 02 mars 2026
+Dernière mise à jour : 04 mars 2026
 
 </div>
 
@@ -109,6 +109,12 @@ Vigie/
 ├── VueModeles/
 ├── Vues/
 │
+├── Ressources/
+│   ├── Couleurs/
+│   ├── Styles/
+│   ├── Dimensions/
+│   └── Themes/
+│
 ├── Assets/
 ├── Properties/
 │
@@ -139,35 +145,56 @@ Vigie/
 
 # ✨ 5. Fonctionnalités
 
-## ✅ Implémentées (0.1.0-dev consolidé)
+## ✅ Version 0.1.0-dev — Fondations
 
-- Structure WinUI 3 initialisée
-- Architecture MVVM stricte
-- Interface générique IGestionnairePaquets
-- Implémentation GestionnaireWinget
-- Orchestrateur central (GestionnaireGlobal)
+- Initialisation projet WinUI 3 (.NET 8)
+- Mise en place architecture MVVM stricte
+- Interface générique `IGestionnairePaquets`
+- Implémentation `GestionnaireWinget`
+- Orchestrateur central `GestionnaireGlobal`
 - Scan winget avec parsing texte robuste basé sur structure colonnes
 - Nettoyage et normalisation des données
 - Gestion timeout (30 secondes)
 - Journalisation structurée des événements
 - Affichage liste simple des mises à jour
 
-## 🔄 En cours (0.2.0-dev)
+---
 
-- Introduction champ Source dans le modèle
+## ✅ Version 0.2.0-dev — Extension multi-gestionnaires
+
+- Introduction propriété `Source` dans le modèle `LogicielMiseAJour`
 - Support multi-gestionnaires actif (Winget + Scoop)
-- Déduplication robuste basée sur identifiant normalisé
+- Déduplication robuste basée sur `IdentifiantNormalise`
 - Introduction couche de normalisation multi-sources
-- Séparation Scan / Normalisation / Fusion (pipeline actif)
-- Stabilisation JournalService (suppression doublons lignes vides)
+- Pipeline officiel : **Scan → Normalisation → Fusion**
+- Stabilisation `JournalService` (suppression doublons lignes vides)
 - Préparation infrastructure paramètres utilisateur
 - Préparation modèle Historique interne (non persistant)
 
-## 📌 Prévues (versions ultérieures)
+---
 
-- Mise à jour individuelle
-- Mise à jour globale sécurisée
-- Création automatique point de restauration
+## 🔄 Version 0.3.0-dev — Mise à jour contrôlée (en cours)
+
+- Implémentation **mise à jour globale contrôlée**
+- Introduction `ServiceMiseAJourGlobal`
+- Confirmation utilisateur via `IConfirmationService`
+- Journalisation détaillée des opérations de mise à jour
+- Désactivation partielle de l’interface pendant opération
+- Préparation service **Point de restauration système** (simulation)
+- Introduction feedback visuel des opérations
+
+⚠️ Fonctionnalités encore en cours :
+
+- Mise à jour individuelle (sélection par logiciel)
+- Gestion élévation administrateur
+- Historique interne des mises à jour
+- Rafraîchissement automatique après mise à jour
+
+---
+
+## 📌 Fonctionnalités prévues (versions ultérieures)
+
+- Création automatique point de restauration système
 - Mode Senior simplifié
 - Mode Expert avancé
 - Extension complète support Scoop
@@ -223,10 +250,14 @@ Feedback > Ambiguïté
 
 # 🔒 7. Sécurité
 
-La version actuelle de Vigie (0.2.0-dev) se limite à la détection
-des mises à jour disponibles.
+La version actuelle de Vigie (0.3.0-dev) introduit la mise à jour
+contrôlée des logiciels.
 
-Aucune modification système n’est effectuée.
+Les opérations sont protégées par :
+
+- confirmation utilisateur
+- journalisation complète
+- préparation du système de point de restauration
 
 ---
 
@@ -277,11 +308,43 @@ Les optimisations avancées interviendront après consolidation multi-gestionnai
 
 ---
 
-# 📦 10. Technologies Utilisées
+# 🎨 10. Ressources UI
+
+Le dossier `Ressources/` centralise les éléments visuels globaux de l'application.
+
+Objectifs :
+
+- garantir une cohérence graphique
+- éviter les valeurs codées directement dans les vues
+- préparer un futur système de thème (clair / sombre)
+
+Structure :
+
+Ressources/
+│
+├── Couleurs/
+│   └── CouleursVigie.xaml
+│
+├── Styles/
+│
+├── Dimensions/
+│
+└── Themes/
+
+Règle importante :
+
+Les vues ne doivent pas contenir de couleurs codées en dur.
+Les ressources doivent être utilisées via :
+
+{StaticResource NomDeRessource}
+
+---
+
+# 📦 11. Technologies Utilisées
 
 | Élément                     | Technologie / Approche                                          |
 |-----------------------------|-----------------------------------------------------------------|
-| Langage principal           |  C#                                                              |
+| Langage principal           |  C#                                                             |
 | Framework                   | .NET 8                                                          |
 | Interface                   | WinUI 3                                                         |
 | Architecture                | MVVM strict                                                     |
@@ -292,7 +355,7 @@ Les optimisations avancées interviendront après consolidation multi-gestionnai
 
 ---
 
-# ⚙️ 11. Environnement de Développement
+# ⚙️ 12. Environnement de Développement
 
 Le projet utilise un fichier `.editorconfig` versionné afin de garantir
 une cohérence de style et de formatage sur l’ensemble du code.
@@ -313,7 +376,7 @@ Toute contribution doit respecter ces règles.
 
 ---
 
-# 📚 12. Documentation
+# 📚 13. Documentation
 
 | Fichier                                  | Rôle                                                |
 |------------------------------------------|-----------------------------------------------------|
@@ -329,7 +392,7 @@ Toute évolution majeure doit être documentée.
 
 ---
 
-# 🧭 13. Roadmap
+# 🧭 14. Roadmap
 
 ## 🔹 Version 0.x — Consolidation
 
@@ -367,19 +430,19 @@ Croissance par consolidation.
 
 ---
 
-# 📊 14. État du Projet
+# 📊 15. État du Projet
 
-Version : 0.2.0-dev  
-Statut : Extension multi-gestionnaires active  
-Architecture : Stable, extensible et consolidée
-Fonctionnalités : Détection consolidée, multi-sources actives  
+Version : 0.3.0-dev  
+Statut : Mise à jour contrôlée en développement  
+Architecture : Stable, extensible et consolidée  
+Fonctionnalités : Scan multi-gestionnaires consolidé, moteur de mise à jour en construction  
 Tests : Manuels structurés  
-Sécurité : Détection uniquement (aucune action système)
+Sécurité : Préparation du système de restauration avant mise à jour  
 Journalisation : Stabilisée (écriture propre, sans doublons)
 
 ---
 
-# 📜 15. Licence
+# 📜 16. Licence
 
 Licence : MIT
 
@@ -389,7 +452,7 @@ Voir le fichier LICENSE.md pour plus de détails.
 
 ---
 
-# 🧠 16. Philosophie Finale
+# 🧠 17. Philosophie Finale
 
 Vigie n’est pas seulement un outil.
 

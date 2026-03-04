@@ -4,14 +4,14 @@
 ║        Centre de maintenance logicielle intelligent                  ║
 ║                                                                      ║
 ║  Module : Infrastructure                                             ║
-║  Fichier : ConvertisseurBooleenVersVisibilite.cs                     ║
+║  Fichier : ConvertisseurBooleenInverse.cs                            ║
 ║                                                                      ║
 ║  Rôle :                                                              ║
-║  Convertit un booléen en visibilité WinUI.                           ║
+║  Inverse une valeur booléenne.                                       ║
 ║                                                                      ║
 ║  Responsabilités :                                                   ║
-║  - Retourner Visible si true                                         ║
-║  - Retourner Collapsed si false                                      ║
+║  - Retourner false si true                                           ║
+║  - Retourner true si false                                           ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -20,7 +20,6 @@
 
 #region 1. Imports
 
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
 using System;
@@ -30,10 +29,14 @@ using System;
 #region 2. Description Générale
 
 /*
- * Classe : ConvertisseurBooleenVersVisibilite
+ * Classe : ConvertisseurBooleenInverse
  *
  * Rôle :
- * Convertit une valeur booléenne en Visibility.
+ * Inverse une valeur booléenne.
+ *
+ * Exemple :
+ * true  → false
+ * false → true
  */
 
 #endregion
@@ -42,7 +45,7 @@ namespace Vigie.Infrastructure
 {
     #region 3. Déclaration
 
-    public class ConvertisseurBooleenVersVisibilite : IValueConverter
+    public class ConvertisseurBooleenInverse : IValueConverter
     {
         #region 3.1 Méthodes publiques
 
@@ -54,10 +57,10 @@ namespace Vigie.Infrastructure
         {
             if (value is bool b)
             {
-                return b ? Visibility.Visible : Visibility.Collapsed;
+                return !b;
             }
 
-            return Visibility.Collapsed;
+            return false;
         }
 
         public object ConvertBack(

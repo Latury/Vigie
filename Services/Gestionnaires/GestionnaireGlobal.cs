@@ -34,7 +34,6 @@ using System.Threading.Tasks;
 
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
-using Vigie.Services.Normalisation;
 
 #endregion
 

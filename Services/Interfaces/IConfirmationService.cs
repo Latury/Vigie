@@ -3,15 +3,16 @@
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
 ║                                                                      ║
-║  Module : Infrastructure                                             ║
-║  Fichier : ConvertisseurBooleenVersVisibilite.cs                     ║
+║  Module : Services.Interfaces                                        ║
+║  Fichier : IConfirmationService.cs                                   ║
 ║                                                                      ║
 ║  Rôle :                                                              ║
-║  Convertit un booléen en visibilité WinUI.                           ║
+║  Définit le contrat permettant de demander                           ║
+║  une confirmation utilisateur avant action critique.                 ║
 ║                                                                      ║
-║  Responsabilités :                                                   ║
-║  - Retourner Visible si true                                         ║
-║  - Retourner Collapsed si false                                      ║
+║  Responsabilités principales :                                       ║
+║  - Afficher une confirmation utilisateur                             ║
+║  - Retourner la décision (Oui / Non)                                 ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -20,54 +21,41 @@
 
 #region 1. Imports
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
-
-using System;
+using System.Threading.Tasks;
 
 #endregion
 
 #region 2. Description Générale
 
 /*
- * Classe : ConvertisseurBooleenVersVisibilite
+ * Interface : IConfirmationService
  *
  * Rôle :
- * Convertit une valeur booléenne en Visibility.
+ * Définit le contrat permettant d’afficher une
+ * confirmation utilisateur dans l’interface.
+ *
+ * Objectif architectural :
+ * - Isoler la logique UI du ViewModel
+ * - Respecter le principe MVVM
+ * - Permettre une implémentation spécifique à WinUI
+ *
+ * Limites :
+ * - Ne contient aucune logique métier
  */
 
 #endregion
 
-namespace Vigie.Infrastructure
+namespace Vigie.Services.Interfaces
 {
     #region 3. Déclaration
 
-    public class ConvertisseurBooleenVersVisibilite : IValueConverter
+    public interface IConfirmationService
     {
         #region 3.1 Méthodes publiques
 
-        public object Convert(
-            object value,
-            Type targetType,
-            object parameter,
-            string language)
-        {
-            if (value is bool b)
-            {
-                return b ? Visibility.Visible : Visibility.Collapsed;
-            }
-
-            return Visibility.Collapsed;
-        }
-
-        public object ConvertBack(
-            object value,
-            Type targetType,
-            object parameter,
-            string language)
-        {
-            throw new NotImplementedException();
-        }
+        Task<bool> DemanderConfirmationAsync(
+            string titre,
+            string message);
 
         #endregion
     }

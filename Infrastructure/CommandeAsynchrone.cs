@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -11,11 +11,8 @@
 ║                                                                      ║
 ║  Responsabilités :                                                   ║
 ║  - Exécuter une tâche asynchrone                                     ║
-║  - S’intégrer au système ICommand                                    ║
-║                                                                      ║
-║  Limites :                                                           ║
-║  - CanExecute toujours vrai                                          ║
-║  - Pas de gestion d’état avancée                                     ║
+║  - Gérer l’état d’exécution                                          ║
+║  - Bloquer la ré-entrée                                              ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -38,22 +35,22 @@ using System.Windows.Input;
  * Rôle :
  * Permet d’exécuter une méthode asynchrone depuis l’interface.
  *
- * Objectif architectural :
- * Remplacer l’ancienne AsyncRelayCommand
- * par une version francisée conforme MVVM.
+ * Particularité :
+ * Empêche l’exécution multiple simultanée.
  */
 
 #endregion
 
-#region 3. Déclaration
-
 namespace Vigie.Infrastructure
 {
+    #region 3. Déclaration
+
     public class CommandeAsynchrone : ICommand
     {
         #region 3.1 Champs privés
 
         private readonly Func<Task> _execute;
+        private bool _estEnExecution;
 
         #endregion
 
@@ -61,7 +58,8 @@ namespace Vigie.Infrastructure
 
         public CommandeAsynchrone(Func<Task> execute)
         {
-            _execute = execute;
+            _execute = execute
+                ?? throw new ArgumentNullException(nameof(execute));
         }
 
         #endregion
@@ -70,15 +68,43 @@ namespace Vigie.Infrastructure
 
         public event EventHandler? CanExecuteChanged;
 
-        public bool CanExecute(object? parameter) => true;
+        public bool CanExecute(object? parameter)
+        {
+            return !_estEnExecution;
+        }
 
         public async void Execute(object? parameter)
         {
-            await _execute();
+            if (_estEnExecution)
+            {
+                return;
+            }
+
+            try
+            {
+                _estEnExecution = true;
+                LeverCanExecuteChanged();
+
+                await _execute();
+            }
+            finally
+            {
+                _estEnExecution = false;
+                LeverCanExecuteChanged();
+            }
+        }
+
+        #endregion
+
+        #region 3.4 Méthodes privées
+
+        private void LeverCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
     }
-}
 
-#endregion
+    #endregion
+}

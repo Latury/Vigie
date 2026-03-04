@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -12,10 +12,11 @@
 ║  Responsabilités :                                                   ║
 ║  - Exposer une méthode Navigate                                      ║
 ║  - Encapsuler l’utilisation du Frame                                 ║
+║  - Permettre la transmission de paramètres de navigation             ║
 ║                                                                      ║
 ║  Limites :                                                           ║
 ║  - Pas encore de gestion historique                                  ║
-║  - Pas encore de gestion paramètres                                  ║
+║  - Pas encore de gestion paramètres complexes                        ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -25,6 +26,7 @@
 #region 1. Imports
 
 using Microsoft.UI.Xaml.Controls;
+
 using System;
 
 #endregion
@@ -59,16 +61,38 @@ namespace Vigie.Infrastructure
 
         public NavigationService(Frame frame)
         {
-            _frame = frame;
+            _frame = frame
+                ?? throw new ArgumentNullException(nameof(frame));
         }
 
         #endregion
 
         #region 3.3 Méthodes publiques
 
+        /*
+         * Méthode : Navigate
+         *
+         * Objectif :
+         * Naviguer vers une page sans paramètre.
+         */
         public void Navigate(Type pageType)
         {
             _frame.Navigate(pageType);
+        }
+
+        /*
+         * Méthode : Navigate (surcharge)
+         *
+         * Objectif :
+         * Naviguer vers une page avec paramètre.
+         *
+         * Utilisation :
+         * Permet l’injection d’un ViewModel
+         * via le système de navigation.
+         */
+        public void Navigate(Type pageType, object parameter)
+        {
+            _frame.Navigate(pageType, parameter);
         }
 
         #endregion

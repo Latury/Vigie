@@ -13,6 +13,7 @@
     ║  - Afficher l’état du système                                        ║
     ║  - Afficher la liste des logiciels détectés                          ║
     ║  - Permettre le déclenchement du scan                                ║
+    ║  - Permettre la mise à jour globale                                  ║
     ║                                                                      ║
     ║  Licence : MIT                                                       ║
     ║  Copyright © 2026 Flo Latury                                         ║
@@ -27,21 +28,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <!--  Layout principal  -->
+    <!--  =============================  -->
+    <!--  1️⃣ LAYOUT PRINCIPAL  -->
+    <!--  =============================  -->
+
     <Grid Background="#F4FAFF">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <!--  Bloc titre  -->
+
             <RowDefinition Height="Auto" />
-            <!--  Carte  -->
+            <!--  Carte état  -->
+
             <RowDefinition Height="*" />
-            <!--  Liste  -->
+            <!--  Liste logiciels  -->
+
             <RowDefinition Height="Auto" />
-            <!--  Bouton  -->
+            <!--  Actions  -->
         </Grid.RowDefinitions>
 
-        <!--  Bloc titre  -->
+        <!--  =============================  -->
+        <!--  2️⃣ BLOC TITRE  -->
+        <!--  =============================  -->
+
         <StackPanel
             Grid.Row="0"
             Margin="40,30,0,0"
@@ -60,11 +70,14 @@
 
         </StackPanel>
 
-        <!--  Carte état système  -->
+        <!--  =============================  -->
+        <!--  3️⃣ CARTE ÉTAT SYSTÈME  -->
+        <!--  =============================  -->
+
         <Border
             Grid.Row="1"
             Width="480"
-            Height="200"
+            Height="220"
             Margin="0,20,0,20"
             HorizontalAlignment="Center"
             Background="#FFFFFF"
@@ -80,6 +93,7 @@
                 Spacing="16">
 
                 <Grid>
+
                     <Ellipse
                         Width="110"
                         Height="110"
@@ -89,9 +103,17 @@
                     <Ellipse
                         Width="80"
                         Height="80"
-                        Fill="Transparent"
                         Stroke="#2E7D32"
                         StrokeThickness="4" />
+
+                    <ProgressRing
+                        Width="40"
+                        Height="40"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        IsActive="{Binding IsScanning}"
+                        Visibility="{Binding IsScanning, Converter={StaticResource ConvertisseurBooleenVersVisibilite}}" />
+
                 </Grid>
 
                 <TextBlock
@@ -101,11 +123,20 @@
                     Foreground="#1F2933"
                     Text="{Binding TexteEtat}" />
 
+                <ProgressRing
+                    Width="26"
+                    Height="26"
+                    IsActive="{Binding IsUpdating}"
+                    Visibility="{Binding IsUpdating, Converter={StaticResource ConvertisseurBooleenVersVisibilite}}" />
+
             </StackPanel>
 
         </Border>
 
-        <!--  Liste logiciels  -->
+        <!--  =============================  -->
+        <!--  4️⃣ LISTE LOGICIELS  -->
+        <!--  =============================  -->
+
         <ListView
             Grid.Row="2"
             Margin="40,10,40,10"
@@ -114,8 +145,11 @@
             ItemsSource="{Binding Logiciels}">
 
             <ListView.ItemTemplate>
+
                 <DataTemplate>
+
                     <Grid Padding="8" ColumnSpacing="20">
+
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="120" />
@@ -138,31 +172,48 @@
                             FontWeight="SemiBold"
                             Foreground="#2563EB"
                             Text="{Binding NouvelleVersion}" />
+
                     </Grid>
+
                 </DataTemplate>
+
             </ListView.ItemTemplate>
 
         </ListView>
 
-        <!--  Bouton Scanner  -->
-        <Button
+        <!--  =============================  -->
+        <!--  5️⃣ ACTIONS UTILISATEUR  -->
+        <!--  =============================  -->
+
+        <StackPanel
             Grid.Row="3"
-            Width="220"
-            Height="56"
             Margin="0,20,0,40"
             HorizontalAlignment="Center"
-            Background="#384454"
-            BorderThickness="0"
-            Command="{Binding ScannerCommande}"
-            Content="Scanner"
-            Foreground="White">
+            Orientation="Horizontal"
+            Spacing="20">
 
-            <Button.Resources>
-                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#4F6D8C" />
-                <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#2F3B4A" />
-            </Button.Resources>
+            <Button
+                Width="180"
+                Height="56"
+                Background="#384454"
+                BorderThickness="0"
+                Command="{Binding ScannerCommande}"
+                Content="Scanner"
+                Foreground="White"
+                IsEnabled="{Binding IsUpdating, Converter={StaticResource ConvertisseurBooleenInverse}}" />
 
-        </Button>
+            <Button
+                Width="180"
+                Height="56"
+                Background="#2563EB"
+                BorderThickness="0"
+                Command="{Binding MettreAJourCommande}"
+                Content="Mettre à jour"
+                Foreground="White"
+                IsEnabled="{Binding IsScanning, Converter={StaticResource ConvertisseurBooleenInverse}}" />
+
+        </StackPanel>
 
     </Grid>
+
 </Page>

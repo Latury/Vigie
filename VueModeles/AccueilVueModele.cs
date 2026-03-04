@@ -11,9 +11,10 @@
 ║                                                                      ║
 ║  Responsabilités principales :                                       ║
 ║  - Exposer la commande de scan                                       ║
-║  - Interagir avec GestionnaireWinget                                 ║
-║  - Exposer la liste des logiciels détectés                           ║
-║  - Fournir un état dynamique structuré du système                    ║
+║  - Exposer la commande de mise à jour                                ║
+║  - Interagir avec GestionnaireGlobal                                 ║
+║  - Gérer la confirmation utilisateur                                 ║
+║  - Bloquer si point restauration échoue                              ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -23,7 +24,6 @@
 #region 1. Imports
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -31,11 +31,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 using Vigie.Infrastructure;
-using Vigie.JournalEvenements;
 using Vigie.Modeles;
-using Vigie.Services.Gestionnaires;
 using Vigie.Services.Interfaces;
-using Vigie.Services.Normalisation;
+using Vigie.Services.MisesAJour;
 
 #endregion
 
@@ -47,24 +45,29 @@ using Vigie.Services.Normalisation;
  * Rôle :
  * Intermédiaire entre la vue Accueil et la logique métier.
  *
- * Particularité :
- * Implémente INotifyPropertyChanged pour permettre
- * la mise à jour dynamique de l’interface.
+ * Particularités :
+ * - Implémente INotifyPropertyChanged
+ * - Gère confirmation utilisateur
+ * - Sécurise la mise à jour globale
  */
 
 #endregion
 
-#region 3. Déclaration
-
 namespace Vigie.VueModeles
 {
+    #region 3. Déclaration
+
     public class AccueilVueModele : INotifyPropertyChanged
     {
         #region 3.1 Champs privés
 
         private readonly IGestionnairePaquets _packageManager;
+        private readonly ServiceMiseAJourGlobal _serviceMiseAJour;
+        private readonly IConfirmationService _confirmationService;
 
         private bool _isScanning;
+        private bool _isUpdating;
+
         private EtatSysteme _etatActuel = EtatSysteme.Inconnu;
         private DateTime? _dernierScan;
 
@@ -73,6 +76,7 @@ namespace Vigie.VueModeles
         #region 3.2 Propriétés publiques
 
         public ICommand ScannerCommande { get; }
+        public ICommand MettreAJourCommande { get; }
 
         public ObservableCollection<LogicielMiseAJour> Logiciels { get; }
 
@@ -86,9 +90,16 @@ namespace Vigie.VueModeles
             }
         }
 
-        /*
-         * État structuré du système (enum).
-         */
+        public bool IsUpdating
+        {
+            get => _isUpdating;
+            private set
+            {
+                _isUpdating = value;
+                OnPropertyChanged();
+            }
+        }
+
         public EtatSysteme EtatActuel
         {
             get => _etatActuel;
@@ -100,9 +111,6 @@ namespace Vigie.VueModeles
             }
         }
 
-        /*
-         * Texte affiché dans l’UI basé sur l’état.
-         */
         public string TexteEtat
         {
             get
@@ -113,7 +121,8 @@ namespace Vigie.VueModeles
                     EtatSysteme.Ajour => "Système à jour",
                     EtatSysteme.MisesAJourDisponibles =>
                         $"{Logiciels.Count} mise(s) à jour disponible(s)",
-                    EtatSysteme.Erreur => "Erreur lors du scan",
+                    EtatSysteme.Erreur =>
+                        "Opération bloquée pour raison de sécurité",
                     _ => "État inconnu"
                 };
             }
@@ -136,37 +145,32 @@ namespace Vigie.VueModeles
 
         #region 3.3 Constructeur
 
-        public AccueilVueModele()
+        public AccueilVueModele(
+            IGestionnairePaquets packageManager,
+            ServiceMiseAJourGlobal serviceMiseAJour,
+            IConfirmationService confirmationService)
         {
-            // Composition manuelle des dépendances
-            var journal = new JournalService();
+            _packageManager = packageManager
+                ?? throw new ArgumentNullException(nameof(packageManager));
 
-            var gestionnaires = new List<IGestionnairePaquets>
-    {
-        new GestionnaireWinget(),
-        new GestionnaireScoop()
-    };
+            _serviceMiseAJour = serviceMiseAJour
+                ?? throw new ArgumentNullException(nameof(serviceMiseAJour));
 
-            var normaliseur = new NormaliseurWinget();
-
-            _packageManager = new GestionnaireGlobal(
-                gestionnaires,
-                normaliseur,
-                journal);
+            _confirmationService = confirmationService
+                ?? throw new ArgumentNullException(nameof(confirmationService));
 
             Logiciels = new ObservableCollection<LogicielMiseAJour>();
 
-            Logiciels.CollectionChanged += (s, e) =>
-            {
+            Logiciels.CollectionChanged += (_, __) =>
                 OnPropertyChanged(nameof(TexteEtat));
-            };
 
             ScannerCommande = new CommandeAsynchrone(ScannerAsync);
+            MettreAJourCommande = new CommandeAsynchrone(MettreAJourAsync);
         }
 
         #endregion
 
-        #region 3.4 Méthodes
+        #region 3.4 Méthodes privées
 
         private async Task ScannerAsync()
         {
@@ -201,6 +205,51 @@ namespace Vigie.VueModeles
             }
         }
 
+        private async Task MettreAJourAsync()
+        {
+            if (Logiciels.Count == 0 || IsUpdating)
+            {
+                return;
+            }
+
+            bool confirme = await _confirmationService
+                .DemanderConfirmationAsync(
+                    "Confirmer la mise à jour globale ?",
+                    "Un point de restauration système sera créé avant exécution.");
+
+            if (!confirme)
+            {
+                return;
+            }
+
+            IsUpdating = true;
+
+            try
+            {
+                bool pointOk =
+                    await _serviceMiseAJour
+                        .PreparerPointRestaurationAsync();
+
+                if (!pointOk)
+                {
+                    EtatActuel = EtatSysteme.Erreur;
+                    return;
+                }
+
+                foreach (var logiciel in Logiciels)
+                {
+                    await _serviceMiseAJour
+                        .ExecuterMiseAJourAsync(logiciel);
+                }
+
+                EtatActuel = EtatSysteme.Ajour;
+            }
+            finally
+            {
+                IsUpdating = false;
+            }
+        }
+
         #endregion
 
         #region 3.5 INotifyPropertyChanged
@@ -217,6 +266,6 @@ namespace Vigie.VueModeles
 
         #endregion
     }
-}
 
-#endregion
+    #endregion
+}

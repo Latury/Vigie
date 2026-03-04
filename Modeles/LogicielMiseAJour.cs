@@ -9,15 +9,7 @@
 ║  Rôle :                                                              ║
 ║  Représente un logiciel détecté avec une mise à jour disponible.     ║
 ║                                                                      ║
-║  Responsabilités principales :                                       ║
-║  - Stocker les informations normalisées d’un logiciel                ║
-║  - Servir de modèle de données pour l’affichage UI                   ║
-║                                                                      ║
-║  Dépendances :                                                       ║
-║  - Aucune dépendance métier                                          ║
-║                                                                      ║
 ║  Licence : MIT                                                       ║
-║  Voir fichier LICENSE pour détails                                   ║
 ║  Copyright © 2026 Flo Latury                                         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 */
@@ -25,95 +17,66 @@
 #region 1. Imports
 
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 #endregion
 
 namespace Vigie.Modeles
 {
-
-    #region 2. Description Générale
-
-    /*
-     * Classe : LogicielMiseAJour
-     *
-     * Rôle :
-     * Modèle représentant un logiciel nécessitant une mise à jour.
-     *
-     * Objectif architectural :
-     * Fournir une structure de données claire et indépendante
-     * de toute logique UI ou logique métier.
-     *
-     * Limites :
-     * - Ne contient aucune logique métier
-     * - Ne gère aucun traitement
-     * - Ne dépend d’aucune vue
-     */
-
-    #endregion
-
-    #region 3. Déclaration de la Classe
-
-    public class LogicielMiseAJour
+    public class LogicielMiseAJour : INotifyPropertyChanged
     {
-        #region 3.1 Propriétés
+        #region 3.1 Champs privés
 
-        /*
-         * Propriété : Nom
-         *
-         * Rôle :
-         * Nom du logiciel détecté.
-         */
+        private bool _estSelectionne;
+
+        #endregion
+
+        #region 3.2 Propriétés publiques
+
         public string Nom { get; set; } = string.Empty;
 
-        /*
-         * Propriété : VersionActuelle
-         *
-         * Rôle :
-         * Version actuellement installée sur le système.
-         */
         public string VersionActuelle { get; set; } = string.Empty;
 
-        /*
-         * Propriété : NouvelleVersion
-         *
-         * Rôle :
-         * Version disponible à la mise à jour.
-         */
         public string NouvelleVersion { get; set; } = string.Empty;
 
-        /*
-         * Propriété : Source
-         *
-         * Rôle :
-         * Gestionnaire ayant détecté la mise à jour
-         * (ex : winget, scoop).
-         */
         public string Source { get; set; } = string.Empty;
 
-        /*
-         * Propriété : IdentifiantSource
-         *
-         * Rôle :
-         * Identifiant technique brut fourni par le gestionnaire
-         * (ex : Notepad++.Notepad++).
-         */
         public string IdentifiantSource { get; set; } = string.Empty;
 
+        public string IdentifiantNormalise { get; set; } = string.Empty;
+
         /*
-         * Propriété : IdentifiantNormalise
+         * Propriété : EstSelectionne
          *
          * Rôle :
-         * Identifiant interne normalisé utilisé pour
-         * la déduplication multi-gestionnaires.
-         *
-         * Remarque :
-         * Généré par la couche de normalisation.
+         * Indique si le logiciel est sélectionné
+         * pour une mise à jour individuelle.
          */
-        public string IdentifiantNormalise { get; set; } = string.Empty;
+        public bool EstSelectionne
+        {
+            get => _estSelectionne;
+            set
+            {
+                if (_estSelectionne != value)
+                {
+                    _estSelectionne = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region 3.3 INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string? nomPropriete = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nomPropriete));
+        }
 
         #endregion
     }
-
-    #endregion
-
 }

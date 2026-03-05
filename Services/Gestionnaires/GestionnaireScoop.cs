@@ -26,32 +26,47 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
-using Vigie.JournalEvenements;
+
+#endregion
+
+#region 2. Description Générale
+
+/*
+ * Classe : GestionnaireScoop
+ *
+ * Rôle :
+ * Simuler un gestionnaire Scoop afin de tester
+ * le pipeline complet de Vigie.
+ */
 
 #endregion
 
 namespace Vigie.Services.Gestionnaires
 {
+    #region 3. Déclaration
+
     public class GestionnaireScoop : IGestionnairePaquets
     {
-        #region Champs privés
+        #region 3.1 Champs privés
 
         private readonly IJournalService _journal;
 
         #endregion
 
-        #region Constructeur
+        #region 3.2 Constructeur
 
-        public GestionnaireScoop()
+        public GestionnaireScoop(IJournalService journal)
         {
-            _journal = new JournalService();
+            _journal =
+                journal ?? throw new System.ArgumentNullException(nameof(journal));
         }
 
         #endregion
 
-        #region Méthodes publiques
+        #region 3.3 Méthodes publiques
 
         public async Task<List<LogicielMiseAJour>> ScanAsync()
         {
@@ -102,4 +117,6 @@ vlc                3.0.20   3.0.21
 
         #endregion
     }
+
+    #endregion
 }

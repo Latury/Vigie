@@ -121,16 +121,23 @@ Permettre la mise à jour sécurisée et maîtrisée des logiciels sélectionné
 
 ### 🧩 Fonctionnalités
 
-- 🔲 Mise à jour individuelle (interface de sélection non finalisée)
-- 🟡 Mise à jour globale stabilisée
-- 🟡 Confirmation utilisateur (structure MVVM stable, amélioration UX prévue)
-- 🔲 Gestion élévation administrateur
-- 🟡 Journalisation détaillée des opérations
-- 🟡 Préparation modèle Historique interne (non persistant, en mémoire)
-- 🔲 Feedback visuel par logiciel (Succès / Échec)
-- 🟡 Désactivation partielle de l’interface pendant opération
+- 🔲 Mise à jour individuelle  
+  (aucune CheckBox, aucune sélection)
+- 🟡 Mise à jour globale stabilisée  
+  (reste à faire : refresh scan, feedback logiciel, amélioration UX confirmation)
+- 🟡 Confirmation utilisateur  
+  (structure MVVM stable, UX simple à améliorer)
+- 🔲 Gestion élévation administrateur  
+  (aucun appel UAC, aucun runas, aucun service élévation)
+- ✅ Journalisation détaillée des opérations
+- 🟡 Préparation modèle Historique interne  
+  (modèle existant mais pas encore affiché ni persisté)
+- 🔲 Feedback visuel par logiciel  
+  (pas d’icône succès / erreur, pas de statut par ligne)
+- ✅ Désactivation partielle de l’interface pendant opération
 - 🔲 Rafraîchissement automatique du scan après mise à jour réussie
-- 🟡 Centralisation des ressources visuelles (dossier Ressources : couleurs, styles et dimensions UI)
+- 🟡 Centralisation des ressources visuelles  
+  (dossier Ressources créé mais certaines valeurs sont encore codées en dur)
 
 Objectif : rendre la mise à jour contrôlée, compréhensible et traçable.
 
@@ -224,14 +231,14 @@ Uniquement si l’architecture le permet.
 
 # 📊 12. Suivi Global
 
-| Version   | Statut          | Progression estimée                                                                       |
-| --------- | --------------- | ------------------------------------------------------------------------------------------|
-| 0.1.0-dev | 🟢 Terminé      |  ~100 %      Fondations consolidées                                                       |
-| 0.2.0-dev | 🟢 Consolidée   |  ~100 % Extension maîtrisée et résilience validée                                         |
-| 0.3.0-dev | 🟡 En cours     |  ~ 35 % Mise à jour globale fonctionnelle, mise à jour individuelle et élévation en cours |                                           |
-| 0.4.0     | ⚪ À faire      | 0 %                                                                                       |
-| 0.5.0     | ⚪ À faire      | 0 %                                                                                       |
-| 1.0.0     | ⚪ À faire      | 0 %                                                                                       |
+| Version   | Statut          | Progression estimée                                                                   |
+| --------- | --------------- | --------------------------------------------------------------------------------------|
+| 0.1.0-dev | 🟢 Terminé      |  ~100 %      Fondations consolidées                                                   |
+| 0.2.0-dev | 🟢 Consolidée   |  ~100 % Extension maîtrisée et résilience validée                                     |
+| 0.3.0-dev | 🟡 En cours     |  ~ 50 % Mise à jour globale stable, sélection individuelle et élévation à implémenter |
+| 0.4.0     | ⚪ À faire      | 0 %                                                                                   |
+| 0.5.0     | ⚪ À faire      | 0 %                                                                                   |
+| 1.0.0     | ⚪ À faire      | 0 %                                                                                   |
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

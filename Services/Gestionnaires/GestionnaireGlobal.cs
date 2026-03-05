@@ -39,6 +39,8 @@ using Vigie.Services.Interfaces;
 
 namespace Vigie.Services.Gestionnaires
 {
+    #region 2. Déclaration
+
     public class GestionnaireGlobal : IGestionnairePaquets
     {
         #region 3.1 Champs privés
@@ -56,9 +58,14 @@ namespace Vigie.Services.Gestionnaires
             INormaliseur normaliseur,
             IJournalService journal)
         {
-            _gestionnaires = gestionnaires ?? throw new ArgumentNullException(nameof(gestionnaires));
-            _normaliseur = normaliseur ?? throw new ArgumentNullException(nameof(normaliseur));
-            _journal = journal ?? throw new ArgumentNullException(nameof(journal));
+            _gestionnaires =
+                gestionnaires ?? throw new ArgumentNullException(nameof(gestionnaires));
+
+            _normaliseur =
+                normaliseur ?? throw new ArgumentNullException(nameof(normaliseur));
+
+            _journal =
+                journal ?? throw new ArgumentNullException(nameof(journal));
         }
 
         #endregion
@@ -71,85 +78,29 @@ namespace Vigie.Services.Gestionnaires
          * Objectif :
          * Orchestrer l’agrégation multi-gestionnaires.
          *
-         * Résilience :
-         * - Chaque gestionnaire est isolé
-         * - La normalisation est protégée
-         * - La fusion est protégée
-         * - Aucune exception ne remonte à l’UI
+         * Particularité :
+         * Les gestionnaires sont exécutés en parallèle
+         * pour améliorer la performance globale.
          */
+
         public async Task<List<LogicielMiseAJour>> ScanAsync()
         {
             try
             {
-                var tousLesResultats = new List<LogicielMiseAJour>();
-
                 _journal.Info("Agrégation des gestionnaires de paquets.");
 
-                foreach (var gestionnaire in _gestionnaires)
-                {
-                    try
-                    {
-                        var resultats = await gestionnaire.ScanAsync();
-
-                        if (resultats != null && resultats.Count > 0)
-                        {
-                            foreach (var logiciel in resultats)
-                            {
-                                try
-                                {
-                                    var normalise = _normaliseur.Normaliser(logiciel);
-                                    tousLesResultats.Add(normalise);
-                                }
-                                catch (Exception exNormalisation)
-                                {
-                                    _journal.Erreur(
-                                        $"Erreur normalisation ({gestionnaire.GetType().Name}) : {exNormalisation.Message}");
-                                }
-                            }
-
-                            _journal.Info(
-                                $"{resultats.Count} mise(s) ajoutée(s) depuis {gestionnaire.GetType().Name}.");
-                        }
-                        else
-                        {
-                            _journal.Info(
-                                $"Aucune mise à jour retournée par {gestionnaire.GetType().Name}.");
-                        }
-                    }
-                    catch (Exception exGestionnaire)
-                    {
-                        _journal.Erreur(
-                            $"Erreur dans {gestionnaire.GetType().Name} : {exGestionnaire.Message}");
-                    }
-                }
-
-                var resultatsDedup = tousLesResultats
-                    .Where(l => l != null && !string.IsNullOrWhiteSpace(l.IdentifiantNormalise))
-                    .GroupBy(l => l.IdentifiantNormalise)
-                    .Select(g =>
-                    {
-                        var groupe = g.ToList();
-
-                        var winget = groupe.FirstOrDefault(x => x.Source == "winget");
-
-                        if (winget != null)
-                        {
-                            bool memeVersionExiste =
-                                groupe.Any(x =>
-                                    x.Source != "winget" &&
-                                    x.NouvelleVersion == winget.NouvelleVersion);
-
-                            if (memeVersionExiste)
-                            {
-                                return winget;
-                            }
-                        }
-
-                        return groupe
-                            .OrderByDescending(x => ParseVersionSafe(x.NouvelleVersion))
-                            .First();
-                    })
+                var taches = _gestionnaires
+                    .Select(ExecuterGestionnaireAsync)
                     .ToList();
+
+                var resultats =
+                    await Task.WhenAll(taches);
+
+                var tousLesResultats =
+                    resultats.SelectMany(r => r).ToList();
+
+                var resultatsDedup =
+                    DedoublonnerResultats(tousLesResultats);
 
                 _journal.Info(
                     $"Total agrégé après déduplication : {resultatsDedup.Count}.");
@@ -169,16 +120,98 @@ namespace Vigie.Services.Gestionnaires
 
         #region 3.4 Méthodes privées
 
+        private async Task<List<LogicielMiseAJour>> ExecuterGestionnaireAsync(
+            IGestionnairePaquets gestionnaire)
+        {
+            var resultatsNormalises = new List<LogicielMiseAJour>();
+
+            try
+            {
+                var resultats =
+                    await gestionnaire.ScanAsync();
+
+                if (resultats == null || resultats.Count == 0)
+                {
+                    _journal.Info(
+                        $"Aucune mise à jour retournée par {gestionnaire.GetType().Name}.");
+
+                    return resultatsNormalises;
+                }
+
+                foreach (var logiciel in resultats)
+                {
+                    try
+                    {
+                        var normalise =
+                            _normaliseur.Normaliser(logiciel);
+
+                        resultatsNormalises.Add(normalise);
+                    }
+                    catch (Exception exNormalisation)
+                    {
+                        _journal.Erreur(
+                            $"Erreur normalisation ({gestionnaire.GetType().Name}) : {exNormalisation.Message}");
+                    }
+                }
+
+                _journal.Info(
+                    $"{resultatsNormalises.Count} mise(s) ajoutée(s) depuis {gestionnaire.GetType().Name}.");
+            }
+            catch (Exception exGestionnaire)
+            {
+                _journal.Erreur(
+                    $"Erreur dans {gestionnaire.GetType().Name} : {exGestionnaire.Message}");
+            }
+
+            return resultatsNormalises;
+        }
+
+
+        private List<LogicielMiseAJour> DedoublonnerResultats(
+            List<LogicielMiseAJour> resultats)
+        {
+            return resultats
+                .Where(l =>
+                    l != null &&
+                    !string.IsNullOrWhiteSpace(l.IdentifiantNormalise))
+                .GroupBy(l => l.IdentifiantNormalise)
+                .Select(g =>
+                {
+                    var groupe = g.ToList();
+
+                    var winget =
+                        groupe.FirstOrDefault(x => x.Source == "winget");
+
+                    if (winget != null)
+                    {
+                        bool memeVersionExiste =
+                            groupe.Any(x =>
+                                x.Source != "winget" &&
+                                x.NouvelleVersion == winget.NouvelleVersion);
+
+                        if (memeVersionExiste)
+                        {
+                            return winget;
+                        }
+                    }
+
+                    return groupe
+                        .OrderByDescending(x =>
+                            ParseVersionSafe(x.NouvelleVersion))
+                        .First();
+                })
+                .ToList();
+        }
+
+
         /*
          * Méthode : ParseVersionSafe
          *
          * Objectif :
          * Convertir une version string en System.Version
          * pour comparaison fiable.
-         *
-         * Sécurité :
-         * Retourne Version(0,0) si parsing impossible.
          */
+
         private Version ParseVersionSafe(string versionString)
         {
             if (string.IsNullOrWhiteSpace(versionString))
@@ -186,7 +219,8 @@ namespace Vigie.Services.Gestionnaires
                 return new Version(0, 0);
             }
 
-            var propre = versionString.Split('-')[0];
+            var propre =
+                versionString.Split('-')[0];
 
             if (Version.TryParse(propre, out var version))
             {
@@ -198,4 +232,6 @@ namespace Vigie.Services.Gestionnaires
 
         #endregion
     }
+
+    #endregion
 }

@@ -33,35 +33,42 @@
 
         <ResourceDictionary>
 
+            <!--  =====================================================  -->
+            <!--  Dictionnaires fusionnés  -->
+            <!--  =====================================================  -->
+
             <ResourceDictionary.MergedDictionaries>
 
                 <!--  Ressources natives WinUI 3  -->
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
 
-                <!--  ======================================================  -->
+                <!--  =================================================  -->
                 <!--  Ressources visuelles globales Vigie  -->
-                <!--  ======================================================  -->
+                <!--  =================================================  -->
 
-                <!--  Couleurs officielles  -->
+                <!--  Palette de couleurs officielle  -->
                 <ResourceDictionary Source="Ressources/Couleurs/CouleursVigie.xaml" />
 
-                <!--  Styles globaux  -->
-                <ResourceDictionary Source="Ressources/Styles/StylesControles.xaml" />
-
-                <!--  Dimensions UI  -->
+                <!--  Dimensions UI standardisées  -->
                 <ResourceDictionary Source="Ressources/Dimensions/DimensionsUI.xaml" />
 
-                <!--  Thème de base  -->
+                <!--  Styles globaux des contrôles  -->
+                <ResourceDictionary Source="Ressources/Styles/StylesControles.xaml" />
+
+                <!--  Thème principal de l’application  -->
                 <ResourceDictionary Source="Ressources/Themes/ThemeBase.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 
-            <!--  ======================================================  -->
-            <!--  Convertisseurs globaux  -->
-            <!--  ======================================================  -->
 
+            <!--  =====================================================  -->
+            <!--  Convertisseurs globaux  -->
+            <!--  =====================================================  -->
+
+            <!--  Convertit bool → Visibility  -->
             <conv:ConvertisseurBooleenVersVisibilite x:Key="ConvertisseurBooleenVersVisibilite" />
 
+            <!--  Inverse bool (true ↔ false)  -->
             <conv:ConvertisseurBooleenInverse x:Key="ConvertisseurBooleenInverse" />
 
         </ResourceDictionary>

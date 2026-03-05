@@ -12,9 +12,10 @@
 ║  Responsabilités principales :                                       ║
 ║  - Exposer la commande de scan                                       ║
 ║  - Exposer la commande de mise à jour                                ║
-║  - Interagir avec GestionnaireGlobal                                 ║
+║  - Interagir avec les services                                       ║
 ║  - Gérer la confirmation utilisateur                                 ║
-║  - Bloquer si point restauration échoue                              ║
+║  - Superviser la mise à jour globale                                 ║
+║  - Gérer l’état des boutons UI                                       ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -34,6 +35,7 @@ using Vigie.Infrastructure;
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
 using Vigie.Services.MisesAJour;
+using Vigie.Services.MisesAJour;
 
 #endregion
 
@@ -43,12 +45,13 @@ using Vigie.Services.MisesAJour;
  * Classe : AccueilVueModele
  *
  * Rôle :
- * Intermédiaire entre la vue Accueil et la logique métier.
+ * Intermédiaire entre l'interface utilisateur
+ * et les services métier.
  *
  * Particularités :
- * - Implémente INotifyPropertyChanged
- * - Gère confirmation utilisateur
- * - Sécurise la mise à jour globale
+ * - Gestion état UI
+ * - Activation dynamique des boutons
+ * - Supervision pipeline de mise à jour
  */
 
 #endregion
@@ -87,6 +90,8 @@ namespace Vigie.VueModeles
             {
                 _isScanning = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(PeutScanner));
+                OnPropertyChanged(nameof(PeutMettreAJour));
             }
         }
 
@@ -97,7 +102,21 @@ namespace Vigie.VueModeles
             {
                 _isUpdating = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(PeutScanner));
+                OnPropertyChanged(nameof(PeutMettreAJour));
             }
+        }
+
+        public bool PeutScanner
+        {
+            get => !IsScanning && !IsUpdating;
+        }
+
+        public bool PeutMettreAJour
+        {
+            get => !IsScanning &&
+                   !IsUpdating &&
+                   Logiciels.Count > 0;
         }
 
         public EtatSysteme EtatActuel
@@ -150,19 +169,22 @@ namespace Vigie.VueModeles
             ServiceMiseAJourGlobal serviceMiseAJour,
             IConfirmationService confirmationService)
         {
-            _packageManager = packageManager
-                ?? throw new ArgumentNullException(nameof(packageManager));
+            _packageManager =
+                packageManager ?? throw new ArgumentNullException(nameof(packageManager));
 
-            _serviceMiseAJour = serviceMiseAJour
-                ?? throw new ArgumentNullException(nameof(serviceMiseAJour));
+            _serviceMiseAJour =
+                serviceMiseAJour ?? throw new ArgumentNullException(nameof(serviceMiseAJour));
 
-            _confirmationService = confirmationService
-                ?? throw new ArgumentNullException(nameof(confirmationService));
+            _confirmationService =
+                confirmationService ?? throw new ArgumentNullException(nameof(confirmationService));
 
             Logiciels = new ObservableCollection<LogicielMiseAJour>();
 
             Logiciels.CollectionChanged += (_, __) =>
+            {
                 OnPropertyChanged(nameof(TexteEtat));
+                OnPropertyChanged(nameof(PeutMettreAJour));
+            };
 
             ScannerCommande = new CommandeAsynchrone(ScannerAsync);
             MettreAJourCommande = new CommandeAsynchrone(MettreAJourAsync);
@@ -174,12 +196,19 @@ namespace Vigie.VueModeles
 
         private async Task ScannerAsync()
         {
+            if (IsScanning || IsUpdating)
+            {
+                return;
+            }
+
             try
             {
                 IsScanning = true;
+
                 EtatActuel = EtatSysteme.AnalyseEnCours;
 
-                var resultats = await _packageManager.ScanAsync();
+                var resultats =
+                    await _packageManager.ScanAsync();
 
                 Logiciels.Clear();
 
@@ -189,9 +218,11 @@ namespace Vigie.VueModeles
                 }
 
                 _dernierScan = DateTime.Now;
+
                 OnPropertyChanged(nameof(DernierScanTexte));
 
-                EtatActuel = Logiciels.Count == 0
+                EtatActuel =
+                    Logiciels.Count == 0
                     ? EtatSysteme.Ajour
                     : EtatSysteme.MisesAJourDisponibles;
             }
@@ -212,10 +243,11 @@ namespace Vigie.VueModeles
                 return;
             }
 
-            bool confirme = await _confirmationService
-                .DemanderConfirmationAsync(
-                    "Confirmer la mise à jour globale ?",
-                    "Un point de restauration système sera créé avant exécution.");
+            bool confirme =
+                await _confirmationService
+                    .DemanderConfirmationAsync(
+                        "Confirmer la mise à jour globale ?",
+                        "Un point de restauration système sera créé avant exécution.");
 
             if (!confirme)
             {
@@ -238,8 +270,18 @@ namespace Vigie.VueModeles
 
                 foreach (var logiciel in Logiciels)
                 {
-                    await _serviceMiseAJour
-                        .ExecuterMiseAJourAsync(logiciel);
+                    if (string.IsNullOrWhiteSpace(logiciel.Source))
+                    {
+                        continue;
+                    }
+
+                    logiciel.StatutMiseAJour = StatutMiseAJour.EnCours;
+
+                    var resultat =
+                        await _serviceMiseAJour
+                            .ExecuterMiseAJourAsync(logiciel);
+
+                    logiciel.StatutMiseAJour = resultat.Statut;
                 }
 
                 EtatActuel = EtatSysteme.Ajour;

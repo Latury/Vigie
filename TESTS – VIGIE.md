@@ -23,9 +23,9 @@ Garantir :
 - Vérification parsing texte basé sur structure colonnes
 - Simulation erreur commande
 - Test interruption processus
-- Test mécanisme de timeout (30 secondes)
+- Test mécanisme de timeout (60 secondes)
 - Vérification journalisation
-- Winget + Scoop (agrégation active, consolidation en cours)
+- Winget + Scoop (agrégation active)
 - Vérification déduplication basée sur IdentifiantNormalise
 - Vérification pipeline Scan → Normalisation → Fusion
 - Vérification comparaison versions via System.Version
@@ -38,7 +38,9 @@ Garantir :
 - Vérification journalisation début / fin des mises à jour
 - Vérification désactivation partielle de l’interface pendant mise à jour
 - Vérification intégration PointRestaurationSimule
-- Test initial système de sélection par cases (suspendu temporairement suite instabilité WinUI)
+- Vérification résilience orchestrateur (échec d’un gestionnaire isolé)
+- Test initial système de sélection par cases  
+  (suspendu temporairement suite instabilité WinUI)
 
 ---
 
@@ -61,12 +63,12 @@ Garantir :
 
 ## 🔒 Tests sécurité (versions futures)
 
-Ces tests seront activés lors de l’introduction des mises à jour automatiques :
+Ces tests seront activés lors de l’introduction des mises à jour système réelles :
 
-- Test point de restauration
-- Test confirmation utilisateur
-- Test comportement en cas d’échec partiel d’une mise à jour
+- Test point de restauration réel
 - Test élévation administrateur contrôlée
+- Test comportement en cas d’échec partiel d’une mise à jour
+- Test rollback en cas d’échec critique
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

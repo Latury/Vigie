@@ -30,14 +30,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
-using Vigie.JournalEvenements;
 
 #endregion
 
 namespace Vigie.Services.Gestionnaires
 {
+    #region 2. Déclaration
+
     public class GestionnaireWinget : IGestionnairePaquets
     {
         #region 3.1 Champs privés
@@ -48,9 +50,10 @@ namespace Vigie.Services.Gestionnaires
 
         #region 3.2 Constructeur
 
-        public GestionnaireWinget()
+        public GestionnaireWinget(IJournalService journal)
         {
-            _journal = new JournalService();
+            _journal =
+                journal ?? throw new ArgumentNullException(nameof(journal));
         }
 
         #endregion
@@ -63,7 +66,6 @@ namespace Vigie.Services.Gestionnaires
 
             try
             {
-                _journal.Info("");
                 _journal.Info("");
                 _journal.Info("══════════════════════════════════════════════");
                 _journal.Info("Début du scan winget");
@@ -86,41 +88,57 @@ namespace Vigie.Services.Gestionnaires
 
                 process.Start();
 
-                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30));
+                // Lecture immédiate des flux (évite les deadlocks)
+                var lectureSortie = process.StandardOutput.ReadToEndAsync();
+                var lectureErreur = process.StandardError.ReadToEndAsync();
+
+                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(60));
                 var exitTask = process.WaitForExitAsync();
-                var completedTask = await Task.WhenAny(exitTask, timeoutTask);
+
+                var completedTask =
+                    await Task.WhenAny(exitTask, timeoutTask);
 
                 if (completedTask == timeoutTask)
                 {
-                    try { process.Kill(); } catch { }
+                    try
+                    {
+                        process.Kill(true);
+                    }
+                    catch { }
+
                     stopwatch.Stop();
 
                     _journal.Erreur("Timeout lors du scan winget.");
                     _journal.Info("══════════════════════════════════════════════");
                     _journal.Info("");
+
                     return new List<LogicielMiseAJour>();
                 }
 
-                string output = await process.StandardOutput.ReadToEndAsync();
-                string error = await process.StandardError.ReadToEndAsync();
+                string output = await lectureSortie;
+                string error = await lectureErreur;
 
                 if (process.ExitCode != 0)
                 {
                     stopwatch.Stop();
 
-                    _journal.Erreur($"Winget a retourné un code {process.ExitCode}. Erreur : {error}");
+                    _journal.Erreur(
+                        $"Winget a retourné un code {process.ExitCode}. Erreur : {error}");
+
                     _journal.Info("══════════════════════════════════════════════");
                     _journal.Info("");
+
                     return new List<LogicielMiseAJour>();
                 }
 
-                var logiciels = ParserSortieWinget(output);
+                var logiciels =
+                    ParserSortieWinget(output);
 
                 stopwatch.Stop();
 
                 if (logiciels.Count == 0)
                 {
-                    _journal.Info("Aucune mise à jour déte  ctée.");
+                    _journal.Info("Aucune mise à jour détectée.");
                 }
                 else
                 {
@@ -145,9 +163,12 @@ namespace Vigie.Services.Gestionnaires
             {
                 stopwatch.Stop();
 
-                _journal.Erreur($"Exception lors du scan winget : {ex.Message}");
+                _journal.Erreur(
+                    $"Exception lors du scan winget : {ex.Message}");
+
                 _journal.Info("══════════════════════════════════════════════");
                 _journal.Info("");
+
                 return new List<LogicielMiseAJour>();
             }
         }
@@ -156,10 +177,6 @@ namespace Vigie.Services.Gestionnaires
 
         #region 3.4 Méthodes privées
 
-        /// <summary>
-        /// Analyse la sortie texte de winget upgrade
-        /// et extrait les mises à jour détectées.
-        /// </summary>
         private List<LogicielMiseAJour> ParserSortieWinget(string sortie)
         {
             var logiciels = new List<LogicielMiseAJour>();
@@ -170,7 +187,8 @@ namespace Vigie.Services.Gestionnaires
                 return logiciels;
             }
 
-            var lignes = sortie.Split(Environment.NewLine);
+            var lignes =
+                sortie.Split(Environment.NewLine);
 
             int indexSeparateur = -1;
 
@@ -203,10 +221,9 @@ namespace Vigie.Services.Gestionnaires
                     break;
                 }
 
-                var colonnes = Regex.Split(ligne, @"\s{2,}");
+                var colonnes =
+                    Regex.Split(ligne, @"\s{2,}");
 
-                // Format winget typique :
-                // Nom | Id | Version | Available | Source
                 if (colonnes.Length < 5)
                 {
                     continue;
@@ -219,7 +236,8 @@ namespace Vigie.Services.Gestionnaires
 
                 if (nom.EndsWith(versionActuelle))
                 {
-                    nom = nom.Replace(versionActuelle, "").Trim();
+                    nom =
+                        nom.Replace(versionActuelle, "").Trim();
                 }
 
                 logiciels.Add(new LogicielMiseAJour
@@ -227,7 +245,8 @@ namespace Vigie.Services.Gestionnaires
                     Nom = nom,
                     VersionActuelle = versionActuelle,
                     NouvelleVersion = nouvelleVersion,
-                    IdentifiantSource = identifiantSource
+                    IdentifiantSource = identifiantSource,
+                    Source = "winget"
                 });
             }
 
@@ -236,4 +255,6 @@ namespace Vigie.Services.Gestionnaires
 
         #endregion
     }
+
+    #endregion
 }

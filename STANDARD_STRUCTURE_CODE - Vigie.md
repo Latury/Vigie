@@ -16,11 +16,11 @@ Ce standard est obligatoire pour chaque fichier créé dans le projet.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. EN-TÊTE OBLIGATOIRE POUR CHAQUE FICHIER
+# 1. EN-TÊTE OBLIGATOIRE POUR CHAQUE FICHIER
 
 Règle absolue :
 
-Tout fichier .cs ou .xaml doit commencer par un bloc d’en-tête conforme au modèle ci-dessous.
+Tout fichier `.cs` ou `.xaml` doit commencer par un bloc d’en-tête conforme au modèle ci-dessous.
 
 Aucune exception.
 
@@ -33,7 +33,7 @@ Objectifs :
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Modèle obligatoire pour fichiers .cs
+## Modèle obligatoire pour fichiers `.cs`
 
 ```csharp
 /*
@@ -58,14 +58,13 @@ Modèle obligatoire pour fichiers .cs
 ║  Copyright © Année 2026 Flo Latury                                   ║
 ╚══════════════════════════════════════════════════════════════════════╝
 */
+```
 
-
-Le champ "Rôle" est obligatoire.
-Il ne doit jamais rester vide.
+Le champ Rôle est obligatoire et ne doit jamais rester vide.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Modèle obligatoire pour fichiers XAML
+## Modèle obligatoire pour fichiers `.xaml`
 
 <!--
 ╔══════════════════════════════════════════════════════════════════════╗
@@ -86,125 +85,60 @@ Modèle obligatoire pour fichiers XAML
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-STRUCTURE INTERNE OBLIGATOIRE D’UN FICHIER C#
+2. STRUCTURE INTERNE D’UN FICHIER C#
 
 Chaque fichier doit respecter une organisation numérotée claire.
 
-Ordre obligatoire :
+Ordre recommandé :
 
 #region 1. Imports
 
 #region 2. Description Générale
 
-#region 3. Déclaration de la Classe
+#region 3. Déclaration
+
+À l’intérieur de la classe :
 
 3.1 Champs privés
 3.2 Propriétés
 3.3 Constructeur
 3.4 Méthodes publiques
 3.5 Méthodes privées
-3.6 Événements (si applicable)
-3.7 Interfaces implémentées (mentionnées dans la déclaration de classe)
+3.6 Événements (si applicables)
 
-Chaque section doit être structurée à l’aide de blocs #region
-afin de faciliter la navigation dans les fichiers longs.
+Les sections peuvent être omises si elles ne sont pas nécessaires.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Exemple structure adaptée à Vigie
+3. STRUCTURE POUR LES MODÈLES ET ENUMS
+
+Les modèles métier et énumérations suivent la même structure générale.
+
+Sections recommandées :
 
 #region 1. Imports
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Vigie.Modeles;
-using Vigie.Services.Interfaces;
-
-#endregion
-
 #region 2. Description Générale
+#region 3. Déclaration
 
-/*
- * Classe : GestionnaireWinget
- *
- * Rôle :
- * Implémente l’interface IGestionnairePaquets
- * pour gérer le scan via winget.
- *
- * Responsabilités :
- * 1. Exécuter la commande système winget upgrade
- * 2. Lire la sortie texte standard
- * 3. Parser les colonnes pour extraire les mises à jour
- * 4. Retourner des modèles normalisés LogicielMiseAJour
- *
- * Limites :
- * - Ne contient aucune logique UI
- * - Ne gère pas la navigation
- * - Ne gère pas la persistance
- * - Dépend du format texte winget
- */
+Règles :
 
-#endregion
+Les modèles doivent rester simples et neutres.
 
-#region 3. Déclaration de la Classe
+Ils ne doivent jamais contenir :
 
-public class GestionnaireWinget : IGestionnairePaquets
-{
-    #region 3.1 Champs privés
+logique UI
 
-    private readonly IJournalService _journal;
+dépendance WinUI
 
-    #endregion
+navigation
 
-    #region 3.2 Constructeur
+accès direct aux services
 
-    /*
-     * Dépendances injectées via constructeur
-     * pour garantir découplage et testabilité.
-     */
-
-    public GestionnaireWinget(IJournalService journal)
-    {
-        _journal = journal;
-    }
-
-    #endregion
-
-    #region 3.3 Méthodes publiques
-
-    /*
-     * Méthode : ScanAsync
-     *
-     * Objectif :
-     * Exécute la commande winget upgrade
-     * et retourne la liste des logiciels à mettre à jour.
-     *
-     * Paramètres :
-     * Aucun.
-     *
-     * Retour :
-     * Liste de LogicielMiseAJour.
-     *
-     * Exceptions possibles :
-     * Exception liée au processus système
-     */
-   
-public async Task<List<LogicielMiseAJour>> ScanAsync()
-    {
-        // Implémentation
-        return new List<LogicielMiseAJour>();
-    }
-
-    #endregion
-}
-
-#endregion
+Les modèles représentent uniquement les données métier.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-RÈGLES DE COMMENTAIRES
+4. RÈGLES DE COMMENTAIRES
 
 Chaque élément important doit être documenté.
 
@@ -230,33 +164,33 @@ Exceptions possibles
 
 Pour une propriété :
 
-Rôle architectural
+rôle architectural
 
-Pourquoi elle existe
+justification si nécessaire
 
 Toute logique complexe doit être expliquée.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-RÈGLES STRICTES
+5. RÈGLES STRICTES
 
-Aucun emoji dans le code
+Aucun emoji dans le code.
 
-Aucun commentaire décoratif inutile
+Aucun commentaire décoratif inutile.
 
-Aucun commentaire vide
+Aucun commentaire vide.
 
-Aucun commentaire vague
+Aucun commentaire vague.
 
-Aucun mélange UI / logique métier
+Aucun mélange UI / logique métier.
 
-Toute décision non évidente doit être expliquée
+Toute décision non évidente doit être expliquée.
 
-Toute dépendance importante doit être documentée
+Toute dépendance importante doit être documentée.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-OBJECTIF DU STANDARD
+6. OBJECTIF DU STANDARD
 
 Ce standard vise à produire un code :
 
@@ -272,29 +206,34 @@ Pédagogique
 
 Durable
 
-Compréhensible plusieurs années plus tard
-
 Un fichier non structuré devient fragile.
 Un fichier documenté devient un actif architectural.
 
-Ce document est obligatoire pour tout nouveau fichier créé dans le projet Vigie.
+Ce standard garantit que tout nouveau fichier créé dans le projet
+peut être compris rapidement par un nouveau développeur
+ou par l’auteur lui-même plusieurs années plus tard.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-INJECTION DE DÉPENDANCES (RÈGLE ARCHITECTURALE)
+7. INJECTION DE DÉPENDANCES (RÈGLE ARCHITECTURALE)
 
 Toute classe métier ou service :
 
-- Ne doit pas instancier directement ses dépendances internes
-- Doit recevoir ses dépendances via le constructeur
-- Doit dépendre d’interfaces plutôt que d’implémentations concrètes
+ne doit pas instancier directement ses dépendances internes
 
-Objectif :
+doit recevoir ses dépendances via le constructeur
 
-- Supprimer le couplage fort
-- Permettre la testabilité
-- Préparer l’intégration future d’un conteneur DI
-- Garantir l’évolutivité long terme
+doit dépendre d’interfaces plutôt que d’implémentations
+
+Objectifs :
+
+supprimer le couplage fort
+
+permettre la testabilité
+
+préparer l’intégration future d’un conteneur DI
+
+garantir l’évolutivité long terme
 
 Exemple interdit :
 
@@ -306,18 +245,63 @@ public GestionnaireWinget(IJournalService journal)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-COUCHE DE NORMALISATION (RÈGLE)
+8. GESTION DES OPÉRATIONS ASYNCHRONES
 
-Toute donnée issue d’une source externe doit passer par une étape de
-normalisation avant d’être utilisée par le moteur interne de l’application.
+Les opérations potentiellement longues doivent être exécutées de manière asynchrone.
+
+Exemples :
+
+scan des gestionnaires de paquets
+
+exécution de processus système
+
+opérations réseau
+
+accès disque
 
 Règles :
 
-- Toute donnée externe doit être transformée en modèle interne standardisé.
-- Les données brutes issues des gestionnaires de paquets ne doivent jamais être utilisées directement dans la couche d’orchestration.
-- La normalisation doit produire un identifiant technique stable lorsque cela est nécessaire.
+utiliser async / await
 
-Pipeline officiel du projet :
+éviter les blocages de l’interface utilisateur
+
+ne jamais utiliser .Result ou .Wait() dans la couche UI
+
+Objectif :
+
+Garantir une interface utilisateur réactive.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9. JOURNALISATION
+
+Toute opération système importante doit être journalisée.
+
+Exemples :
+
+début / fin d’un scan
+
+début / fin d’une mise à jour
+
+erreurs de processus
+
+exceptions capturées
+
+opérations critiques de sécurité
+
+La journalisation doit passer par le service central :
+
+JournalService
+
+Aucun fichier ne doit écrire directement dans un fichier log.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+10. COUCHE DE NORMALISATION (RÈGLE)
+
+Toute donnée issue d’une source externe doit passer par une étape de normalisation.
+
+Pipeline officiel :
 
 Scan → Normalisation → Fusion
 
@@ -340,7 +324,7 @@ Séparer clairement :
 
 - l’acquisition des données externes
 - la normalisation des données
-- la consolidation interne
+- garantir cohérence interne
 
 Cela permet :
 
@@ -350,19 +334,9 @@ Cela permet :
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-RESSOURCES VISUELLES (RÈGLE ARCHITECTURALE)
+11. RESSOURCES VISUELLES (RÈGLE ARCHITECTURALE)
 
-Les ressources visuelles globales de l’application doivent être centralisées
-dans le dossier `Ressources/`.
-
-Objectifs :
-
-- éviter les valeurs visuelles codées directement dans les vues
-- garantir la cohérence graphique de l'application
-- préparer un futur système de thème
-- simplifier la maintenance UI
-
-Structure recommandée :
+Les ressources visuelles globales doivent être centralisées dans :
 
 Ressources/
 ├── Couleurs/
@@ -370,9 +344,15 @@ Ressources/
 ├── Dimensions/
 └── Themes/
 
-Règles :
+Objectifs :
 
-Les vues XAML ne doivent pas contenir de couleurs codées directement.
+éviter valeurs visuelles codées en dur
+
+garantir cohérence graphique
+
+préparer un système de thèmes
+
+simplifier maintenance UI
 
 Exemple interdit :
 
@@ -382,26 +362,11 @@ Exemple conforme :
 
 Foreground="{StaticResource CouleurPrincipale}"
 
-Les styles de contrôles doivent être définis dans `Ressources/Styles`.
-
-Les constantes visuelles (espacements, tailles standard, rayons de bordure)
-doivent être définies dans `Ressources/Dimensions`.
-
-Les vues doivent uniquement consommer ces ressources
-et ne pas définir leurs propres valeurs visuelles.
-
-Objectif final :
-
-Maintenir une cohérence graphique globale et éviter
-la duplication de valeurs visuelles dans l’ensemble de l’application.
-
-Les ressources visuelles appartiennent à la couche UI.
-Elles ne doivent jamais être définies dans la logique métier
-ou dans les ViewModels.
+Les ressources appartiennent uniquement à la couche UI.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-RESPONSABILITÉ DES CLASSES (PRINCIPE)
+12. RESPONSABILITÉ DES CLASSES
 
 Chaque classe doit avoir une responsabilité claire et unique.
 
@@ -411,23 +376,25 @@ GestionnaireWinget
 Responsabilité : exécuter les commandes winget et parser la sortie.
 
 JournalService
-Responsabilité : écrire les événements dans les logs.
+Responsabilité : journaliser les événements.
 
 AccueilVueModele
-Responsabilité : orchestrer les interactions entre l’interface
-et les services métier.
+Responsabilité : orchestrer les interactions entre UI et services.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-COMPARAISON DE VERSIONS
+13. COMPARAISON DE VERSIONS
 
-Toute comparaison de versions logicielles :
+Toute comparaison de versions doit utiliser :
 
-- Doit utiliser System.Version
-- Ne doit jamais utiliser une comparaison lexicographique de chaînes
+System.Version
 
-Raison :
+Jamais de comparaison texte.
 
-"1.10" > "1.2" est faux en comparaison texte,
-mais correct via System.Version.
-```
+Exemple incorrect :
+
+"1.10" < "1.2"
+
+Exemple correct :
+
+new Version("1.10") > new Version("1.2")

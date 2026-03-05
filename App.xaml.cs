@@ -10,6 +10,12 @@
 ║  Point d’entrée logique de l’application.                            ║
 ║  Centralise la composition des dépendances.                          ║
 ║                                                                      ║
+║  Responsabilités principales :                                       ║
+║  - Initialiser l’application                                         ║
+║  - Créer les services principaux                                     ║
+║  - Injecter les dépendances                                          ║
+║  - Créer la fenêtre principale                                       ║
+║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
 ╚══════════════════════════════════════════════════════════════════════╝
@@ -41,7 +47,7 @@ using Vigie.VueModeles;
  * Initialise l’application et compose les dépendances.
  *
  * Objectif architectural :
- * - Centraliser l’injection
+ * - Centraliser l’injection de dépendances
  * - Éviter toute dépendance UI dans les services métier
  */
 
@@ -68,33 +74,44 @@ namespace Vigie
 
         #endregion
 
-        #region 3.3 Méthodes
+        #region 3.3 Méthodes publiques
 
         protected override void OnLaunched(
             Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            // 1️⃣ Journalisation
-            var journal = new JournalService();
+            #region 1️⃣ Initialisation journal
 
-            // 2️⃣ Gestionnaires de scan
+            IJournalService journal =
+                new JournalService();
+
+            #endregion
+
+
+            #region 2️⃣ Gestionnaires de scan
+
             var gestionnaires = new List<IGestionnairePaquets>
             {
-                new GestionnaireWinget(),
-                new GestionnaireScoop()
+                new GestionnaireWinget(journal),
+                new GestionnaireScoop(journal)
             };
 
-            var normaliseur = new NormaliseurWinget();
+            var normaliseur =
+                new NormaliseurWinget();
 
-            var gestionnaireGlobal = new GestionnaireGlobal(
-                gestionnaires,
-                normaliseur,
-                journal);
+            var gestionnaireGlobal =
+                new GestionnaireGlobal(
+                    gestionnaires,
+                    normaliseur,
+                    journal);
 
-            // 3️⃣ Service mise à jour simulé
+            #endregion
+
+
+            #region 3️⃣ Services de mise à jour
+
             IServiceMiseAJour serviceSimule =
                 new ServiceMiseAJourSimule();
 
-            // 4️⃣ Point de restauration simulé
             IPointRestaurationService pointRestauration =
                 new PointRestaurationSimule();
 
@@ -104,24 +121,45 @@ namespace Vigie
                     journal,
                     pointRestauration);
 
-            // 5️⃣ Création fenêtre
-            var fenetre = new FenetrePrincipale();
+            #endregion
+
+
+            #region 4️⃣ Création fenêtre principale
+
+            var fenetre =
+                new FenetrePrincipale();
+
             fenetre.Activate();
 
-            // 6️⃣ Service de confirmation (Window-based)
+            #endregion
+
+
+            #region 5️⃣ Service de confirmation UI
+
             var confirmationService =
                 new ConfirmationService(fenetre);
 
-            // 7️⃣ Création ViewModel
-            var accueilVM = new AccueilVueModele(
-                gestionnaireGlobal,
-                serviceMiseAJourGlobal,
-                confirmationService);
+            #endregion
 
-            // 8️⃣ Injection ViewModel
+
+            #region 6️⃣ Création ViewModel
+
+            var accueilVM =
+                new AccueilVueModele(
+                    gestionnaireGlobal,
+                    serviceMiseAJourGlobal,
+                    confirmationService);
+
+            #endregion
+
+
+            #region 7️⃣ Injection ViewModel
+
             fenetre.DefinirViewModel(accueilVM);
 
             _window = fenetre;
+
+            #endregion
         }
 
         #endregion

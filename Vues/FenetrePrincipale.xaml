@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
 <!--
     ╔══════════════════════════════════════════════════════════════════════╗
     ║                          VIGIE                                       ║
@@ -28,34 +30,63 @@
     Title="Vigie"
     mc:Ignorable="d">
 
+    <!--  =============================================================  -->
+    <!--  Backdrop système (effet Mica Windows 11)  -->
+    <!--  =============================================================  -->
+
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
+    <!--  =============================================================  -->
+    <!--  1. LAYOUT PRINCIPAL  -->
+    <!--  =============================================================  -->
+
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220" />
+
+            <!--  Barre navigation  -->
+            <ColumnDefinition Width="{StaticResource LargeurSidebar}" />
+
+            <!--  Zone contenu  -->
             <ColumnDefinition Width="*" />
+
         </Grid.ColumnDefinitions>
 
-        <!--  Barre latérale  -->
-        <Grid Grid.Column="0" Background="#384454">
+        <!--  =============================================================  -->
+        <!--  2. BARRE LATÉRALE DE NAVIGATION  -->
+        <!--  =============================================================  -->
+
+        <Grid Grid.Column="0" Background="{StaticResource CouleurSidebar}">
+
+            <!--  =========================================================  -->
+            <!--  Styles navigation  -->
+            <!--  =========================================================  -->
 
             <Grid.Resources>
 
                 <Style x:Key="NavButtonStyle" TargetType="Button">
+
                     <Setter Property="Background" Value="Transparent" />
                     <Setter Property="Foreground" Value="White" />
                     <Setter Property="BorderThickness" Value="0" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
-                    <Setter Property="Height" Value="44" />
-                    <Setter Property="Margin" Value="20,0" />
+
+                    <Setter Property="Height" Value="{StaticResource HauteurBoutonNavigation}" />
+
+                    <Setter Property="Margin" Value="{StaticResource MargeNavigationBouton}" />
+
                     <Setter Property="HorizontalContentAlignment" Value="Left" />
+
                     <Setter Property="Padding" Value="12,0" />
+
                     <Setter Property="Template">
+
                         <Setter.Value>
+
                             <ControlTemplate TargetType="Button">
+
                                 <Grid x:Name="RootGrid" Background="Transparent">
                                     <ContentPresenter Margin="12,0" VerticalAlignment="Center" />
 
@@ -66,40 +97,56 @@
                                             <VisualState x:Name="Normal" />
 
                                             <VisualState x:Name="PointerOver">
+
                                                 <Storyboard>
+
                                                     <ColorAnimation
                                                         Storyboard.TargetName="RootGrid"
                                                         Storyboard.TargetProperty="(Grid.Background).(SolidColorBrush.Color)"
-                                                        To="#4F6D8C"
+                                                        To="{StaticResource CouleurSidebarHover}"
                                                         Duration="0" />
+
                                                 </Storyboard>
+
                                             </VisualState>
 
                                             <VisualState x:Name="Pressed">
+
                                                 <Storyboard>
+
                                                     <ColorAnimation
                                                         Storyboard.TargetName="RootGrid"
                                                         Storyboard.TargetProperty="(Grid.Background).(SolidColorBrush.Color)"
-                                                        To="#2F3B4A"
+                                                        To="{StaticResource CouleurSidebarPressed}"
                                                         Duration="0" />
+
                                                 </Storyboard>
+
                                             </VisualState>
 
                                         </VisualStateGroup>
 
                                     </VisualStateManager.VisualStateGroups>
                                 </Grid>
+
                             </ControlTemplate>
+
                         </Setter.Value>
+
                     </Setter>
+
                 </Style>
 
             </Grid.Resources>
 
+            <!--  =========================================================  -->
+            <!--  Boutons navigation  -->
+            <!--  =========================================================  -->
+
             <StackPanel
-                Margin="0,40,0,0"
+                Margin="{StaticResource MargeSidebar}"
                 VerticalAlignment="Top"
-                Spacing="12">
+                Spacing="{StaticResource EspacementNavigation}">
 
                 <Button
                     Click="Accueil_Click"
@@ -125,8 +172,12 @@
 
         </Grid>
 
-        <!--  Zone d'affichage des pages  -->
+        <!--  =============================================================  -->
+        <!--  3. CONTENU PRINCIPAL (FRAME NAVIGATION)  -->
+        <!--  =============================================================  -->
+
         <Frame x:Name="RootFrame" Grid.Column="1" />
 
     </Grid>
+
 </Window>

@@ -51,7 +51,8 @@ public enum StatutMiseAJour
     Succes = 1,
     Echec = 2,
     Annule = 3,
-    Timeout = 4
+    Timeout = 4,
+    EnCours = 5
 }
 
 #endregion

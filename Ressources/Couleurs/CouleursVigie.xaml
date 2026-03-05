@@ -120,4 +120,16 @@
     <SolidColorBrush x:Key="BrushAvertissement" Color="{StaticResource CouleurAvertissement}" />
     <SolidColorBrush x:Key="BrushErreur" Color="{StaticResource CouleurErreur}" />
 
+    <!--  ============================================================  -->
+    <!--  Couleurs navigation latérale (UI actuelle)  -->
+    <!--  ============================================================  -->
+
+    <Color x:Key="CouleurSidebar">#384454</Color>
+    <Color x:Key="CouleurSidebarHover">#4F6D8C</Color>
+    <Color x:Key="CouleurSidebarPressed">#2F3B4A</Color>
+
+    <SolidColorBrush x:Key="BrushSidebar" Color="{StaticResource CouleurSidebar}" />
+    <SolidColorBrush x:Key="BrushSidebarHover" Color="{StaticResource CouleurSidebarHover}" />
+    <SolidColorBrush x:Key="BrushSidebarPressed" Color="{StaticResource CouleurSidebarPressed}" />
+
 </ResourceDictionary>

@@ -12,14 +12,13 @@
 ║  Responsabilités principales :                                       ║
 ║  - Simuler une mise à jour                                           ║
 ║  - Tester le pipeline global sans action système                     ║
-║  - Retourner un ResultatMiseAJour cohérent                           ║
+║  - Simuler succès / échec / timeout                                  ║
 ║                                                                      ║
 ║  Dépendances :                                                       ║
 ║  - IServiceMiseAJour                                                 ║
 ║  - ResultatMiseAJour                                                 ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
-║  Voir fichier LICENSE pour détails                                   ║
 ║  Copyright © 2026 Flo Latury                                         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 */
@@ -47,10 +46,14 @@ using Vigie.Services.Interfaces;
  * Permettre le test complet du pipeline :
  * UI → Global → Service → Resultat → Historique
  *
+ * Particularités :
+ * - Simulation succès
+ * - Simulation échec
+ * - Simulation timeout
+ *
  * Limites :
  * - Aucune exécution winget
  * - Aucune modification système
- * - Simulation volontairement contrôlée
  */
 
 #endregion
@@ -75,6 +78,49 @@ namespace Vigie.Services.MisesAJour
 
             // Simulation d'un délai réaliste
             await Task.Delay(800);
+
+            /*
+             * Simulation volontaire d'échec
+             * Permet de tester l'affichage erreur dans l'UI.
+             */
+
+            if (logiciel.Nom.Contains("fail", StringComparison.OrdinalIgnoreCase))
+            {
+                return new ResultatMiseAJour
+                {
+                    Nom = logiciel.Nom,
+                    VersionAvant = logiciel.VersionActuelle,
+                    VersionApres = logiciel.NouvelleVersion,
+                    Source = logiciel.Source,
+                    Statut = StatutMiseAJour.Echec,
+                    CodeRetourProcessus = -1,
+                    DureeExecution = TimeSpan.FromMilliseconds(800),
+                    MessageErreur = "Erreur simulée."
+                };
+            }
+
+            /*
+             * Simulation d'un timeout
+             */
+
+            if (logiciel.Nom.Contains("timeout", StringComparison.OrdinalIgnoreCase))
+            {
+                return new ResultatMiseAJour
+                {
+                    Nom = logiciel.Nom,
+                    VersionAvant = logiciel.VersionActuelle,
+                    VersionApres = logiciel.NouvelleVersion,
+                    Source = logiciel.Source,
+                    Statut = StatutMiseAJour.Timeout,
+                    CodeRetourProcessus = -2,
+                    DureeExecution = TimeSpan.FromMilliseconds(800),
+                    MessageErreur = "Timeout simulé."
+                };
+            }
+
+            /*
+             * Simulation succès normal
+             */
 
             return new ResultatMiseAJour
             {

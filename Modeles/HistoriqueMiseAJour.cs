@@ -70,7 +70,7 @@ public class HistoriqueMiseAJour
 
     public DateTime DateOperation { get; set; }
 
-    public bool Succes { get; set; }
+    public StatutMiseAJour Statut { get; set; } = StatutMiseAJour.Inconnu;
 
     public string MessageErreur { get; set; } = string.Empty;
 

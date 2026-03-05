@@ -188,6 +188,10 @@ Toute décision non évidente doit être expliquée.
 
 Toute dépendance importante doit être documentée.
 
+Aucun code mort dans le projet.
+
+Toujours vérifié qu'il ne reste pas de debug après avoir testé
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 6. OBJECTIF DU STANDARD
@@ -231,7 +235,7 @@ supprimer le couplage fort
 
 permettre la testabilité
 
-préparer l’intégration future d’un conteneur DI
+préparer une éventuelle intégration future d’un conteneur DI
 
 garantir l’évolutivité long terme
 
@@ -265,7 +269,7 @@ utiliser async / await
 
 éviter les blocages de l’interface utilisateur
 
-ne jamais utiliser .Result ou .Wait() dans la couche UI
+ne jamais utiliser .Result ou .Wait() dans la couche UI ou ViewModel
 
 Objectif :
 
@@ -397,4 +401,50 @@ Exemple incorrect :
 
 Exemple correct :
 
-new Version("1.10") > new Version("1.2")
+new Version("1.10").CompareTo(new Version("1.2")) > 0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+14. GESTION DES EXCEPTIONS
+
+Les exceptions ne doivent jamais remonter directement vers la couche UI.
+
+Toute exception provenant d’une opération système doit être :
+
+capturée
+journalisée via JournalService
+transformée en résultat métier (ex : ResultatMiseAJour)
+
+Objectif :
+
+éviter les crashs de l’application
+garantir la stabilité du moteur
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+15. NOMMAGE DES FICHIERS
+
+Exemple :
+         GestionnaireWinget
+         ServiceMiseAJourGlobal
+         JournalService
+         AccueilVueModele
+
+Règles :
+        PascalCase
+        Nom explicite
+        Suffixe indiquant le rôle
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+16. RÈGLE MVVM POUR LES VUES
+
+Contenu :
+         Les vues XAML ne doivent contenir aucune logique métier.
+         Les interactions doivent être gérées via :
+                                                   Command
+                                                   Binding
+                                                   ViewModel
+
+Objectif : maintenir la séparation stricte entre UI et logique applicative.
+

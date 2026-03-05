@@ -52,7 +52,9 @@ namespace Vigie.Modeles
         #region 3.1 Champs privés
 
         private bool _estSelectionne;
-        private StatutMiseAJour? _statutMiseAJour;
+
+        private StatutMiseAJour _statutMiseAJour =
+            StatutMiseAJour.EnAttente;
 
         #endregion
 
@@ -98,12 +100,18 @@ namespace Vigie.Modeles
          * Indique l'état actuel de la mise à jour
          * pour ce logiciel.
          *
+         * États possibles :
+         * - EnAttente
+         * - EnCours
+         * - Succes
+         * - Echec
+         *
          * Utilisation :
          * - Feedback visuel dans l'interface
          * - Préparation historique futur
          */
 
-        public StatutMiseAJour? StatutMiseAJour
+        public StatutMiseAJour StatutMiseAJour
         {
             get => _statutMiseAJour;
             set

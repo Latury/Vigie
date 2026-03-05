@@ -121,23 +121,23 @@ Permettre la mise à jour sécurisée et maîtrisée des logiciels sélectionné
 
 ### 🧩 Fonctionnalités
 
-- 🔲 Mise à jour individuelle  
-  (aucune CheckBox, aucune sélection)
-- 🟡 Mise à jour globale stabilisée  
-  (reste à faire : refresh scan, feedback logiciel, amélioration UX confirmation)
-- 🟡 Confirmation utilisateur  
-  (structure MVVM stable, UX simple à améliorer)
-- 🔲 Gestion élévation administrateur  
-  (aucun appel UAC, aucun runas, aucun service élévation)
 - ✅ Journalisation détaillée des opérations
-- 🟡 Préparation modèle Historique interne  
-  (modèle existant mais pas encore affiché ni persisté)
-- 🔲 Feedback visuel par logiciel  
-  (pas d’icône succès / erreur, pas de statut par ligne)
+- ✅ Mise à jour globale stabilisée  (pipeline stable : scan - orchestration - statuts) ( les améliorations UX seront réalisées lors de la conception UI )
 - ✅ Désactivation partielle de l’interface pendant opération
-- 🔲 Rafraîchissement automatique du scan après mise à jour réussie
-- 🟡 Centralisation des ressources visuelles  
-  (dossier Ressources créé mais certaines valeurs sont encore codées en dur)
+- ✅ Rafraîchissement automatique du scan après mise à jour réussie
+- ✅ Support Scoop (simulé)
+- ✅ Support Chocolatey (simulé)
+- 🟡 Timeout configurable pour mise à jour ( certains packages peuvent bloquer )
+- 🟡 Affichage source gestionnaire ( winget - scoop - choco dans la liste des logiciels )
+- 🟡 Confirmation utilisateur (Le seul manque : UX plus riche possible )
+- 🟡 Détection automatique des gestionnaires installés ( gestion PATH - logs UX )
+- 🟡 Centralisation des ressources visuelles (dossier Ressources créé mais certaines valeurs sont encore codées en dur)
+- 🟡 Préparation modèle Historique interne ( Nous avons : HistoriqueMiseAJour.cs Mais : pas de stockage - pas d'affichage - pas de persistance )
+- 🟡 Feedback visuel par logiciel (statuts internes présents, reste affichage UI à améliorer)
+- 🟡 Mise à jour interne du statut des logiciels pendant l’opération (statuts moteur implémentés, affichage UI à finaliser)
+- 🔲 Mise à jour individuelle (aucune CheckBox - aucune sélection - mise à jour toujours globale - Décision : volontairement globale pour simplifier l’UX. )
+- 🔲 Gestion élévation administrateur  (aucun appel UAC - aucun runas - aucun service élévation )
+- 🔲 Rotation des logs (limite taille fichier journal)
 
 Objectif : rendre la mise à jour contrôlée, compréhensible et traçable.
 
@@ -151,11 +151,14 @@ Renforcer la sécurité et la transparence des opérations système.
 
 ### 🔐 Sécurité système
 
+- 🔲 Vérification de la connectivité réseau avant mise à jour
 - 🔲 Création automatique point de restauration (stabilisation UX)
 - 🔲 Affichage visuel du statut du point de restauration (date/heure, origine Vigie)
 - 🔲 Gestion échec avec retry
 - 🔲 Rapport détaillé d’erreurs
 - 🔲 Séparation validation UX / validation métier
+- 🔲 Vérification espace disque disponible avant mise à jour
+- 🔲 Détection mise à jour nécessitant redémarrage ( Certaines mises à jour Windows - packages peuvent demander - Reboot required  Vigie pourrait afficher : Redémarrage recommandé )
 
 ### ⚙️ Paramètres liés à la sécurité
 
@@ -170,6 +173,9 @@ Renforcer la sécurité et la transparence des opérations système.
 
 Rendre l’application accessible.
 
+- 🔲 Barre de progression globale des mises à jour
+- 🔲 Icônes visuelles des statuts et non des émojis ( ✔ Succès - ⚠ Échec - ⏳ En cours )
+- 🔲 Amélioration UX des opérations de mise à jour (feedback visuel clair, progression, statut détaillé)
 - 🔲 Interface simplifiée
 - 🔲 Boutons larges
 - 🔲 Texte clair
@@ -184,8 +190,10 @@ Rendre l’application accessible.
 
 Support multi-gestionnaires et mode avancé complet.
 
-- 🔲 Support Scoop
-- 🔲 Support Chocolatey
+- 🔲 Import configuration Vigie pratique si l’utilisateur change de PC
+- 🔲 Export configuration Vigie pratique si l’utilisateur change de PC ( Exemple : vigie-config.json - Pour sauvegarder : gestionnaires activés - paramètres - mode expert )
+- 🔲 Activation réelle Scoop
+- 🔲 Activation réelle Chocolatey
 - 🔲 Support pip
 - 🔲 Support npm
 - 🔲 Paramètres avancés
@@ -195,8 +203,7 @@ Support multi-gestionnaires et mode avancé complet.
 - 🔲 Option utilisateur pour activer/désactiver le Mode Expert
 - 🔲 Packaging application
 - 🔲 Documentation complète
-- 🔲 Implémentation niveaux de journalisation configurables
-      (Debug / Info / Warning / Erreur)
+- 🔲 Implémentation niveaux de journalisation configurables (Debug - Info - Warning - Erreur)
 - 🔲 Intégration configuration niveau via Paramètres utilisateur
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -207,6 +214,7 @@ Support multi-gestionnaires et mode avancé complet.
 
 Faire de Vigie un outil réellement exploitable.
 
+- 🔲 Notifications système après mise à jour utile si la mise à jour est planifiée. ( Exemple : 5 logiciels mis à jour - 2 erreurs détectées )
 - 🔲 Planification automatique mises à jour
 - 🔲 Rapport synthétique santé système
 - 🔲 Historique des mises à jour
@@ -235,7 +243,7 @@ Uniquement si l’architecture le permet.
 | --------- | --------------- | --------------------------------------------------------------------------------------|
 | 0.1.0-dev | 🟢 Terminé      |  ~100 %      Fondations consolidées                                                   |
 | 0.2.0-dev | 🟢 Consolidée   |  ~100 % Extension maîtrisée et résilience validée                                     |
-| 0.3.0-dev | 🟡 En cours     |  ~ 50 % Mise à jour globale stable, sélection individuelle et élévation à implémenter |
+| 0.3.0-dev | 🟡 En cours     |  ~ 85 % Mise à jour globale stable, sélection individuelle et élévation à implémenter |
 | 0.4.0     | ⚪ À faire      | 0 %                                                                                   |
 | 0.5.0     | ⚪ À faire      | 0 %                                                                                   |
 | 1.0.0     | ⚪ À faire      | 0 %                                                                                   |

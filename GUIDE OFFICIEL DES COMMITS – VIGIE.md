@@ -79,7 +79,7 @@ Exemples adaptés à Vigie :
 📎 [Init] Initialisation projet WinUI 3
 🏗️ [Architecture] Mise en place MVVM strict
 🧱 [Core] Implémentation GestionnaireWinget scan texte
-✨ [Feature] Ajout mise à jour individuelle
+✨ [Feature] Implémentation mise à jour globale contrôlée
 🔒 [Security] Ajout point de restauration
 
 Règles :
@@ -172,6 +172,7 @@ Explication claire destinée :
 | 🎯    | UX           | Amélioration expérience utilisateur                                                  |
 | 📁    | Structure    | Réorganisation dossiers                                                              |
 | 🧬    | Experimental | Fonctionnalité expérimentale                                                         |
+| ⚙️    | Service      | Modification ou création d’un service applicatif                                     |
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -246,6 +247,16 @@ Base architecturale pour extension multi-gestionnaires.
   doit être strictement alignée avec l’état réel du code au moment du commit.
 - Un commit de documentation ne doit jamais anticiper une
   fonctionnalité non encore implémentée.
+
+- Un commit ne doit pas dépasser ~300 lignes modifiées
+  sauf justification explicite dans la description.
+
+- Tout commit introduisant une nouvelle fonctionnalité
+  doit mentionner la version cible de la feuille de route.
+
+Exemple :
+
+Version cible : 0.3.0
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

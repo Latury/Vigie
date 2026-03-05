@@ -427,7 +427,7 @@ Début de l’implémentation du système de mise à jour contrôlée.
 
 ## 📌 Statut
 
-🟡 En cours (~50%)
+🟡 En cours (~85%)
 
 ---
 
@@ -453,6 +453,7 @@ Priorités :
 - Journalisation début / fin par logiciel
 - Mesure de la durée d’exécution
 - Gestion des exceptions critiques
+- Mise à jour automatique du statut visuel des logiciels
 
 Impact :
 
@@ -493,6 +494,7 @@ L’implémentation actuelle fonctionne en **mode simulé**.
 - Ajout du **ProgressRing de scan**
 - Ajout du **ProgressRing de mise à jour**
 - Désactivation partielle de l’interface pendant les opérations
+- Désactivation automatique des boutons pendant scan / mise à jour
 
 Impact :
 
@@ -544,8 +546,9 @@ La **mise à jour globale reste pleinement opérationnelle**.
 ## ⚙️ Améliorations techniques
 
 - Correction du blocage de l’interface lors du scan
-- Exécution parallèle des gestionnaires dans `GestionnaireGlobal`
+- Exécution séquentielle contrôlée des gestionnaires dans `GestionnaireGlobal`
 - Stabilisation de l’agrégation des résultats
+- Détection automatique des gestionnaires installés (winget / scoop / choco)
 
 Impact :
 
@@ -555,25 +558,25 @@ Amélioration notable de la **réactivité et de la stabilité du scan**.
 
 # 📊 INDICATEURS DE MATURITÉ
 
-| Fonctionnalité         | Statut                         |
-|------------------------|--------------------------------|
-Mise à jour globale      | Fonctionnelle                  |
-Confirmation utilisateur | Stable                         |
-Point de restauration    | Simulé (architecture prête)    |
-Mise à jour individuelle | Non implémentée (UI suspendue) |
-Élévation administrateur | Non implémentée                |
-Historique interne       | Modèle prêt, non intégré       |
-Feedback visuel logiciel | Non implémenté                 |
+| Fonctionnalité          | Statut                         |
+|-------------------------|--------------------------------|
+|Mise à jour globale      | Fonctionnelle                  |
+|Confirmation utilisateur | Stable                         |
+|Point de restauration    | Simulé (architecture prête)    |
+|Mise à jour individuelle | Non implémentée (décision UX)  |
+|Élévation administrateur | Non implémentée                |
+|Historique interne       | Modèle prêt                    |
+|Feedback visuel logiciel | Implémenté côté moteur         |
 
 ---
 
 # ⏭️ PROCHAINES ÉTAPES (0.3.0)
 
-- Mise à jour individuelle (sélection par cases)
 - Gestion de l’élévation administrateur
 - Historique interne en mémoire
-- Feedback visuel par logiciel
-- Rafraîchissement automatique du scan après mise à jour
+- Amélioration du feedback visuel dans l’UI
+- Amélioration UX de la confirmation utilisateur
+- Détection automatique des gestionnaires installés
 
 ---
 

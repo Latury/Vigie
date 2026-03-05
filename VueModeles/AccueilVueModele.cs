@@ -16,6 +16,7 @@
 ║  - Gérer la confirmation utilisateur                                 ║
 ║  - Superviser la mise à jour globale                                 ║
 ║  - Gérer l’état des boutons UI                                       ║
+║  - Enregistrer l’historique des opérations                           ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -35,7 +36,6 @@ using Vigie.Infrastructure;
 using Vigie.Modeles;
 using Vigie.Services.Interfaces;
 using Vigie.Services.MisesAJour;
-using Vigie.Services.MisesAJour;
 
 #endregion
 
@@ -52,6 +52,7 @@ using Vigie.Services.MisesAJour;
  * - Gestion état UI
  * - Activation dynamique des boutons
  * - Supervision pipeline de mise à jour
+ * - Enregistrement historique interne
  */
 
 #endregion
@@ -82,6 +83,12 @@ namespace Vigie.VueModeles
         public ICommand MettreAJourCommande { get; }
 
         public ObservableCollection<LogicielMiseAJour> Logiciels { get; }
+
+        /*
+         * Historique des mises à jour exécutées.
+         * Stockage mémoire uniquement.
+         */
+        public ObservableCollection<HistoriqueMiseAJour> Historique { get; }
 
         public bool IsScanning
         {
@@ -179,6 +186,7 @@ namespace Vigie.VueModeles
                 confirmationService ?? throw new ArgumentNullException(nameof(confirmationService));
 
             Logiciels = new ObservableCollection<LogicielMiseAJour>();
+            Historique = new ObservableCollection<HistoriqueMiseAJour>();
 
             Logiciels.CollectionChanged += (_, __) =>
             {
@@ -282,14 +290,35 @@ namespace Vigie.VueModeles
                             .ExecuterMiseAJourAsync(logiciel);
 
                     logiciel.StatutMiseAJour = resultat.Statut;
+
+                    AjouterHistorique(resultat);
                 }
 
-                EtatActuel = EtatSysteme.Ajour;
+                await ScannerAsync();
             }
             finally
             {
                 IsUpdating = false;
             }
+        }
+
+        /*
+         * Enregistre une entrée d’historique interne
+         * après une tentative de mise à jour.
+         */
+        private void AjouterHistorique(ResultatMiseAJour resultat)
+        {
+            var entree = new HistoriqueMiseAJour
+            {
+                Nom = resultat.Nom,
+                VersionAvant = resultat.VersionAvant,
+                VersionApres = resultat.VersionApres,
+                Source = resultat.Source,
+                Statut = resultat.Statut,
+                MessageErreur = resultat.MessageErreur
+            };
+
+            Historique.Add(entree);
         }
 
         #endregion

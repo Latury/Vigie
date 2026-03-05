@@ -29,6 +29,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -77,10 +78,6 @@ namespace Vigie.Services.Gestionnaires
          *
          * Objectif :
          * Orchestrer l’agrégation multi-gestionnaires.
-         *
-         * Particularité :
-         * Les gestionnaires sont exécutés en parallèle
-         * pour améliorer la performance globale.
          */
 
         public async Task<List<LogicielMiseAJour>> ScanAsync()
@@ -89,15 +86,33 @@ namespace Vigie.Services.Gestionnaires
             {
                 _journal.Info("Agrégation des gestionnaires de paquets.");
 
-                var taches = _gestionnaires
-                    .Select(ExecuterGestionnaireAsync)
-                    .ToList();
+                var tousLesResultats = new List<LogicielMiseAJour>();
 
-                var resultats =
-                    await Task.WhenAll(taches);
+                foreach (var gestionnaire in _gestionnaires)
+                {
+                    string nomGestionnaire = gestionnaire.GetType().Name;
 
-                var tousLesResultats =
-                    resultats.SelectMany(r => r).ToList();
+                    string commande = nomGestionnaire switch
+                    {
+                        "GestionnaireWinget" => "winget",
+                        "GestionnaireScoop" => "scoop",
+                        "GestionnaireChocolatey" => "choco",
+                        _ => null
+                    };
+
+                    if (commande != null && !GestionnaireDisponible(commande))
+                    {
+                        _journal.Info(
+                            $"{nomGestionnaire} ignoré (outil non installé).");
+
+                        continue;
+                    }
+
+                    var resultats =
+                        await ExecuterGestionnaireAsync(gestionnaire);
+
+                    tousLesResultats.AddRange(resultats);
+                }
 
                 var resultatsDedup =
                     DedoublonnerResultats(tousLesResultats);
@@ -125,6 +140,10 @@ namespace Vigie.Services.Gestionnaires
         {
             var resultatsNormalises = new List<LogicielMiseAJour>();
 
+            string nomGestionnaire = gestionnaire.GetType().Name;
+
+            _journal.Info($"Exécution {nomGestionnaire}...");
+
             try
             {
                 var resultats =
@@ -133,7 +152,7 @@ namespace Vigie.Services.Gestionnaires
                 if (resultats == null || resultats.Count == 0)
                 {
                     _journal.Info(
-                        $"Aucune mise à jour retournée par {gestionnaire.GetType().Name}.");
+                        $"Aucune mise à jour retournée par {nomGestionnaire}.");
 
                     return resultatsNormalises;
                 }
@@ -150,18 +169,20 @@ namespace Vigie.Services.Gestionnaires
                     catch (Exception exNormalisation)
                     {
                         _journal.Erreur(
-                            $"Erreur normalisation ({gestionnaire.GetType().Name}) : {exNormalisation.Message}");
+                            $"Erreur normalisation ({nomGestionnaire}) : {exNormalisation.Message}");
                     }
                 }
 
                 _journal.Info(
-                    $"{resultatsNormalises.Count} mise(s) ajoutée(s) depuis {gestionnaire.GetType().Name}.");
+                    $"{resultatsNormalises.Count} mise(s) ajoutée(s) depuis {nomGestionnaire}.");
             }
             catch (Exception exGestionnaire)
             {
                 _journal.Erreur(
-                    $"Erreur dans {gestionnaire.GetType().Name} : {exGestionnaire.Message}");
+                    $"Erreur dans {nomGestionnaire} : {exGestionnaire.Message}");
             }
+
+            _journal.Info($"Fin exécution {nomGestionnaire}.");
 
             return resultatsNormalises;
         }
@@ -171,10 +192,11 @@ namespace Vigie.Services.Gestionnaires
             List<LogicielMiseAJour> resultats)
         {
             return resultats
-                .Where(l =>
-                    l != null &&
-                    !string.IsNullOrWhiteSpace(l.IdentifiantNormalise))
-                .GroupBy(l => l.IdentifiantNormalise)
+                .Where(l => l != null)
+                .GroupBy(l =>
+                    !string.IsNullOrWhiteSpace(l.IdentifiantNormalise)
+                        ? l.IdentifiantNormalise.ToLowerInvariant()
+                        : l.Nom.ToLowerInvariant())
                 .Select(g =>
                 {
                     var groupe = g.ToList();
@@ -219,15 +241,76 @@ namespace Vigie.Services.Gestionnaires
                 return new Version(0, 0);
             }
 
-            var propre =
-                versionString.Split('-')[0];
-
-            if (Version.TryParse(propre, out var version))
+            try
             {
-                return version;
-            }
+                var propre = versionString
+                    .Split('-', '+')[0]
+                    .Trim();
 
-            return new Version(0, 0);
+                var segments = propre
+                    .Split('.')
+                    .Take(4)
+                    .Select(s =>
+                    {
+                        if (int.TryParse(s, out var val))
+                        {
+                            return val;
+                        }
+
+                        return 0;
+                    })
+                    .ToArray();
+
+                while (segments.Length < 2)
+                {
+                    segments = segments.Append(0).ToArray();
+                }
+
+                return segments.Length switch
+                {
+                    2 => new Version(segments[0], segments[1]),
+                    3 => new Version(segments[0], segments[1], segments[2]),
+                    _ => new Version(segments[0], segments[1], segments[2], segments[3])
+                };
+            }
+            catch
+            {
+                return new Version(0, 0);
+            }
+        }
+
+
+        /*
+         * Méthode : GestionnaireDisponible
+         *
+         * Objectif :
+         * Vérifier si un gestionnaire de paquets
+         * est disponible sur la machine.
+         */
+
+        private bool GestionnaireDisponible(string commande)
+        {
+            try
+            {
+                var process = new Process();
+
+                process.StartInfo.FileName = commande;
+                process.StartInfo.Arguments = "--version";
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.CreateNoWindow = true;
+
+                process.Start();
+
+                process.WaitForExit(2000);
+
+                return process.ExitCode == 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         #endregion

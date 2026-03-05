@@ -33,12 +33,18 @@
  * Enum : StatutMiseAJour
  *
  * Rôle :
- * Représente l’état final d’une tentative
+ * Représente l’état d’une tentative
  * de mise à jour logicielle.
  *
- * Objectif :
- * Remplacer un booléen trop limité
- * par une représentation explicite et extensible.
+ * Cycle typique :
+ *
+ * Scan détecte logiciel
+ * ↓
+ * EnAttente
+ * ↓
+ * EnCours
+ * ↓
+ * Succes / Echec / Timeout / Annule
  */
 
 #endregion
@@ -48,11 +54,12 @@
 public enum StatutMiseAJour
 {
     Inconnu = 0,
-    Succes = 1,
-    Echec = 2,
-    Annule = 3,
-    Timeout = 4,
-    EnCours = 5
+    EnAttente = 1,
+    EnCours = 2,
+    Succes = 3,
+    Echec = 4,
+    Annule = 5,
+    Timeout = 6
 }
 
 #endregion

@@ -16,6 +16,7 @@
 ║  - Gérer préparation point de restauration                           ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
+║  Copyright © 2026 Flo Latury                                         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 */
 
@@ -45,6 +46,7 @@ namespace Vigie.Services.MisesAJour
      * 2. Encapsuler toute exception
      * 3. Journaliser les événements
      * 4. Garantir qu’aucune exception ne remonte vers l’UI
+     * 5. Mettre à jour le statut visuel des logiciels
      */
 
     #endregion
@@ -139,6 +141,9 @@ namespace Vigie.Services.MisesAJour
 
             try
             {
+                // Feedback visuel : début mise à jour
+                logiciel.StatutMiseAJour = StatutMiseAJour.EnCours;
+
                 _journal?.Info(
                     $"Début mise à jour : {logiciel.Nom} ({logiciel.Source})");
 
@@ -150,6 +155,8 @@ namespace Vigie.Services.MisesAJour
 
                 if (resultat == null)
                 {
+                    logiciel.StatutMiseAJour = StatutMiseAJour.Echec;
+
                     return ConstruireEchec(
                         logiciel,
                         "Service interne retourné null.",
@@ -157,6 +164,16 @@ namespace Vigie.Services.MisesAJour
                 }
 
                 resultat.DureeExecution = stopwatch.Elapsed;
+
+                // Feedback visuel : succès
+                if (resultat.Statut == StatutMiseAJour.Succes)
+                {
+                    logiciel.StatutMiseAJour = StatutMiseAJour.Succes;
+                }
+                else
+                {
+                    logiciel.StatutMiseAJour = StatutMiseAJour.Echec;
+                }
 
                 _journal?.Info(
                     $"Fin mise à jour : {logiciel.Nom} - {resultat.Statut}");
@@ -166,6 +183,8 @@ namespace Vigie.Services.MisesAJour
             catch (TaskCanceledException)
             {
                 stopwatch.Stop();
+
+                logiciel.StatutMiseAJour = StatutMiseAJour.Timeout;
 
                 _journal?.Erreur(
                     $"Timeout mise à jour : {logiciel.Nom}");
@@ -177,6 +196,8 @@ namespace Vigie.Services.MisesAJour
             catch (Exception ex)
             {
                 stopwatch.Stop();
+
+                logiciel.StatutMiseAJour = StatutMiseAJour.Echec;
 
                 _journal?.Erreur(
                     $"Erreur critique mise à jour {logiciel.Nom} : {ex.Message}");

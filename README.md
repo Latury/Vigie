@@ -26,6 +26,10 @@ Dernière mise à jour : 04 mars 2026
 
 Vigie est un centre de maintenance logicielle moderne conçu pour Windows.
 
+Vigie agit comme un orchestrateur de gestionnaires de paquets
+permettant de centraliser l'analyse et la mise à jour des logiciels
+via plusieurs sources (winget, scoop, chocolatey).
+
 Son objectif est de :
 
 - Scanner les logiciels installés
@@ -100,8 +104,12 @@ Vigie/
 │
 ├── Services/
 │   ├── Gestionnaires/
+│   ├── Historique/
 │   ├── Interfaces/
-│   └── Normalisation/
+│   ├── MiseAJour/
+│   ├── Normalisation/
+│   ├── Securite/
+│   └── UI/    
 │
 ├── Modeles/
 ├── JournalEvenements/
@@ -111,8 +119,8 @@ Vigie/
 │
 ├── Ressources/
 │   ├── Couleurs/
-│   ├── Styles/
 │   ├── Dimensions/
+│   ├── Styles/
 │   └── Themes/
 │
 ├── Assets/
@@ -139,7 +147,7 @@ Vigie/
 - Journalisation centralisée
 - Extensibilité progressive
 - Orchestrateur central (GestionnaireGlobal)
-- Support multi-gestionnaires activé (Winget + Scoop)
+- Support multi-gestionnaires activé (Winget réel - Scoop simulé - Chocolatey simulé )
 
 ---
 
@@ -182,13 +190,14 @@ Vigie/
 - Désactivation partielle de l’interface pendant opération
 - Préparation service **Point de restauration système** (simulation)
 - Introduction feedback visuel des opérations
+- Mise à jour du statut des logiciels pendant les opérations
 
 ⚠️ Fonctionnalités encore en cours :
 
 - Mise à jour individuelle (sélection par logiciel)
 - Gestion élévation administrateur
 - Historique interne des mises à jour
-- Rafraîchissement automatique après mise à jour
+- Amélioration du feedback visuel dans l’UI
 
 ---
 
@@ -199,10 +208,9 @@ Vigie/
 - Mode Expert avancé
 - Extension complète support Scoop
 - Support Chocolatey
-- Support pip
-- Support npm
+- Support gestionnaires de paquets développeur 
 - Historique persistant des mises à jour
-- Planification automatique
+- Planification automatique (pip, npm, etc.)
 - Niveaux de journalisation configurables
 
 ---
@@ -258,6 +266,7 @@ Les opérations sont protégées par :
 - confirmation utilisateur
 - journalisation complète
 - préparation du système de point de restauration
+- Préparation de la gestion de l’élévation administrateur
 
 ---
 
@@ -284,6 +293,7 @@ Avant toute mise à jour globale, les mécanismes suivants seront appliqués :
 - Parsing texte robuste basé sur structure colonnes winget
 - Mesure précise de la durée du scan (Stopwatch)
 - Priorité donnée à la stabilité et à la fiabilité
+- Parsing texte robuste basé sur structure colonnes winget et normalisation multi-gestionnaires
 
 Les optimisations avancées interviendront après consolidation multi-gestionnaires.
 
@@ -342,16 +352,16 @@ Les ressources doivent être utilisées via :
 
 # 📦 11. Technologies Utilisées
 
-| Élément                     | Technologie / Approche                                          |
-|-----------------------------|-----------------------------------------------------------------|
-| Langage principal           |  C#                                                             |
-| Framework                   | .NET 8                                                          |
-| Interface                   | WinUI 3                                                         |
-| Architecture                | MVVM strict                                                     |
-| Gestionnaires implémentés   | winget (complet), Scoop (support actif, consolidation en cours) |
-| Support multi-gestionnaires | Actif (fusion et déduplication intégrées)                       |
-| Versioning                  | Git (discipline commits structurée)                             |
-| Méthodologie                | Versionnement incrémental par consolidation                     |
+| Élément                     | Technologie / Approche                                               |
+|-----------------------------|----------------------------------------------------------------------|
+| Langage principal           |  C#                                                                  |
+| Framework                   | .NET 8                                                               |
+| Interface                   | WinUI 3                                                              |
+| Architecture                | MVVM strict                                                          |
+| Gestionnaires implémentés   | winget (complet), winget (complet), Scoop et Chocolatey (simulation) |
+| Support multi-gestionnaires | Actif (fusion et déduplication intégrées)                            |
+| Versioning                  | Git (discipline commits structurée)                                  |
+| Méthodologie                | Versionnement incrémental par consolidation                          |
 
 ---
 

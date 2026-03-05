@@ -92,7 +92,8 @@ namespace Vigie
             var gestionnaires = new List<IGestionnairePaquets>
             {
                 new GestionnaireWinget(journal),
-                new GestionnaireScoop(journal)
+                new GestionnaireScoop(journal),
+                new GestionnaireChocolatey(journal)
             };
 
             var normaliseur =

@@ -197,6 +197,7 @@ Vigie/
 
 ## ⚙️ Pipeline interne de traitement
 
+```
 Scan des gestionnaires
         ↓
 Normalisation des données
@@ -206,9 +207,11 @@ Fusion des résultats
 Analyse des mises à jour disponibles
         ↓
 Orchestration des mises à jour sécurisées
+```
 
 ## 🧠 Fonctionnement interne de Vigie
 
+```
 Gestionnaires
    │
    ├─ Winget
@@ -226,6 +229,7 @@ Orchestrateur
         │
         ▼
 Mise à jour sécurisée
+```
 
 ---
 

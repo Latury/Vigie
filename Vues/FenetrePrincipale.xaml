@@ -143,32 +143,49 @@
             <!--  Boutons navigation  -->
             <!--  =========================================================  -->
 
-            <StackPanel
-                Margin="{StaticResource MargeSidebar}"
-                VerticalAlignment="Top"
-                Spacing="{StaticResource EspacementNavigation}">
+            <Grid Margin="{StaticResource MargeSidebar}">
 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  Navigation principale  -->
+                <StackPanel
+                    Grid.Row="0"
+                    Margin="0,0,0,30"
+                    Spacing="{StaticResource EspacementNavigation}">
+
+                    <Button
+                        Click="Accueil_Click"
+                        Content="Accueil"
+                        Style="{StaticResource NavButtonStyle}" />
+
+                    <Button
+                        Click="Historique_Click"
+                        Content="Historique"
+                        Style="{StaticResource NavButtonStyle}" />
+
+                    <Button
+                        Click="Parametres_Click"
+                        Content="Paramètres"
+                        Style="{StaticResource NavButtonStyle}" />
+
+                    <Button
+                        Click="APropos_Click"
+                        Content="À propos"
+                        Style="{StaticResource NavButtonStyle}" />
+
+                </StackPanel>
+
+                <!--  Bouton quitter en bas  -->
                 <Button
-                    Click="Accueil_Click"
-                    Content="Accueil"
+                    Grid.Row="1"
+                    Click="BoutonQuitter_Click"
+                    Content="Quitter"
                     Style="{StaticResource NavButtonStyle}" />
 
-                <Button
-                    Click="Historique_Click"
-                    Content="Historique"
-                    Style="{StaticResource NavButtonStyle}" />
-
-                <Button
-                    Click="Parametres_Click"
-                    Content="Paramètres"
-                    Style="{StaticResource NavButtonStyle}" />
-
-                <Button
-                    Click="APropos_Click"
-                    Content="À propos"
-                    Style="{StaticResource NavButtonStyle}" />
-
-            </StackPanel>
+            </Grid>
 
         </Grid>
 

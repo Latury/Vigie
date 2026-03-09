@@ -8,14 +8,7 @@
     ║  Module : Vues                                                       ║
     ║  Fichier : AccueilPage.xaml                                          ║
     ║                                                                      ║
-    ║  Rôle :                                                              ║
-    ║  Page principale affichant l’état du système et les mises à jour.    ║
-    ║                                                                      ║
-    ║  Responsabilités :                                                   ║
-    ║  - Afficher l’état du système                                        ║
-    ║  - Afficher la liste des logiciels détectés                          ║
-    ║  - Permettre le déclenchement du scan                                ║
-    ║  - Permettre la mise à jour globale                                  ║
+    ║  Rôle : Page principale affichant l’état du système.                 ║
     ║                                                                      ║
     ║  Licence : MIT                                                       ║
     ║  Copyright © 2026 Flo Latury                                         ║
@@ -37,29 +30,21 @@
     <Grid Background="{StaticResource BrushFondPrincipal}">
 
         <Grid.RowDefinitions>
-
-            <!--  Titre  -->
             <RowDefinition Height="Auto" />
-
-            <!--  Carte état  -->
             <RowDefinition Height="Auto" />
-
-            <!--  Liste logiciels  -->
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-
-            <!--  Actions utilisateur  -->
             <RowDefinition Height="Auto" />
-
         </Grid.RowDefinitions>
 
 
         <!--  =============================================================  -->
-        <!--  2. TITRE  -->
+        <!--  2. TITRE PAGE  -->
         <!--  =============================================================  -->
 
         <StackPanel
             Grid.Row="0"
-            Margin="40,30,0,0"
+            Margin="{StaticResource MargeTitrePage}"
             Spacing="4">
 
             <TextBlock
@@ -82,9 +67,9 @@
 
         <Border
             Grid.Row="1"
-            Width="500"
-            Height="220"
-            Margin="0,25,0,20"
+            Width="{StaticResource LargeurCarteEtat}"
+            Height="{StaticResource HauteurCarteEtat}"
+            Margin="{StaticResource MargeCarteEtat}"
             HorizontalAlignment="Center"
             Background="{StaticResource BrushFondCarte}"
             BorderBrush="{StaticResource BrushBordure}"
@@ -95,8 +80,6 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Spacing="18">
-
-                <!--  Indicateur état  -->
 
                 <Grid>
 
@@ -121,18 +104,12 @@
 
                 </Grid>
 
-
-                <!--  Texte état  -->
-
                 <TextBlock
                     HorizontalAlignment="Center"
                     FontSize="20"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource BrushTextePrincipal}"
                     Text="{Binding TexteEtat}" />
-
-
-                <!--  Progress mise à jour  -->
 
                 <ProgressRing
                     Width="24"
@@ -145,34 +122,116 @@
 
 
         <!--  =============================================================  -->
-        <!--  4. LISTE DES LOGICIELS  -->
+        <!--  4. ENTÊTE TABLEAU  -->
+        <!--  =============================================================  -->
+
+        <Grid
+            Grid.Row="2"
+            Height="{StaticResource HauteurEnteteTableau}"
+            Margin="{StaticResource MargeTableau}">
+
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition Width="90" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="140" />
+                <ColumnDefinition Width="120" />
+
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Grid.Column="0"
+                FontWeight="SemiBold"
+                Text="Source" />
+
+            <CheckBox
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                IsChecked="{Binding ToutSelectionner, Mode=TwoWay}"
+                IsThreeState="True" />
+
+            <TextBlock
+                Grid.Column="2"
+                FontWeight="SemiBold"
+                Text="Nom" />
+
+            <TextBlock
+                Grid.Column="3"
+                HorizontalAlignment="Center"
+                FontWeight="SemiBold"
+                Text="Version actuelle" />
+
+            <TextBlock
+                Grid.Column="5"
+                HorizontalAlignment="Center"
+                FontWeight="SemiBold"
+                Text="Nouvelle version" />
+
+            <TextBlock
+                Grid.Column="6"
+                HorizontalAlignment="Center"
+                FontWeight="SemiBold"
+                Text="Statut" />
+
+        </Grid>
+
+
+        <!--  =============================================================  -->
+        <!--  5. SÉPARATEUR  -->
+        <!--  =============================================================  -->
+
+        <Border
+            Grid.Row="2"
+            Height="1"
+            Margin="40,30,40,0"
+            VerticalAlignment="Bottom"
+            Background="{StaticResource BrushBordure}" />
+
+
+        <!--  =============================================================  -->
+        <!--  6. LISTE DES LOGICIELS  -->
         <!--  =============================================================  -->
 
         <ListView
-            Grid.Row="2"
-            Margin="40,10,40,10"
+            Grid.Row="3"
+            Margin="{StaticResource MargeListe}"
             Background="Transparent"
             BorderThickness="0"
             ItemsSource="{Binding Logiciels}">
+
+            <ListView.ItemContainerStyle>
+
+                <Style TargetType="ListViewItem">
+
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                    <Setter Property="Background" Value="Transparent" />
+
+                </Style>
+
+            </ListView.ItemContainerStyle>
+
 
             <ListView.ItemTemplate>
 
                 <DataTemplate>
 
-                    <Grid Padding="10" ColumnSpacing="20">
+                    <Grid>
 
                         <Grid.ColumnDefinitions>
 
-                            <!--  Nom  -->
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
-
-                            <!--  Version actuelle  -->
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="140" />
-
-                            <!--  Nouvelle version  -->
-                            <ColumnDefinition Width="140" />
-
-                            <!--  Statut  -->
                             <ColumnDefinition Width="120" />
 
                         </Grid.ColumnDefinitions>
@@ -180,28 +239,58 @@
 
                         <TextBlock
                             Grid.Column="0"
+                            Foreground="{StaticResource BrushTexteSecondaire}"
+                            Text="{Binding Source}" />
+
+
+                        <CheckBox
+                            Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding EstSelectionne, Mode=TwoWay}"
+                            IsEnabled="{Binding SelectionAutorisee}"
+                            IsHitTestVisible="{Binding SelectionAutorisee}"
+                            Opacity="{Binding SelectionAutorisee, Converter={StaticResource ConvertisseurBooleenInverse}}" />
+
+
+                        <TextBlock
+                            Grid.Column="2"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource BrushTextePrincipal}"
                             Text="{Binding Nom}" />
 
 
                         <TextBlock
-                            Grid.Column="1"
+                            Grid.Column="3"
+                            HorizontalAlignment="Center"
                             Foreground="{StaticResource BrushTexteSecondaire}"
-                            Text="{Binding VersionActuelle}" />
+                            Text="{Binding VersionActuelle}"
+                            TextAlignment="Center" />
 
 
                         <TextBlock
-                            Grid.Column="2"
+                            Grid.Column="4"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{StaticResource BrushTexteSecondaire}"
+                            Text="→" />
+
+
+                        <TextBlock
+                            Grid.Column="5"
+                            HorizontalAlignment="Center"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource BrushAccent}"
-                            Text="{Binding NouvelleVersion}" />
+                            Text="{Binding NouvelleVersion}"
+                            TextAlignment="Center" />
 
 
                         <TextBlock
-                            Grid.Column="3"
-                            Foreground="{StaticResource BrushTexteSecondaire}"
-                            Text="{Binding StatutMiseAJour}" />
+                            Grid.Column="6"
+                            HorizontalAlignment="Center"
+                            Foreground="{Binding StatutMiseAJour, Converter={StaticResource ConvertisseurStatutCouleur}}"
+                            Text="{Binding StatutMiseAJour}"
+                            TextAlignment="Center" />
 
                     </Grid>
 
@@ -213,21 +302,19 @@
 
 
         <!--  =============================================================  -->
-        <!--  5. ACTIONS UTILISATEUR  -->
+        <!--  7. ACTIONS UTILISATEUR  -->
         <!--  =============================================================  -->
 
         <StackPanel
-            Grid.Row="3"
-            Margin="0,25,0,40"
+            Grid.Row="4"
+            Margin="{StaticResource MargeBoutonsActions}"
             HorizontalAlignment="Center"
             Orientation="Horizontal"
-            Spacing="20">
-
-            <!--  Scanner  -->
+            Spacing="{StaticResource EspacementBoutonsActions}">
 
             <Button
-                Width="180"
-                Height="50"
+                Width="{StaticResource LargeurBoutonAction}"
+                Height="{StaticResource HauteurBoutonAction}"
                 Background="{StaticResource BrushFondCarte}"
                 BorderBrush="{StaticResource BrushBordure}"
                 BorderThickness="1"
@@ -236,12 +323,9 @@
                 Foreground="{StaticResource BrushTextePrincipal}"
                 IsEnabled="{Binding PeutScanner}" />
 
-
-            <!--  Mettre à jour  -->
-
             <Button
-                Width="180"
-                Height="50"
+                Width="{StaticResource LargeurBoutonAction}"
+                Height="{StaticResource HauteurBoutonAction}"
                 Background="{StaticResource BrushPrincipale}"
                 BorderThickness="0"
                 Command="{Binding MettreAJourCommande}"

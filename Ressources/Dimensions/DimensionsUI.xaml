@@ -9,7 +9,7 @@
     ║  Fichier : DimensionsUI.xaml                                         ║
     ║                                                                      ║
     ║  Rôle :                                                              ║
-    ║  Centraliser toutes les dimensions utilisées dans l’UI Vigie.       ║
+    ║  Centraliser toutes les dimensions utilisées dans l’UI Vigie.        ║
     ║                                                                      ║
     ║  Responsabilités :                                                   ║
     ║  - Définir les espacements UI                                        ║
@@ -78,5 +78,31 @@
 
     <!--  espacement boutons navigation  -->
     <x:Double x:Key="EspacementNavigation">12</x:Double>
+
+
+    <!--  ============================================================  -->
+    <!--  6. Dimensions spécifiques AccueilPage  -->
+    <!--  ============================================================  -->
+
+    <!--  Carte état système  -->
+    <x:Double x:Key="LargeurCarteEtat">500</x:Double>
+    <x:Double x:Key="HauteurCarteEtat">220</x:Double>
+
+    <!--  Boutons principaux  -->
+    <x:Double x:Key="LargeurBoutonAction">180</x:Double>
+    <x:Double x:Key="HauteurBoutonAction">50</x:Double>
+
+    <!--  En-tête tableau  -->
+    <x:Double x:Key="HauteurEnteteTableau">32</x:Double>
+
+    <!--  Marges Accueil  -->
+    <Thickness x:Key="MargeTitrePage">40,30,0,0</Thickness>
+    <Thickness x:Key="MargeCarteEtat">0,25,0,20</Thickness>
+    <Thickness x:Key="MargeTableau">40,0,40,0</Thickness>
+    <Thickness x:Key="MargeListe">40,10,40,10</Thickness>
+    <Thickness x:Key="MargeBoutonsActions">0,25,0,40</Thickness>
+
+    <!--  Espacement boutons  -->
+    <x:Double x:Key="EspacementBoutonsActions">20</x:Double>
 
 </ResourceDictionary>

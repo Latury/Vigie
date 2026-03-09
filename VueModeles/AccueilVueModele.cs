@@ -16,6 +16,7 @@
 ║  - Gérer la confirmation utilisateur                                 ║
 ║  - Superviser la mise à jour globale                                 ║
 ║  - Gérer l’état des boutons UI                                       ║
+║  - Gérer la sélection globale des logiciels                          ║
 ║  - Enregistrer l’historique des opérations                           ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
@@ -27,7 +28,9 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -39,31 +42,14 @@ using Vigie.Services.MisesAJour;
 
 #endregion
 
-#region 2. Description Générale
-
-/*
- * Classe : AccueilVueModele
- *
- * Rôle :
- * Intermédiaire entre l'interface utilisateur
- * et les services métier.
- *
- * Particularités :
- * - Gestion état UI
- * - Activation dynamique des boutons
- * - Supervision pipeline de mise à jour
- * - Enregistrement historique interne
- */
-
-#endregion
-
 namespace Vigie.VueModeles
 {
-    #region 3. Déclaration
+    #region 2. Déclaration
 
     public class AccueilVueModele : INotifyPropertyChanged
     {
-        #region 3.1 Champs privés
+
+        #region 2.1 Champs privés
 
         private readonly IGestionnairePaquets _packageManager;
         private readonly ServiceMiseAJourGlobal _serviceMiseAJour;
@@ -77,17 +63,13 @@ namespace Vigie.VueModeles
 
         #endregion
 
-        #region 3.2 Propriétés publiques
+
+        #region 2.2 Propriétés publiques
 
         public ICommand ScannerCommande { get; }
         public ICommand MettreAJourCommande { get; }
 
         public ObservableCollection<LogicielMiseAJour> Logiciels { get; }
-
-        /*
-         * Historique des mises à jour exécutées.
-         * Stockage mémoire uniquement.
-         */
         public ObservableCollection<HistoriqueMiseAJour> Historique { get; }
 
         public bool IsScanning
@@ -114,17 +96,49 @@ namespace Vigie.VueModeles
             }
         }
 
-        public bool PeutScanner
+        public bool PeutScanner =>
+            !IsScanning && !IsUpdating;
+
+        public bool PeutMettreAJour =>
+            !IsScanning &&
+            !IsUpdating &&
+            Logiciels.Any(l => l.EstSelectionne && l.SelectionAutorisee);
+
+
+        /*
+         * Sélection globale
+         */
+
+        public bool ToutSelectionner
         {
-            get => !IsScanning && !IsUpdating;
+            get
+            {
+                var selectionnables =
+                    Logiciels.Where(l => l.SelectionAutorisee).ToList();
+
+                if (selectionnables.Count == 0)
+                {
+                    return false;
+                }
+
+                return selectionnables.All(l => l.EstSelectionne);
+            }
+
+            set
+            {
+                foreach (var logiciel in Logiciels)
+                {
+                    if (logiciel.SelectionAutorisee)
+                    {
+                        logiciel.EstSelectionne = value;
+                    }
+                }
+
+                OnPropertyChanged(nameof(PeutMettreAJour));
+                OnPropertyChanged(nameof(ToutSelectionner));
+            }
         }
 
-        public bool PeutMettreAJour
-        {
-            get => !IsScanning &&
-                   !IsUpdating &&
-                   Logiciels.Count > 0;
-        }
 
         public EtatSysteme EtatActuel
         {
@@ -137,22 +151,36 @@ namespace Vigie.VueModeles
             }
         }
 
+
         public string TexteEtat
         {
             get
             {
+                int restantes =
+                    Logiciels.Count(l => l.SelectionAutorisee);
+
                 return EtatActuel switch
                 {
-                    EtatSysteme.AnalyseEnCours => "Analyse en cours...",
-                    EtatSysteme.Ajour => "Système à jour",
+                    EtatSysteme.AnalyseEnCours =>
+                        "Analyse en cours...",
+
+                    EtatSysteme.Ajour =>
+                        "Système à jour",
+
                     EtatSysteme.MisesAJourDisponibles =>
-                        $"{Logiciels.Count} mise(s) à jour disponible(s)",
+                        restantes == 0
+                        ? "Système à jour"
+                        : $"{restantes} mise(s) à jour disponible(s)",
+
                     EtatSysteme.Erreur =>
                         "Opération bloquée pour raison de sécurité",
-                    _ => "État inconnu"
+
+                    _ =>
+                        "État inconnu"
                 };
             }
         }
+
 
         public string DernierScanTexte
         {
@@ -169,7 +197,8 @@ namespace Vigie.VueModeles
 
         #endregion
 
-        #region 3.3 Constructeur
+
+        #region 2.3 Constructeur
 
         public AccueilVueModele(
             IGestionnairePaquets packageManager,
@@ -188,11 +217,7 @@ namespace Vigie.VueModeles
             Logiciels = new ObservableCollection<LogicielMiseAJour>();
             Historique = new ObservableCollection<HistoriqueMiseAJour>();
 
-            Logiciels.CollectionChanged += (_, __) =>
-            {
-                OnPropertyChanged(nameof(TexteEtat));
-                OnPropertyChanged(nameof(PeutMettreAJour));
-            };
+            Logiciels.CollectionChanged += Logiciels_CollectionChanged;
 
             ScannerCommande = new CommandeAsynchrone(ScannerAsync);
             MettreAJourCommande = new CommandeAsynchrone(MettreAJourAsync);
@@ -200,7 +225,63 @@ namespace Vigie.VueModeles
 
         #endregion
 
-        #region 3.4 Méthodes privées
+
+        #region 2.4 Gestion collection logiciels
+
+        private void Logiciels_CollectionChanged(
+            object? sender,
+            NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (LogicielMiseAJour logiciel in e.NewItems)
+                {
+                    logiciel.SelectionChanged += Logiciel_SelectionChanged;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (LogicielMiseAJour logiciel in e.OldItems)
+                {
+                    logiciel.SelectionChanged -= Logiciel_SelectionChanged;
+                }
+            }
+
+            RafraichirEtatUI();
+        }
+
+        private void Logiciel_SelectionChanged(
+            object? sender,
+            EventArgs e)
+        {
+            RafraichirEtatUI();
+        }
+
+        #endregion
+
+
+        #region 2.5 Méthodes privées
+
+        private void RecalculerEtatSysteme()
+        {
+            int restantes =
+                Logiciels.Count(l => l.SelectionAutorisee);
+
+            EtatActuel =
+                restantes == 0
+                ? EtatSysteme.Ajour
+                : EtatSysteme.MisesAJourDisponibles;
+        }
+
+
+        private void RafraichirEtatUI()
+        {
+            OnPropertyChanged(nameof(ToutSelectionner));
+            OnPropertyChanged(nameof(PeutMettreAJour));
+            OnPropertyChanged(nameof(TexteEtat));
+        }
+
 
         private async Task ScannerAsync()
         {
@@ -222,17 +303,22 @@ namespace Vigie.VueModeles
 
                 foreach (var logiciel in resultats)
                 {
-                    Logiciels.Add(logiciel);
+                    Logiciels.Add(new LogicielMiseAJour
+                    {
+                        Nom = logiciel.Nom,
+                        VersionActuelle = logiciel.VersionActuelle,
+                        NouvelleVersion = logiciel.NouvelleVersion,
+                        Source = logiciel.Source,
+                        IdentifiantSource = logiciel.IdentifiantSource,
+                        IdentifiantNormalise = logiciel.IdentifiantNormalise
+                    });
                 }
 
                 _dernierScan = DateTime.Now;
 
                 OnPropertyChanged(nameof(DernierScanTexte));
 
-                EtatActuel =
-                    Logiciels.Count == 0
-                    ? EtatSysteme.Ajour
-                    : EtatSysteme.MisesAJourDisponibles;
+                RecalculerEtatSysteme();
             }
             catch
             {
@@ -244,9 +330,10 @@ namespace Vigie.VueModeles
             }
         }
 
+
         private async Task MettreAJourAsync()
         {
-            if (Logiciels.Count == 0 || IsUpdating)
+            if (!Logiciels.Any(l => l.EstSelectionne && l.SelectionAutorisee) || IsUpdating)
             {
                 return;
             }
@@ -276,7 +363,7 @@ namespace Vigie.VueModeles
                     return;
                 }
 
-                foreach (var logiciel in Logiciels)
+                foreach (var logiciel in Logiciels.Where(l => l.EstSelectionne && l.SelectionAutorisee))
                 {
                     if (string.IsNullOrWhiteSpace(logiciel.Source))
                     {
@@ -289,12 +376,17 @@ namespace Vigie.VueModeles
                         await _serviceMiseAJour
                             .ExecuterMiseAJourAsync(logiciel);
 
-                    logiciel.StatutMiseAJour = resultat.Statut;
+                    if (resultat.Statut == StatutMiseAJour.Succes)
+                    {
+                        logiciel.EstSelectionne = false;
+                        logiciel.SelectionAutorisee = false;
+                    }
 
                     AjouterHistorique(resultat);
                 }
 
-                await ScannerAsync();
+                RecalculerEtatSysteme();
+                RafraichirEtatUI();
             }
             finally
             {
@@ -302,28 +394,25 @@ namespace Vigie.VueModeles
             }
         }
 
-        /*
-         * Enregistre une entrée d’historique interne
-         * après une tentative de mise à jour.
-         */
+
         private void AjouterHistorique(ResultatMiseAJour resultat)
         {
-            var entree = new HistoriqueMiseAJour
-            {
-                Nom = resultat.Nom,
-                VersionAvant = resultat.VersionAvant,
-                VersionApres = resultat.VersionApres,
-                Source = resultat.Source,
-                Statut = resultat.Statut,
-                MessageErreur = resultat.MessageErreur
-            };
-
-            Historique.Add(entree);
+            Historique.Add(
+                new HistoriqueMiseAJour
+                {
+                    Nom = resultat.Nom,
+                    VersionAvant = resultat.VersionAvant,
+                    VersionApres = resultat.VersionApres,
+                    Source = resultat.Source,
+                    Statut = resultat.Statut,
+                    MessageErreur = resultat.MessageErreur
+                });
         }
 
         #endregion
 
-        #region 3.5 INotifyPropertyChanged
+
+        #region 2.6 INotifyPropertyChanged
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -336,6 +425,7 @@ namespace Vigie.VueModeles
         }
 
         #endregion
+
     }
 
     #endregion

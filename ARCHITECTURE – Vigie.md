@@ -1,18 +1,49 @@
-# STANDARD OFFICIEL DE STRUCTURATION
+# 🏗️ ARCHITECTURE – VIGIE
 
-Projet : Vigie – Centre de maintenance logicielle intelligent
+Projet : **Vigie – Centre de maintenance logicielle intelligent**
 
-Ce document définit le standard obligatoire de structuration du code pour le projet Vigie.
+Ce document définit **le standard officiel d’architecture et de structuration du code** pour le projet Vigie.
 
-Il vise à garantir :
+Il constitue la **référence principale** pour comprendre comment organiser le code et maintenir une architecture cohérente.
 
-- Lisibilité
-- Cohérence architecturale
-- Maintenabilité long terme
-- Discipline documentaire
-- Valeur pédagogique
+---
 
-Ce standard est obligatoire pour chaque fichier créé dans le projet.
+# 🔎 Référence rapide : AVG
+
+Dans la documentation interne du projet, l’abréviation **AVG** signifie :
+
+**A V G = Architecture ViGie**
+
+Lorsqu’une décision de développement nécessite de vérifier :
+
+- la structure du code
+- les règles d’architecture
+- l’organisation des classes
+- les conventions du projet
+
+il suffit de **consulter ce document**.
+
+Exemple :
+
+> *Voir AVG pour la structure du service.*
+
+AVG renvoie donc directement à :
+
+**ARCHITECTURE – Vigie.md**
+
+---
+
+# 🎯 Objectifs du standard
+
+Ce standard vise à garantir :
+
+- lisibilité du code
+- cohérence architecturale
+- maintenabilité long terme
+- discipline documentaire
+- valeur pédagogique
+
+Ce standard est **obligatoire pour chaque fichier créé dans le projet**.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -26,10 +57,10 @@ Aucune exception.
 
 Objectifs :
 
-- Identifier immédiatement le rôle du fichier
-- Situer sa place dans l’architecture
-- Rappeler la licence
-- Maintenir une cohérence documentaire
+- identifier immédiatement le rôle du fichier
+- situer sa place dans l’architecture
+- rappeler la licence
+- maintenir une cohérence documentaire
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -64,7 +95,7 @@ Le champ Rôle est obligatoire et ne doit jamais rester vide.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## Modèle obligatoire pour fichiers `.xaml`
+Modèle obligatoire pour fichiers .xaml
 
 <!--
 ╔══════════════════════════════════════════════════════════════════════╗
@@ -87,14 +118,12 @@ Le champ Rôle est obligatoire et ne doit jamais rester vide.
 
 2. STRUCTURE INTERNE D’UN FICHIER C#
 
-Chaque fichier doit respecter une organisation numérotée claire.
+Chaque fichier doit respecter une organisation claire.
 
 Ordre recommandé :
 
 #region 1. Imports
-
 #region 2. Description Générale
-
 #region 3. Déclaration
 
 À l’intérieur de la classe :
@@ -104,7 +133,7 @@ Ordre recommandé :
 3.3 Constructeur
 3.4 Méthodes publiques
 3.5 Méthodes privées
-3.6 Événements (si applicables)
+3.6 Événements (si nécessaires)
 
 Les sections peuvent être omises si elles ne sont pas nécessaires.
 
@@ -122,19 +151,16 @@ Sections recommandées :
 
 Règles :
 
-Les modèles doivent rester simples et neutres.
+Les modèles doivent rester **simples et neutres.**
 
 Ils ne doivent jamais contenir :
 
-logique UI
+- logique UI
+- dépendance WinUI
+- navigation
+- accès direct aux services
 
-dépendance WinUI
-
-navigation
-
-accès direct aux services
-
-Les modèles représentent uniquement les données métier.
+Les modèles représentent uniquement **les données métier.**
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -144,29 +170,17 @@ Chaque élément important doit être documenté.
 
 Pour une classe :
 
-Rôle
-
-Responsabilités
-
-Limites
+- rôle
+- responsabilités
+- limites
 
 Pour une méthode :
 
-Objectif
-
-Paramètres
-
-Retour
-
-Effets secondaires
-
-Exceptions possibles
-
-Pour une propriété :
-
-rôle architectural
-
-justification si nécessaire
+- objectif
+- paramètres
+- valeur de retour
+- effets secondaires
+- exceptions possibles
 
 Toute logique complexe doit être expliquée.
 
@@ -174,23 +188,15 @@ Toute logique complexe doit être expliquée.
 
 5. RÈGLES STRICTES
 
-Aucun emoji dans le code.
-
-Aucun commentaire décoratif inutile.
-
-Aucun commentaire vide.
-
-Aucun commentaire vague.
-
-Aucun mélange UI / logique métier.
-
-Toute décision non évidente doit être expliquée.
-
-Toute dépendance importante doit être documentée.
-
-Aucun code mort dans le projet.
-
-Toujours vérifié qu'il ne reste pas de debug après avoir testé
+- Aucun emoji dans le code
+- Aucun commentaire décoratif inutile
+- Aucun commentaire vide
+- Aucun commentaire vague
+- Aucun mélange UI / logique métier
+- Toute décision non évidente doit être expliquée
+- Toute dépendance importante doit être documentée
+- Aucun code mort dans le projet
+- Vérifier qu’il ne reste **aucun debug après les tests**
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -198,20 +204,15 @@ Toujours vérifié qu'il ne reste pas de debug après avoir testé
 
 Ce standard vise à produire un code :
 
-Lisible
-
-Structuré
-
-Testable
-
-Maintenable
-
-Pédagogique
-
-Durable
+- lisible
+- structuré
+- testable
+- maintenable
+- pédagogique
+- durable
 
 Un fichier non structuré devient fragile.
-Un fichier documenté devient un actif architectural.
+Un fichier documenté devient **un actif architectural.**
 
 Ce standard garantit que tout nouveau fichier créé dans le projet
 peut être compris rapidement par un nouveau développeur
@@ -219,61 +220,48 @@ ou par l’auteur lui-même plusieurs années plus tard.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-7. INJECTION DE DÉPENDANCES (RÈGLE ARCHITECTURALE)
+7. INJECTION DE DÉPENDANCES
 
 Toute classe métier ou service :
 
-ne doit pas instancier directement ses dépendances internes
+- ne doit pas instancier directement ses dépendances
+- doit recevoir ses dépendances via le constructeur
+- doit dépendre d’interfaces plutôt que d’implémentations
 
-doit recevoir ses dépendances via le constructeur
-
-doit dépendre d’interfaces plutôt que d’implémentations
-
-Objectifs :
-
-supprimer le couplage fort
-
-permettre la testabilité
-
-préparer une éventuelle intégration future d’un conteneur DI
-
-garantir l’évolutivité long terme
-
-Exemple interdit :
+**Exemple interdit:**
 
 new JournalService()
 
-Exemple conforme :
+**Exemple conforme:**
 
-public GestionnaireWinget(IJournalService journal)
+***public GestionnaireWinget(IJournalService journal)***
+
+Objectifs :
+
+- supprimer le couplage fort
+- permettre la testabilité
+- préparer l’intégration d’un conteneur DI
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-8. GESTION DES OPÉRATIONS ASYNCHRONES
+8. OPÉRATIONS ASYNCHRONES
 
-Les opérations potentiellement longues doivent être exécutées de manière asynchrone.
+Les opérations longues doivent être exécutées de manière asynchrone.
 
 Exemples :
 
-scan des gestionnaires de paquets
-
-exécution de processus système
-
-opérations réseau
-
-accès disque
+- scan des gestionnaires
+- exécution de processus système
+- opérations réseau
+- accès disque
 
 Règles :
 
-utiliser async / await
+- utiliser ***async / await***
+- éviter tout blocage de l’interface
+- ne jamais utiliser ***.Result*** ou ***.Wait()*** dans la couche UI
 
-éviter les blocages de l’interface utilisateur
-
-ne jamais utiliser .Result ou .Wait() dans la couche UI ou ViewModel
-
-Objectif :
-
-Garantir une interface utilisateur réactive.
+Objectif : maintenir une **interface utilisateur réactive.**
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -283,64 +271,46 @@ Toute opération système importante doit être journalisée.
 
 Exemples :
 
-début / fin d’un scan
+- début / fin d’un scan
+- début / fin d’une mise à jour
+- erreurs de processus
+- exceptions capturées
 
-début / fin d’une mise à jour
+La journalisation doit passer par :
 
-erreurs de processus
+**IJournalService / JournalService**
 
-exceptions capturées
-
-opérations critiques de sécurité
-
-La journalisation doit passer par le service central :
-
-JournalService
-
-Aucun fichier ne doit écrire directement dans un fichier log.
+Aucun fichier ne doit écrire directement dans un fichier log. log.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-10. COUCHE DE NORMALISATION (RÈGLE)
+10. PIPELINE DE DONNÉES
 
-Toute donnée issue d’une source externe doit passer par une étape de normalisation.
+Toute donnée externe doit passer par une normalisation.
 
-Pipeline officiel :
+***Pipeline officiel:***
 
-Scan → Normalisation → Fusion
+***Scan → Normalisation → Fusion → Mise à jour***
 
-Explication :
+**Objectif:**
 
-1. Scan  
-   Les gestionnaires (winget, scoop, etc.) récupèrent les informations depuis les outils système.
+***séparer clairement:***
 
-2. Normalisation  
-   Les données sont converties dans un format interne cohérent  
-   (ex : `LogicielMiseAJour`, `IdentifiantNormalise`).
+- acquisition des données
+- normalisation
+- fusion multi-sources
+- exécution des mises à jour
 
-3. Fusion  
-   Les résultats provenant de plusieurs gestionnaires sont regroupés,
-   dédupliqués et consolidés.
+**Cela permet:**
 
-Objectif architectural :
-
-Séparer clairement :
-
-- l’acquisition des données externes
-- la normalisation des données
-- garantir cohérence interne
-
-Cela permet :
-
-- d’ajouter facilement de nouveaux gestionnaires
-- d’éviter les dépendances directes au format des outils externes
-- de garantir une cohérence interne du moteur de mise à jour.
+- l’ajout facile de nouveaux gestionnaires
+- l’indépendance vis-à-vis du format des outils externes
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-11. RESSOURCES VISUELLES (RÈGLE ARCHITECTURALE)
+11. RESSOURCES VISUELLES
 
-Les ressources visuelles globales doivent être centralisées dans :
+Les ressources UI doivent être centralisées dans :
 
 Ressources/
 ├── Couleurs/
@@ -348,60 +318,40 @@ Ressources/
 ├── Dimensions/
 └── Themes/
 
-Objectifs :
+**Exemple interdit:**
 
-éviter valeurs visuelles codées en dur
+***Foreground="#2563EB"***
 
-garantir cohérence graphique
+**Exemple conforme:**
 
-préparer un système de thèmes
-
-simplifier maintenance UI
-
-Exemple interdit :
-
-Foreground="#2563EB"
-
-Exemple conforme :
-
-Foreground="{StaticResource CouleurPrincipale}"
-
-Les ressources appartiennent uniquement à la couche UI.
+***Foreground="{StaticResource CouleurPrincipale}"***
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 12. RESPONSABILITÉ DES CLASSES
 
-Chaque classe doit avoir une responsabilité claire et unique.
+Chaque classe doit avoir **une responsabilité unique.**
 
-Exemples :
+**Exemples:**
 
 GestionnaireWinget
-Responsabilité : exécuter les commandes winget et parser la sortie.
+***→ exécuter les commandes winget et parser la sortie.***
 
 JournalService
-Responsabilité : journaliser les événements.
+***→ journaliser les événements.***
 
 AccueilVueModele
-Responsabilité : orchestrer les interactions entre UI et services.
+***→ orchestrer les interactions UI / services.***
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 13. COMPARAISON DE VERSIONS
 
-Toute comparaison de versions doit utiliser :
+Toute comparaison doit utiliser :
 
-System.Version
+***System.Version***
 
 Jamais de comparaison texte.
-
-Exemple incorrect :
-
-"1.10" < "1.2"
-
-Exemple correct :
-
-new Version("1.10").CompareTo(new Version("1.2")) > 0
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -409,42 +359,50 @@ new Version("1.10").CompareTo(new Version("1.2")) > 0
 
 Les exceptions ne doivent jamais remonter directement vers la couche UI.
 
-Toute exception provenant d’une opération système doit être :
+Toute exception doit être :
 
-capturée
-journalisée via JournalService
-transformée en résultat métier (ex : ResultatMiseAJour)
+- capturée
+- journalisée
+- transformée en résultat métier
 
-Objectif :
+**Objectif:**
 
-éviter les crashs de l’application
-garantir la stabilité du moteur
+garantir la **stabilité du moteur Vigie.**
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 15. NOMMAGE DES FICHIERS
 
-Exemple :
-         GestionnaireWinget
-         ServiceMiseAJourGlobal
-         JournalService
-         AccueilVueModele
+Exemples :
+
+- GestionnaireWinget
+- ServiceMiseAJourGlobal
+- JournalService
+- AccueilVueModele
 
 Règles :
-        PascalCase
-        Nom explicite
-        Suffixe indiquant le rôle
+
+- PascalCase
+- nom explicite
+- suffixe indiquant le rôle
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-16. RÈGLE MVVM POUR LES VUES
+16. RÈGLE MVVM
 
-Contenu :
-         Les vues XAML ne doivent contenir aucune logique métier.
-         Les interactions doivent être gérées via :
-                                                   Command
-                                                   Binding
-                                                   ViewModel
+Les vues XAML ne doivent contenir **aucune logique métier.**
 
-Objectif : maintenir la séparation stricte entre UI et logique applicative.
+Les interactions doivent passer par :
 
+- Command
+- Binding
+- ViewModel
+
+Objectif :
+
+maintenir la **séparation stricte UI / logique applicative.**
+
+---
+
+Si tu veux, je peux aussi te montrer **un petit ajout très puissant pour ce document** :  
+un **diagramme visuel du moteur Vigie (Scan → Normalisation → Fusion → Mise à jour)** qui rend l’architecture compréhensible en **10 secondes pour n’importe quel développeur**.

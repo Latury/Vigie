@@ -1,4 +1,4 @@
-﻿/*
+/*
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
@@ -27,52 +27,31 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Vigie.Modeles;
 
 #endregion
-
-#region 2. Description Générale
-
-/*
- * Interface : IGestionnairePaquets
- *
- * Rôle :
- * Définit le contrat commun pour tous les gestionnaires
- * de paquets supportés par Vigie (winget, scoop, etc.).
- *
- * Objectif architectural :
- * Permettre l’abstraction complète de la logique
- * de scan et de mise à jour.
- *
- * Limites :
- * - Aucune implémentation
- * - Aucune logique système
- */
-
-#endregion
-
-#region 3. Déclaration
 
 namespace Vigie.Services.Interfaces
 {
     public interface IGestionnairePaquets
     {
-        #region 3.1 Méthodes Publiques
+        #region 3.1 Méthodes publiques
+
+        Task<List<LogicielMiseAJour>> ScanAsync();
 
         /*
-         * Méthode : ScanAsync
+         * Méthode : MettreAJourAsync
          *
          * Objectif :
-         * Scanner le système et retourner la liste
-         * des logiciels nécessitant une mise à jour.
+         * Lancer la mise à jour d’un logiciel.
          *
-         * Retour :
-         * Liste de LogicielMiseAJour.
+         * Dans la phase actuelle (0.3.0-dev)
+         * cette méthode peut être simulée.
          */
-        Task<List<LogicielMiseAJour>> ScanAsync();
+
+        Task<bool> MettreAJourAsync(LogicielMiseAJour logiciel);
 
         #endregion
     }
 }
-
-#endregion

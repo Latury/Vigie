@@ -3,18 +3,19 @@
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
 ║                                                                      ║
-║  Module : Services.Gestionnaires                                     ║
+║  Module : Services                                                   ║
 ║  Fichier : GestionnaireScoop.cs                                      ║
 ║                                                                      ║
 ║  Rôle :                                                              ║
-║  Gestionnaire simulé de paquets Scoop.                               ║
+║  Implémente le gestionnaire Scoop (simulation actuelle).             ║
 ║                                                                      ║
 ║  Responsabilités principales :                                       ║
-║  - Simuler un scan Scoop                                             ║
-║  - Retourner une liste de LogicielMiseAJour                          ║
+║  - Simuler la détection de mises à jour Scoop                        ║
+║  - Simuler les mises à jour                                          ║
+║  - Journaliser les opérations                                        ║
 ║                                                                      ║
 ║  Limites :                                                           ║
-║  - Simulation uniquement (pas d’appel système réel)                  ║
+║  - Simulation uniquement (phase de développement)                    ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -23,8 +24,8 @@
 
 #region 1. Imports
 
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Vigie.Modeles;
@@ -32,21 +33,9 @@ using Vigie.Services.Interfaces;
 
 #endregion
 
-#region 2. Description Générale
-
-/*
- * Classe : GestionnaireScoop
- *
- * Rôle :
- * Simuler un gestionnaire Scoop afin de tester
- * le pipeline complet de Vigie.
- */
-
-#endregion
-
 namespace Vigie.Services.Gestionnaires
 {
-    #region 3. Déclaration
+    #region 2. Déclaration
 
     public class GestionnaireScoop : IGestionnairePaquets
     {
@@ -61,7 +50,7 @@ namespace Vigie.Services.Gestionnaires
         public GestionnaireScoop(IJournalService journal)
         {
             _journal =
-                journal ?? throw new System.ArgumentNullException(nameof(journal));
+                journal ?? throw new ArgumentNullException(nameof(journal));
         }
 
         #endregion
@@ -70,49 +59,44 @@ namespace Vigie.Services.Gestionnaires
 
         public async Task<List<LogicielMiseAJour>> ScanAsync()
         {
-            _journal.Info(">>> SCOOP EST APPELÉ <<<");
+            _journal.Info("[SIMULATION] Scan Scoop.");
 
-            await Task.CompletedTask;
+            await Task.Delay(500);
 
-            var sortieSimulee = @"
-Name        Current    Available
---------------------------------
-notepadplusplus    8.9.1    8.9.2
-githubdesktop      3.5.4    3.5.5
-vlc                3.0.20   3.0.21
-";
+            return new List<LogicielMiseAJour>();
+        }
 
-            var resultats = new List<LogicielMiseAJour>();
+        /*
+         * Méthode : MettreAJourAsync
+         *
+         * Objectif :
+         * Simuler une mise à jour Scoop.
+         */
 
-            var lignes = sortieSimulee
-                .Split('\n', System.StringSplitOptions.RemoveEmptyEntries)
-                .Skip(2);
-
-            foreach (var ligne in lignes)
+        public async Task<bool> MettreAJourAsync(LogicielMiseAJour logiciel)
+        {
+            try
             {
-                var colonnes = ligne
-                    .Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+                _journal.Info($"[SIMULATION] Mise à jour scoop : {logiciel.Nom}");
 
-                if (colonnes.Length >= 3)
-                {
-                    var identifiant = colonnes[0];
+                logiciel.StatutMiseAJour = StatutMiseAJour.EnCours;
 
-                    var logiciel = new LogicielMiseAJour
-                    {
-                        Nom = colonnes[0],
-                        VersionActuelle = colonnes[1],
-                        NouvelleVersion = colonnes[2],
-                        Source = "scoop",
-                        IdentifiantSource = identifiant
-                    };
+                await Task.Delay(1200);
 
-                    resultats.Add(logiciel);
-                }
+                logiciel.StatutMiseAJour = StatutMiseAJour.Succes;
+
+                _journal.Info($"[SIMULATION] Mise à jour scoop terminée : {logiciel.Nom}");
+
+                return true;
             }
+            catch (Exception ex)
+            {
+                logiciel.StatutMiseAJour = StatutMiseAJour.Echec;
 
-            _journal.Info($"{resultats.Count} mise(s) simulée(s) depuis Scoop.");
+                _journal.Erreur($"Erreur simulation scoop : {ex.Message}");
 
-            return resultats;
+                return false;
+            }
         }
 
         #endregion

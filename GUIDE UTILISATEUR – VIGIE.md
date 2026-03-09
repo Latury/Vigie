@@ -1,52 +1,80 @@
 # 👤 GUIDE UTILISATEUR – VIGIE
 
-Vigie est un centre de maintenance logicielle intelligent.
+Vigie est un **centre de maintenance logicielle intelligent**.
 
-La version actuelle permet de détecter les mises à jour disponibles
-sur votre système Windows.
+L’application permet d’analyser les logiciels installés
+et d’identifier les mises à jour disponibles sur votre système Windows.
+
+Vigie centralise les informations provenant de plusieurs gestionnaires
+de paquets afin de fournir une **vision claire des mises à jour disponibles.**
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 # 🧭 1. Scanner les mises à jour
 
 1. Ouvrir Vigie
-2. Cliquer sur "Scanner"
+2. Cliquer sur **"Scanner"**
 3. Attendre la fin de l’analyse
 4. Consulter la liste des mises à jour détectées
 
 Pendant l’analyse, un indicateur visuel signale que le scan est en cours.
 
-Aucun logiciel n’est installé, modifié ou supprimé.
-Le scan est strictement informatif.
+Le scan permet de :
 
-Vigie se limite actuellement à l’analyse et à l’agrégation
-des mises à jour disponibles.
+- détecter les logiciels pouvant être mis à jour
+- identifier leur version actuelle
+- identifier la version disponible
 
-Vigie peut interroger plusieurs gestionnaires de paquets
-(ex : winget, Scoop).
+Le scan interroge plusieurs gestionnaires de paquets
+(ex : **winget**, **Scoop**).
 
-Les résultats sont fusionnés automatiquement
+Les résultats sont **fusionnés automatiquement**
 afin d’éviter les doublons.
+
+Aucun logiciel n’est installé, modifié ou supprimé
+pendant la phase de scan.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# 🔄 2. Mise à jour des logiciels (en développement)
+# 🔄 2. Mettre à jour les logiciels
 
-Les fonctionnalités de mise à jour individuelle et globale
-sont actuellement en cours de développement.
+Vigie permet de lancer la mise à jour des logiciels détectés.
 
-Les mécanismes de sécurité prévus incluront :
+Deux modes sont disponibles :
 
-- confirmation utilisateur
+### Mise à jour globale
+
+1. Scanner les mises à jour
+2. Cliquer sur **"Mettre à jour"**
+3. Confirmer l’opération
+
+Vigie exécutera alors les mises à jour nécessaires.
+
+### Mise à jour individuelle
+
+Vous pouvez sélectionner précisément les logiciels
+à mettre à jour grâce aux **cases à cocher** dans la liste.
+
+Seuls les logiciels sélectionnés seront mis à jour.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# 🔐 3. Sécurité des mises à jour
+
+Les opérations de mise à jour sont protégées par plusieurs mécanismes :
+
+- confirmation explicite de l’utilisateur
 - journalisation complète des opérations
-- création d’un point de restauration système
+- préparation d’un point de restauration système
 
-Ces fonctionnalités seront introduites progressivement
+Ces mécanismes visent à garantir une **mise à jour contrôlée et traçable.**
+
+Des mécanismes de validation supplémentaires seront ajoutés
 dans les prochaines versions du projet.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# 👴 3. Mode Senior (prévu)
+# 👴 4. Mode Senior (prévu)
 
 Une interface simplifiée est prévue afin de rendre
 l’application accessible aux utilisateurs peu techniques.
@@ -56,12 +84,13 @@ Objectifs :
 - afficher uniquement les actions essentielles
 - utiliser des boutons larges
 - supprimer le jargon technique
+- présenter clairement l’état du système
 
-Implémentation prévue en version 0.5.0.
+Implémentation prévue en **version 0.5.0**.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# 🧠 4. Mode Expert (prévu)
+# 🧠 5. Mode Expert (prévu)
 
 Un mode avancé permettra d’accéder
 à des informations techniques détaillées.
@@ -73,15 +102,17 @@ Fonctionnalités prévues :
 - sélection et configuration des gestionnaires de paquets
 - accès à des paramètres techniques avancés
 
-Implémentation progressive jusqu’à la version 1.0.0.
+Implémentation progressive jusqu’à la **version 1.0.0**.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# ⚠️ 5. Recommandations
+# ⚠️ 6. Recommandations
+
+Pour garantir un fonctionnement optimal :
 
 - vérifier votre connexion internet avant un scan
-- ne pas fermer l’application pendant l’analyse
-- consulter les journaux en cas d’erreur (mode expert futur)
+- éviter de fermer l’application pendant une mise à jour
+- consulter les journaux en cas d’erreur (Mode Expert futur)
 
-Vigie est conçu pour simplifier la maintenance
+Vigie est conçu pour **simplifier la maintenance logicielle**
 et rendre la gestion des mises à jour plus compréhensible.

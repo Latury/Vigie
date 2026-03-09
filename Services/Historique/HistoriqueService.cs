@@ -3,7 +3,7 @@
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
 ║                                                                      ║
-║  Module : Services                                                   ║
+║  Module : Services.Historique                                        ║
 ║  Fichier : HistoriqueService.cs                                      ║
 ║                                                                      ║
 ║  Rôle :                                                              ║
@@ -18,8 +18,7 @@
 ║  - HistoriqueMiseAJour                                               ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
-║  Voir fichier LICENSE pour détails                                   ║
-║  Copyright © Année 2026 Flo Latury                                   ║
+║  Copyright © 2026 Flo Latury                                         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 */
 
@@ -32,56 +31,60 @@ using Vigie.Services.Interfaces;
 
 #endregion
 
-#region 2. Description Générale
-
-/*
- * Classe : HistoriqueService
- *
- * Rôle :
- * Implémentation simple en mémoire du service d’historique.
- *
- * Responsabilités :
- * 1. Conserver les entrées en mémoire
- * 2. Garantir lecture seule côté extérieur
- *
- * Limites :
- * - Non persistant
- * - Non thread-safe avancé (usage UI unique actuellement)
- */
-
-#endregion
-
-#region 3. Déclaration de la Classe
-
-public class HistoriqueService : IHistoriqueService
+namespace Vigie.Services.Historique
 {
-    #region 3.1 Champs privés
+    #region 2. Description Générale
 
-    private readonly List<HistoriqueMiseAJour> _entrees = new();
+    /*
+     * Classe : HistoriqueService
+     *
+     * Rôle :
+     * Implémentation simple en mémoire du service d’historique.
+     *
+     * Responsabilités :
+     * 1. Conserver les entrées en mémoire
+     * 2. Garantir une lecture seule côté extérieur
+     *
+     * Limites :
+     * - Non persistant
+     * - Non thread-safe avancé
+     * - Usage actuel limité au contexte UI
+     */
 
     #endregion
 
-    #region 3.2 Constructeur
+    #region 3. Déclaration
 
-    public HistoriqueService()
+    public class HistoriqueService : IHistoriqueService
     {
-    }
+        #region 3.1 Champs privés
 
-    #endregion
+        private readonly List<HistoriqueMiseAJour> _entrees = new();
 
-    #region 3.3 Méthodes publiques
+        #endregion
 
-    public void Ajouter(HistoriqueMiseAJour entree)
-    {
-        _entrees.Add(entree);
-    }
+        #region 3.2 Constructeur
 
-    public IReadOnlyList<HistoriqueMiseAJour> ObtenirTout()
-    {
-        return _entrees.AsReadOnly();
+        public HistoriqueService()
+        {
+        }
+
+        #endregion
+
+        #region 3.3 Méthodes publiques
+
+        public void Ajouter(HistoriqueMiseAJour entree)
+        {
+            _entrees.Add(entree);
+        }
+
+        public IReadOnlyList<HistoriqueMiseAJour> ObtenirTout()
+        {
+            return new List<HistoriqueMiseAJour>(_entrees).AsReadOnly();
+        }
+
+        #endregion
     }
 
     #endregion
 }
-
-#endregion

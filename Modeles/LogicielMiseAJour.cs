@@ -13,6 +13,7 @@
 ║  - Contenir les informations du logiciel                             ║
 ║  - Permettre la sélection pour mise à jour                           ║
 ║  - Exposer l'état de mise à jour pour l'UI                           ║
+║  - Notifier les changements pour l'interface                         ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -21,6 +22,7 @@
 
 #region 1. Imports
 
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -28,37 +30,24 @@ using System.Runtime.CompilerServices;
 
 namespace Vigie.Modeles
 {
-    #region 2. Description Générale
-
-    /*
-     * Classe : LogicielMiseAJour
-     *
-     * Rôle :
-     * Modèle représentant un logiciel détecté
-     * avec une mise à jour disponible.
-     *
-     * Utilisation :
-     * - Liste affichée dans l'interface
-     * - Support sélection utilisateur
-     * - Support statut de mise à jour
-     */
-
-    #endregion
-
-    #region 3. Déclaration
+    #region 2. Déclaration
 
     public class LogicielMiseAJour : INotifyPropertyChanged
     {
-        #region 3.1 Champs privés
+
+        #region 2.1 Champs privés
 
         private bool _estSelectionne;
+
+        private bool _selectionAutorisee = true;
 
         private StatutMiseAJour _statutMiseAJour =
             StatutMiseAJour.EnAttente;
 
         #endregion
 
-        #region 3.2 Propriétés publiques
+
+        #region 2.2 Propriétés publiques
 
         public string Nom { get; set; } = string.Empty;
 
@@ -72,61 +61,101 @@ namespace Vigie.Modeles
 
         public string IdentifiantNormalise { get; set; } = string.Empty;
 
+
         /*
          * Propriété : EstSelectionne
          *
          * Rôle :
          * Indique si le logiciel est sélectionné
-         * pour une mise à jour individuelle.
+         * pour une mise à jour.
          */
 
         public bool EstSelectionne
         {
             get => _estSelectionne;
+
             set
             {
-                if (_estSelectionne != value)
+                if (_estSelectionne == value)
                 {
-                    _estSelectionne = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                _estSelectionne = value;
+
+                OnPropertyChanged();
+
+                OnSelectionChanged();
             }
         }
+
+
+        /*
+         * Propriété : SelectionAutorisee
+         *
+         * Rôle :
+         * Permet d'empêcher la sélection
+         * lorsqu'une mise à jour a déjà été effectuée.
+         */
+
+        public bool SelectionAutorisee
+        {
+            get => _selectionAutorisee;
+
+            set
+            {
+                if (_selectionAutorisee == value)
+                {
+                    return;
+                }
+
+                _selectionAutorisee = value;
+
+                OnPropertyChanged();
+            }
+        }
+
 
         /*
          * Propriété : StatutMiseAJour
          *
          * Rôle :
-         * Indique l'état actuel de la mise à jour
-         * pour ce logiciel.
-         *
-         * États possibles :
-         * - EnAttente
-         * - EnCours
-         * - Succes
-         * - Echec
-         *
-         * Utilisation :
-         * - Feedback visuel dans l'interface
-         * - Préparation historique futur
+         * Indique l'état actuel de la mise à jour.
          */
 
         public StatutMiseAJour StatutMiseAJour
         {
             get => _statutMiseAJour;
+
             set
             {
-                if (_statutMiseAJour != value)
+                if (_statutMiseAJour == value)
                 {
-                    _statutMiseAJour = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                _statutMiseAJour = value;
+
+                OnPropertyChanged();
             }
         }
 
         #endregion
 
-        #region 3.3 INotifyPropertyChanged
+
+        #region 2.3 Événement sélection
+
+        public event EventHandler? SelectionChanged;
+
+        private void OnSelectionChanged()
+        {
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        #endregion
+
+
+        #region 2.4 INotifyPropertyChanged
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -139,6 +168,7 @@ namespace Vigie.Modeles
         }
 
         #endregion
+
     }
 
     #endregion

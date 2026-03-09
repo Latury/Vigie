@@ -3,16 +3,18 @@
 ║                          VIGIE                                       ║
 ║        Centre de maintenance logicielle intelligent                  ║
 ║                                                                      ║
-║  Module : Services.Gestionnaires                                     ║
+║  Module : Services                                                   ║
 ║  Fichier : GestionnaireChocolatey.cs                                 ║
 ║                                                                      ║
 ║  Rôle :                                                              ║
-║  Gestionnaire de paquets pour Chocolatey.                            ║
+║  Implémente le gestionnaire Chocolatey (simulation actuelle).        ║
 ║                                                                      ║
 ║  Responsabilités principales :                                       ║
-║  - Exécuter la commande chocolatey pour détecter les mises à jour    ║
-║  - Parser la sortie texte                                            ║
-║  - Produire des modèles LogicielMiseAJour                            ║
+║  - Simuler les mises à jour Chocolatey                               ║
+║  - Préparer l'intégration future                                     ║
+║                                                                      ║
+║  Limites :                                                           ║
+║  - Simulation uniquement                                             ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -23,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 using Vigie.Modeles;
@@ -33,22 +34,7 @@ using Vigie.Services.Interfaces;
 
 namespace Vigie.Services.Gestionnaires
 {
-    #region 2. Description Générale
-
-    /*
-     * Classe : GestionnaireChocolatey
-     *
-     * Rôle :
-     * Implémente IGestionnairePaquets pour
-     * récupérer les mises à jour via Chocolatey.
-     *
-     * Commande utilisée :
-     * choco outdated
-     */
-
-    #endregion
-
-    #region 3. Déclaration
+    #region 2. Déclaration
 
     public class GestionnaireChocolatey : IGestionnairePaquets
     {
@@ -72,68 +58,37 @@ namespace Vigie.Services.Gestionnaires
 
         public async Task<List<LogicielMiseAJour>> ScanAsync()
         {
-            var logiciels = new List<LogicielMiseAJour>();
+            _journal.Info("[SIMULATION] Scan Chocolatey.");
 
+            await Task.Delay(500);
+
+            return new List<LogicielMiseAJour>();
+        }
+
+        public async Task<bool> MettreAJourAsync(LogicielMiseAJour logiciel)
+        {
             try
             {
-                _journal.Info("Début du scan Chocolatey.");
+                _journal.Info($"[SIMULATION] Mise à jour chocolatey : {logiciel.Nom}");
 
-                var process = new Process();
+                logiciel.StatutMiseAJour = StatutMiseAJour.EnCours;
 
-                process.StartInfo.FileName = "choco";
-                process.StartInfo.Arguments = "outdated";
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.CreateNoWindow = true;
+                await Task.Delay(1300);
 
-                process.Start();
+                logiciel.StatutMiseAJour = StatutMiseAJour.Succes;
 
-                string sortie =
-                    await process.StandardOutput.ReadToEndAsync();
+                _journal.Info($"[SIMULATION] Mise à jour chocolatey terminée : {logiciel.Nom}");
 
-                process.WaitForExit();
-
-                var lignes =
-                    sortie.Split(
-                        new[] { '\r', '\n' },
-                        StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var ligne in lignes)
-                {
-                    if (!ligne.Contains("|"))
-                    {
-                        continue;
-                    }
-
-                    var parties = ligne.Split('|');
-
-                    if (parties.Length < 3)
-                    {
-                        continue;
-                    }
-
-                    var logiciel = new LogicielMiseAJour
-                    {
-                        Nom = parties[0],
-                        VersionActuelle = parties[1],
-                        NouvelleVersion = parties[2],
-                        Source = "chocolatey",
-                        IdentifiantSource = parties[0]
-                    };
-
-                    logiciels.Add(logiciel);
-                }
-
-                _journal.Info(
-                    $"{logiciels.Count} mise(s) à jour détectée(s) via Chocolatey.");
+                return true;
             }
             catch (Exception ex)
             {
-                _journal.Erreur(
-                    $"Erreur scan Chocolatey : {ex.Message}");
-            }
+                logiciel.StatutMiseAJour = StatutMiseAJour.Echec;
 
-            return logiciels;
+                _journal.Erreur($"Erreur simulation chocolatey : {ex.Message}");
+
+                return false;
+            }
         }
 
         #endregion

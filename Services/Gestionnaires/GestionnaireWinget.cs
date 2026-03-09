@@ -173,6 +173,54 @@ namespace Vigie.Services.Gestionnaires
             }
         }
 
+                 /*
+                  * Méthode : MettreAJourAsync
+                  *
+                  * Objectif :
+                  * Simuler une mise à jour winget.
+                  *
+                  * Phase actuelle :
+                  * Simulation uniquement afin de tester
+                  * le moteur interne de mise à jour.
+                  */
+
+        public async Task<bool> MettreAJourAsync(LogicielMiseAJour logiciel)
+        {
+            try
+            {
+                if (logiciel == null)
+                {
+                    return false;
+                }
+
+                _journal.Info($"[SIMULATION] Mise à jour winget : {logiciel.Nom}");
+
+                logiciel.StatutMiseAJour = StatutMiseAJour.EnCours;
+
+                // Simulation temps installation
+
+                await Task.Delay(1500);
+
+                // Simulation succès
+
+                logiciel.StatutMiseAJour = StatutMiseAJour.Succes;
+
+                _journal.Info($"[SIMULATION] Mise à jour terminée : {logiciel.Nom}");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logiciel.StatutMiseAJour = StatutMiseAJour.Echec;
+
+                _journal.Erreur(
+                    $"Erreur simulation winget : {ex.Message}");
+
+                return false;
+            }
+        }
+
+
         #endregion
 
         #region 3.4 Méthodes privées

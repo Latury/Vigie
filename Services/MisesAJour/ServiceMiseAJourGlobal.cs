@@ -14,6 +14,8 @@
 ║  - Journaliser les événements critiques                              ║
 ║  - Garantir stabilité application                                    ║
 ║  - Gérer préparation point de restauration                           ║
+║  - Gérer timeout d'exécution                                         ║
+║  - Enregistrer l’historique des opérations                           ║
 ║                                                                      ║
 ║  Licence : MIT                                                       ║
 ║  Copyright © 2026 Flo Latury                                         ║
@@ -46,7 +48,9 @@ namespace Vigie.Services.MisesAJour
      * 2. Encapsuler toute exception
      * 3. Journaliser les événements
      * 4. Garantir qu’aucune exception ne remonte vers l’UI
-     * 5. Mettre à jour le statut visuel des logiciels
+     * 5. Gérer timeout d’exécution
+     * 6. Mettre à jour le statut visuel des logiciels
+     * 7. Enregistrer les opérations dans l’historique
      */
 
     #endregion
@@ -60,6 +64,10 @@ namespace Vigie.Services.MisesAJour
         private readonly IServiceMiseAJour _serviceMiseAJour;
         private readonly IJournalService? _journal;
         private readonly IPointRestaurationService? _pointRestauration;
+        private readonly IHistoriqueService? _historique;
+
+        private readonly TimeSpan _timeoutMiseAJour =
+            TimeSpan.FromMinutes(10);
 
         #endregion
 
@@ -68,22 +76,22 @@ namespace Vigie.Services.MisesAJour
         public ServiceMiseAJourGlobal(
             IServiceMiseAJour serviceMiseAJour,
             IJournalService? journal = null,
-            IPointRestaurationService? pointRestauration = null)
+            IPointRestaurationService? pointRestauration = null,
+            IHistoriqueService? historique = null)
         {
-            _serviceMiseAJour = serviceMiseAJour
+            _serviceMiseAJour =
+                serviceMiseAJour
                 ?? throw new ArgumentNullException(nameof(serviceMiseAJour));
 
             _journal = journal;
             _pointRestauration = pointRestauration;
+            _historique = historique;
         }
 
         #endregion
 
         #region 3.3 Méthodes publiques
 
-        /// <summary>
-        /// Prépare un point de restauration avant mise à jour globale.
-        /// </summary>
         public async Task<bool> PreparerPointRestaurationAsync()
         {
             if (_pointRestauration == null)
@@ -121,9 +129,6 @@ namespace Vigie.Services.MisesAJour
             }
         }
 
-        /// <summary>
-        /// Exécute une mise à jour individuelle sécurisée.
-        /// </summary>
         public async Task<ResultatMiseAJour> ExecuterMiseAJourAsync(
             LogicielMiseAJour logiciel)
         {
@@ -141,15 +146,28 @@ namespace Vigie.Services.MisesAJour
 
             try
             {
-                // Feedback visuel : début mise à jour
                 logiciel.StatutMiseAJour = StatutMiseAJour.EnCours;
 
                 _journal?.Info(
                     $"Début mise à jour : {logiciel.Nom} ({logiciel.Source})");
 
-                var resultat =
-                    await _serviceMiseAJour
+                var tacheMiseAJour =
+                    _serviceMiseAJour
                         .ExecuterMiseAJourAsync(logiciel);
+
+                var tacheTimeout =
+                    Task.Delay(_timeoutMiseAJour);
+
+                var tacheTerminee =
+                    await Task.WhenAny(tacheMiseAJour, tacheTimeout);
+
+                if (tacheTerminee == tacheTimeout)
+                {
+                    throw new TaskCanceledException(
+                        $"Timeout mise à jour après {_timeoutMiseAJour.TotalMinutes} minutes.");
+                }
+
+                var resultat = await tacheMiseAJour;
 
                 stopwatch.Stop();
 
@@ -165,18 +183,15 @@ namespace Vigie.Services.MisesAJour
 
                 resultat.DureeExecution = stopwatch.Elapsed;
 
-                // Feedback visuel : succès
-                if (resultat.Statut == StatutMiseAJour.Succes)
-                {
-                    logiciel.StatutMiseAJour = StatutMiseAJour.Succes;
-                }
-                else
-                {
-                    logiciel.StatutMiseAJour = StatutMiseAJour.Echec;
-                }
+                logiciel.StatutMiseAJour =
+                    resultat.Statut == StatutMiseAJour.Succes
+                    ? StatutMiseAJour.Succes
+                    : StatutMiseAJour.Echec;
 
                 _journal?.Info(
                     $"Fin mise à jour : {logiciel.Nom} - {resultat.Statut}");
+
+                EnregistrerHistorique(resultat);
 
                 return resultat;
             }
@@ -189,9 +204,14 @@ namespace Vigie.Services.MisesAJour
                 _journal?.Erreur(
                     $"Timeout mise à jour : {logiciel.Nom}");
 
-                return ConstruireTimeout(
-                    logiciel,
-                    stopwatch.Elapsed);
+                var resultat =
+                    ConstruireTimeout(
+                        logiciel,
+                        stopwatch.Elapsed);
+
+                EnregistrerHistorique(resultat);
+
+                return resultat;
             }
             catch (Exception ex)
             {
@@ -202,10 +222,15 @@ namespace Vigie.Services.MisesAJour
                 _journal?.Erreur(
                     $"Erreur critique mise à jour {logiciel.Nom} : {ex.Message}");
 
-                return ConstruireEchec(
-                    logiciel,
-                    ex.Message,
-                    stopwatch.Elapsed);
+                var resultat =
+                    ConstruireEchec(
+                        logiciel,
+                        ex.Message,
+                        stopwatch.Elapsed);
+
+                EnregistrerHistorique(resultat);
+
+                return resultat;
             }
         }
 
@@ -218,6 +243,26 @@ namespace Vigie.Services.MisesAJour
             return logiciel != null
                 && !string.IsNullOrWhiteSpace(logiciel.Nom)
                 && !string.IsNullOrWhiteSpace(logiciel.Source);
+        }
+
+        private void EnregistrerHistorique(ResultatMiseAJour resultat)
+        {
+            if (_historique == null)
+            {
+                return;
+            }
+
+            var entree = new HistoriqueMiseAJour
+            {
+                Nom = resultat.Nom,
+                VersionAvant = resultat.VersionAvant,
+                VersionApres = resultat.VersionApres,
+                Source = resultat.Source,
+                Statut = resultat.Statut,
+                MessageErreur = resultat.MessageErreur
+            };
+
+            _historique.Ajouter(entree);
         }
 
         private ResultatMiseAJour ConstruireEchec(

@@ -47,6 +47,66 @@ Interdit :
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+# 🔎 RÉFÉRENCE ARCHITECTURALE
+
+Lorsqu’un commit modifie :
+
+- la structure du code
+- les services principaux
+- le pipeline interne
+- l’orchestration des gestionnaires
+- l’architecture MVVM
+
+il est recommandé de consulter :
+
+**AVG — Architecture Vigie**
+
+Le document de référence est :
+
+**ARCHITECTURE – Vigie.md**
+
+AVG constitue la référence officielle pour :
+
+- la structuration du code
+- les règles d’architecture
+- les principes de conception du moteur Vigie
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# ⚙️ PIPELINE OFFICIEL VIGIE
+
+Le moteur interne de Vigie repose sur un pipeline structuré.
+
+Pipeline officiel :
+
+Scan → Normalisation → Fusion → Mise à jour
+
+Description des étapes :
+
+1. Scan  
+   Les gestionnaires interrogent le système (winget, scoop, etc.)
+
+2. Normalisation  
+   Les données sont converties dans un format interne cohérent.
+
+3. Fusion  
+   Les résultats provenant de plusieurs gestionnaires sont consolidés
+   et dédupliqués.
+
+4. Mise à jour  
+   Les opérations de mise à jour sont orchestrées de manière sécurisée.
+
+Toute modification d’une étape du pipeline doit être explicitement documentée dans le commit.
+
+Le commit doit préciser :
+
+- quelle étape est modifiée
+- l’ordre d’exécution
+- les impacts sur les gestionnaires
+- les impacts sur la fusion des données
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 # 🏗️ RÈGLE ARCHITECTURALE SPÉCIFIQUE
 
 Tout commit modifiant une classe métier doit préciser :
@@ -57,7 +117,7 @@ Tout commit modifiant une classe métier doit préciser :
 
 Objectif :
 
-Tracer l’évolution du découplage architectural
+Tracer l’évolution du découplage architectural  
 et garantir la testabilité progressive du projet.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -76,11 +136,11 @@ Format strict :
 
 Exemples adaptés à Vigie :
 
-📎 [Init] Initialisation projet WinUI 3
-🏗️ [Architecture] Mise en place MVVM strict
-🧱 [Core] Implémentation GestionnaireWinget scan texte
-✨ [Feature] Implémentation mise à jour globale contrôlée
-🔒 [Security] Ajout point de restauration
+📎 [Init] Initialisation projet WinUI 3  
+🏗️ [Architecture] Mise en place MVVM strict  
+🧱 [Core] Implémentation GestionnaireWinget scan texte  
+✨ [Feature] Implémentation mise à jour globale contrôlée  
+🔒 [Security] Ajout point de restauration  
 
 Règles :
 
@@ -147,32 +207,32 @@ Explication claire destinée :
 
 # 🏷️ CATÉGORIES OFFICIELLES DE COMMIT – VIGIE
 
-| Emoji | Type         | Utilisation spécifique Vigie                                                         |
-| ----- | ------------ | ------------------------------------------------------------------------------------ |
-| 📎    | Init         | Initialisation projet                                                                |
-| 🏗️    | Architecture | Modification structure MVVM                                                          |
-| 🧱    | Core         | Modification logique cœur (PackageManagers)                                          |
-| ✨    | Feature      | Nouvelle fonctionnalité utilisateur                                                  |
-| ⛓️‍💥    | Bug          | Correction d’un dysfonctionnement affectant la logique métier ou l’exécution système |
-| 🛠️    | Fix          | Correction mineure                                                                   |
-| ♻️    | Refactor     | Réorganisation sans changement fonctionnel                                           |
-| 📝    | Docs         | Documentation                                                                        |
-| 📚    | Readme       | Modification README uniquement                                                       |
-| 🔒    | Security     | Sécurité (point restauration, validation)                                            |
-| 🚀    | Performance  | Optimisation                                                                         |
-| 🧪    | Test         | Ajout ou modification tests                                                          |
-| 🧹    | Cleanup      | Nettoyage code                                                                       |
-| 🔥    | Remove       | Suppression code                                                                     |
-| 🔧    | Config       | Configuration projet                                                                 |
-| 🔄    | Upgrade      | Mise à jour dépendances                                                              |
-| 🧠    | Logic        | Modification logique métier                                                          |
-| 🛡️    | Validation   | Validation données                                                                   |
-| 🧵    | Async        | Passage en asynchrone                                                                |
-| 🧭    | Navigation   | Modification navigation                                                              |
-| 🎯    | UX           | Amélioration expérience utilisateur                                                  |
-| 📁    | Structure    | Réorganisation dossiers                                                              |
-| 🧬    | Experimental | Fonctionnalité expérimentale                                                         |
-| ⚙️    | Service      | Modification ou création d’un service applicatif                                     |
+| Emoji | Type | Utilisation spécifique Vigie |
+|------|------|------|
+| 📎 | Init | Initialisation projet |
+| 🏗️ | Architecture | Modification structure MVVM |
+| 🧱 | Core | Modification logique cœur |
+| ✨ | Feature | Nouvelle fonctionnalité |
+| ⛓️‍💥 | Bug | Correction dysfonctionnement |
+| 🛠️ | Fix | Correction mineure |
+| ♻️ | Refactor | Réorganisation sans changement fonctionnel |
+| 📝 | Docs | Documentation |
+| 📚 | Readme | Modification README |
+| 🔒 | Security | Sécurité système |
+| 🚀 | Performance | Optimisation |
+| 🧪 | Test | Ajout ou modification tests |
+| 🧹 | Cleanup | Nettoyage code |
+| 🔥 | Remove | Suppression code |
+| 🔧 | Config | Configuration projet |
+| 🔄 | Upgrade | Mise à jour dépendances |
+| 🧠 | Logic | Modification logique métier |
+| 🛡️ | Validation | Validation données |
+| 🧵 | Async | Passage en asynchrone |
+| 🧭 | Navigation | Navigation UI |
+| 🎯 | UX | Amélioration UX |
+| 📁 | Structure | Réorganisation dossiers |
+| 🧬 | Experimental | Fonctionnalité expérimentale |
+| ⚙️ | Service | Création ou modification service |
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -187,6 +247,7 @@ Explication claire destinée :
 ## Description
 
 👶 Description simplifiée :
+
 Ajout du moteur permettant à Vigie de scanner les mises à jour via winget.
 
 ---
@@ -195,11 +256,10 @@ Ajout du moteur permettant à Vigie de scanner les mises à jour via winget.
 
 - Création classe GestionnaireWinget
 - Implémentation interface IGestionnairePaquets
-- Exécution commande :
-  winget upgrade
+- Exécution commande winget upgrade
 - Lecture sortie standard
 - Parsing texte basé sur structure colonnes winget
-- Nettoyage des données (suppression ID parasite)
+- Nettoyage des données
 - Journalisation structurée
 
 ---
@@ -214,15 +274,30 @@ Ajout du moteur permettant à Vigie de scanner les mises à jour via winget.
 
 ⚠️ Risques ou effets secondaires :
 
-- Parsing dépend du format texte winget
-- Sensible aux évolutions de colonnes
+Parsing dépend du format texte winget.
 
 ---
 
 🎯 Impact global :
 
-Activation du scan robuste.
-Base architecturale pour extension multi-gestionnaires.
+Activation du scan robuste  
+et base pour extension multi-gestionnaires.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# 📚 RELATION ENTRE COMMITS ET PATCH NOTES
+
+Les commits documentent les **modifications détaillées du code**.
+
+Les Patch Notes documentent les **évolutions consolidées du projet**.
+
+Règle :
+
+Un commit ne doit jamais annoncer une version officielle.
+
+Les versions sont documentées uniquement dans :
+
+**PATCH NOTES – VIGIE.md**
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -235,51 +310,38 @@ Base architecturale pour extension multi-gestionnaires.
 - Pas de commit émotionnel
 - Pas de commit automatique non documenté
 - Pas de commit massif sans explication détaillée
-- Toute modification de logique de fusion ou de comparaison de versions
-  doit explicitement mentionner le mécanisme utilisé (ex : System.Version)
-- Toute modification du pipeline Scan → Normalisation → Fusion
-  doit décrire l’ordre exact d’exécution.
-- Toute modification du JournalService
-  doit préciser l’impact sur le format des logs
-  et le risque de rupture de lecture future.
-- Toute modification de documentation stratégique
-  (README, FEUILLE DE ROUTE, PATCH NOTES, STANDARD)
-  doit être strictement alignée avec l’état réel du code au moment du commit.
-- Un commit de documentation ne doit jamais anticiper une
-  fonctionnalité non encore implémentée.
 
-- Un commit ne doit pas dépasser ~300 lignes modifiées
-  sauf justification explicite dans la description.
+Toute modification de :
 
-- Tout commit introduisant une nouvelle fonctionnalité
-  doit mentionner la version cible de la feuille de route.
+- logique de fusion
+- comparaison de versions
+- pipeline interne
+- journalisation
 
-Exemple :
+doit être explicitement décrite.
 
-Version cible : 0.3.0
+Un commit ne doit pas dépasser **~300 lignes modifiées**
+sauf justification explicite.
+
+Toute nouvelle fonctionnalité doit mentionner :
+
+Version cible : ex 0.4.0
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 # 🧾 FORMAT FOURNI PAR L’ASSISTANT
 
-Règle spécifique au workflow Vigie :
+À chaque demande de rédaction de commit, l’assistant doit fournir :
 
-À chaque demande de rédaction de commit,
-l’assistant doit obligatoirement fournir :
-
-- Le Summary en format texte brut
-- La Description complète en bloc code (format prêt à copier-coller)
-- Sans mise en forme décorative inutile
-- Sans variation de structure
+- Summary en texte brut
+- Description complète en bloc code
+- Format prêt à copier-coller
 
 Objectif :
 
-Optimiser la rapidité de commit,
-éviter les erreurs de format,
-standardiser la communication technique,
-et maintenir une discipline professionnelle constante.
-
-Cette règle est permanente.
+- accélérer la rédaction
+- éviter les erreurs de format
+- maintenir une discipline professionnelle constante
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -295,20 +357,20 @@ Cette règle est permanente.
 
 # 🚫 EXEMPLES INTERDITS
 
-❌ Update
-❌ Correction
-❌ Divers changements
-❌ Bug fix
-❌ WIP
-❌ Ajouts
+❌ Update  
+❌ Correction  
+❌ Divers changements  
+❌ Bug fix  
+❌ WIP  
+❌ Ajouts  
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 # 🏁 OBJECTIF FINAL
 
-Un historique Git lisible.
-Une architecture documentée.
-Un projet auditable.
-Un futur mainteneur serein.
+Un historique Git lisible  
+Une architecture documentée  
+Un projet auditable  
+Un futur mainteneur serein
 
 Un bon commit aujourd’hui évite une catastrophe mentale dans 6 mois.

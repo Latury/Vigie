@@ -131,6 +131,29 @@ namespace Vigie.Services.Gestionnaires
             }
         }
 
+        /*
+          * Méthode : MettreAJourAsync
+          *
+          * Objectif :
+          * Orchestrer la mise à jour d’un logiciel
+          * via le gestionnaire approprié.
+          */
+
+        public async Task<bool> MettreAJourAsync(LogicielMiseAJour logiciel)
+        {
+            foreach (var gestionnaire in _gestionnaires)
+            {
+                if (gestionnaire.GetType().Name.Contains(logiciel.Source, StringComparison.OrdinalIgnoreCase))
+                {
+                    return await gestionnaire.MettreAJourAsync(logiciel);
+                }
+            }
+
+            _journal.Erreur($"Aucun gestionnaire trouvé pour {logiciel.Source}");
+
+            return false;
+        }
+
         #endregion
 
         #region 3.4 Méthodes privées
